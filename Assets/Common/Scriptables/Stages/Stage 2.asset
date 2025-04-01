@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e675658e5d57a9046b3324c0c946a620, type: 3}
   m_Name: Stage 2
   m_EditorClassIdentifier: 
-  icon: {fileID: 21300000, guid: 9000f7664ecafea498cba3b07fa1f838, type: 3}
-  displayName: SHADE PALACE
+  icon: {fileID: 21300000, guid: 1e03abc7d067c428fb45e9e9594eacc2, type: 3}
+  displayName: S2 even more
   timeline: {fileID: 11400000, guid: b0f895641243c3540b636140e9d64276, type: 2}
   stageType: 0
   stageFieldData: {fileID: 11400000, guid: 4784fb39006132f48ad76bf040e6db27, type: 2}
