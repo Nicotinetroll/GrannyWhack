@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6347c4bf45db0cb4b9b95edb3aa5908e, type: 3}
+  m_Name: Characters Database
+  m_EditorClassIdentifier: 
+  characters:
+  - name: WIZARD
+    cost: 0
+    icon: {fileID: 21300000, guid: 755f8689cc0272545aff1e866ef340e2, type: 3}
+    prefab: {fileID: 2921880940271959218, guid: e46276dd75482da438f1ed5734db6950,
+      type: 3}
+    hasStartingAbility: 0
+    startingAbility: 0
+    baseHP: 100
+    baseDamage: 1
+  - name: MAGE
+    cost: 500
+    icon: {fileID: 21300000, guid: f732c85210a311741abc947ab8af1424, type: 3}
+    prefab: {fileID: 2921880940271959218, guid: 54121bc69e709ef4aae3deb8291032d8,
+      type: 3}
+    hasStartingAbility: 0
+    startingAbility: 0
+    baseHP: 120
+    baseDamage: 1.2
+  - name: STNWGN
+    cost: 0
+    icon: {fileID: 21300000, guid: 41340b0f6aa5243a68e77db416678585, type: 3}
+    prefab: {fileID: 2921880940271959218, guid: 7de6d3d2b639a40b0bc2422c27685f24,
+      type: 3}
+    hasStartingAbility: 1
+    startingAbility: 6
+    baseHP: 160
+    baseDamage: 1.6
+  - name: REDNECK
+    cost: 0
+    icon: {fileID: 21300000, guid: 18883dfeb848c433c9761fc87ddcf86d, type: 3}
+    prefab: {fileID: 2921880940271959218, guid: 13a9b77005e2d4afa9b86f04698235e3,
+      type: 3}
+    hasStartingAbility: 1
+    startingAbility: 1
+    baseHP: 200
+    baseDamage: 2
+  - name: GRANNY
+    cost: 0
+    icon: {fileID: 21300000, guid: dd97ad280f1174a469304a8efa3840cf, type: 3}
+    prefab: {fileID: 2921880940271959218, guid: 4b2de28fef5124d70b8cb7bc6a402b09,
+      type: 3}
+    hasStartingAbility: 1
+    startingAbility: 10
+    baseHP: 100
+    baseDamage: 1

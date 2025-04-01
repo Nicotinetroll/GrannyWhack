@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d2b29ddab0014c7f892912e6b4ce6d2, type: 3}
+  m_Name: Grannys Armpit Ability Data
+  m_EditorClassIdentifier: 
+  type: 10
+  title: "Granny\u2019s Armpit"
+  description: Unleash a toxic cloud of ancient stink
+  icon: {fileID: 21300000, guid: fe6710f24379a4828b2af79b9f88ebc4, type: 3}
+  prefab: {fileID: 6046089768498997805, guid: e545bdbda405c4c278992dd3708e2fdc, type: 3}
+  isActiveAbility: 1
+  isWeaponAbility: 1
+  isEndgameAbility: 0
+  isEvolution: 0
+  evolutionRequirements: []
+  levels:
+  - fieldRadius: 1
+    damage: 6
+    damageCooldown: 1
+  - fieldRadius: 1.3
+    damage: 9
+    damageCooldown: 1
+  - fieldRadius: 1.6
+    damage: 15
+    damageCooldown: 1
+  - fieldRadius: 1.9
+    damage: 18
+    damageCooldown: 1
+  - fieldRadius: 2.2
+    damage: 24
+    damageCooldown: 1

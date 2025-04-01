@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89e62bba5c9a8465fac42fcc293e3d57, type: 3}
+  m_Name: The Elder Rot Ability Data
+  m_EditorClassIdentifier: 
+  type: 210
+  title: The Elder Rot
+  description: Cupcake ipsum
+  icon: {fileID: 21300000, guid: fe6710f24379a4828b2af79b9f88ebc4, type: 3}
+  prefab: {fileID: 6046089768498997805, guid: 98c2d74f67398421da087760fa2876cc, type: 3}
+  isActiveAbility: 0
+  isWeaponAbility: 0
+  isEndgameAbility: 0
+  isEvolution: 1
+  evolutionRequirements: []
+  levels: []
