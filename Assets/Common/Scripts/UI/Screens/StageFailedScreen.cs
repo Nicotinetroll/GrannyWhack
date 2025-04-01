@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
+
 
 namespace OctoberStudio.UI
 {
@@ -14,6 +16,8 @@ namespace OctoberStudio.UI
         [SerializeField] CanvasGroup canvasGroup;
         [SerializeField] Button reviveButton;
         [SerializeField] Button exitButton;
+        [SerializeField] private TextMeshProUGUI totalDamageText;
+
 
         private Canvas canvas;
 
@@ -32,6 +36,9 @@ namespace OctoberStudio.UI
         public void Show()
         {
             gameObject.SetActive(true);
+            
+            totalDamageText.text = $"{Mathf.RoundToInt(DamageStatsTracker.TotalDamage):N0}";
+
 
             canvasGroup.alpha = 0;
             canvasGroup.DoAlpha(1, 0.3f).SetUnscaledTime(true);
