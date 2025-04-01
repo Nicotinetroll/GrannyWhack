@@ -30,9 +30,8 @@ MonoBehaviour:
       chance: 1
     - dropType: 100
       chance: 0
-    deathParticlePrefab: {fileID: 4359775741450278212, guid: 96679bc10afc50845962599d04695343,
-      type: 3}
-    deathParticlePoolName: GhostDeathFX
+    deathParticlePrefab: {fileID: 0}
+    deathParticlePoolName: 
   - type: 1
     prefab: {fileID: 1090571174421192766, guid: bdb159c5340f537448bf478665384e2d,
       type: 3}
