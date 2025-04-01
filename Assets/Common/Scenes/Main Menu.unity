@@ -931,6 +931,32 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1372640283393604201, guid: 7dfbe892154909b41aea43c2840561fd,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: d90e4e0dc33be4c438c8f1a7d2088f0a,
+        type: 3}
+    - target: {fileID: 3590043595979241367, guid: 7dfbe892154909b41aea43c2840561fd,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 585.7896
+      objectReference: {fileID: 0}
+    - target: {fileID: 3590043595979241367, guid: 7dfbe892154909b41aea43c2840561fd,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 390.5263
+      objectReference: {fileID: 0}
+    - target: {fileID: 3590043595979241367, guid: 7dfbe892154909b41aea43c2840561fd,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3590043595979241367, guid: 7dfbe892154909b41aea43c2840561fd,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -151
+      objectReference: {fileID: 0}
     - target: {fileID: 6135548803352852383, guid: 7dfbe892154909b41aea43c2840561fd,
         type: 3}
       propertyPath: m_AnchoredPosition.y
