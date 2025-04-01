@@ -78,7 +78,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 0.2
   damage: 100
-  hp: 400
+  hp: 1200
   canBeKickedBack: 0
   shouldFadeIn: 0
   rb: {fileID: 5611959192970924213}
