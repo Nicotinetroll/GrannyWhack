@@ -115,10 +115,12 @@ namespace OctoberStudio
             
             enemiesDiedLabel.SetAmount(enemiesDiedCounter);
         }
+            
 
         private void Update()
         {
-            if (!isOffscreenTeleportEnabled || PlayerBehavior.Player == null) return;
+            if (!isOffscreenTeleportEnabled || PlayerBehavior.Player == null)
+                return;
 
             var diagonalSqr = (CameraManager.HalfWidth * CameraManager.HalfWidth + CameraManager.HalfHeight * CameraManager.HalfHeight) * diagonalDistanceMultiplier;
             var diagonal = Mathf.Sqrt(diagonalSqr);
@@ -130,7 +132,10 @@ namespace OctoberStudio
             for (int i = frame; i < enemies.Count; i += modValue)
             {
                 var enemy = enemies[i];
-                if (enemy == null || enemy.WaveOverride.DisableOffscreenTeleport) continue;
+
+                // ✅ Safe null check inside loop
+                if (PlayerBehavior.Player == null || enemy == null || enemy.WaveOverride == null || enemy.WaveOverride.DisableOffscreenTeleport)
+                    continue;
 
                 var enemyToPlayer = enemy.transform.position - PlayerBehavior.Player.transform.position;
                 var direction = enemyToPlayer.normalized;
@@ -138,12 +143,13 @@ namespace OctoberStudio
 
                 if (diagonalSqr < enemyToPlayer.sqrMagnitude && dot < dotValue)
                 {
-                    var teleportPosition = PlayerBehavior.Player.transform.position + 
+                    var teleportPosition = PlayerBehavior.Player.transform.position +
                                            Quaternion.Euler(0, 0, Random.Range(-45, 45)) * PlayerBehavior.Player.LookDirection * diagonal;
                     enemy.transform.position = teleportPosition;
                 }
             }
         }
+
 
 
         public EnemyBehavior GetClosestEnemy(Vector2 point, GameObject exclude = null)
