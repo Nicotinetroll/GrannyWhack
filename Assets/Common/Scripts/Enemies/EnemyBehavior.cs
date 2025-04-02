@@ -242,31 +242,16 @@ namespace OctoberStudio
                 GameObject pooled = poolsManager.GetEntity("ParticlePrefab"); // <-- make sure this name matches
                 if (pooled != null)
                 {
-                    Debug.Log("[Particle] Spawned pooled particle");
-
                     pooled.transform.position = Center;
                     pooled.transform.rotation = Quaternion.identity;
                     pooled.SetActive(true);
 
                     if (pooled.TryGetComponent<ParticleSystem>(out var ps))
                     {
-                        Debug.Log("[Particle] Found and played particle system");
                         ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
                         ps.Play();
                     }
-                    else
-                    {
-                        Debug.LogWarning("[Particle] Pooled object has no ParticleSystem");
-                    }
                 }
-                else
-                {
-                    Debug.LogWarning("[Particle] No object found in pool. Check pool name?");
-                }
-            }
-            else
-            {
-                Debug.LogWarning("[Particle] ParticlePrefab or PoolsManager missing on enemy");
             }
 
             HP -= damage;

@@ -44,6 +44,10 @@ namespace OctoberStudio
 
         [Header("Death and Revive")]
         [SerializeField] ParticleSystem reviveParticle;
+        
+        [Header("Visual Effects")]
+        [SerializeField] private ParticleSystem immuneVFX;
+
 
         [Space]
         [SerializeField] SpriteRenderer reviveBackgroundSpriteRenderer;
@@ -363,6 +367,21 @@ namespace OctoberStudio
             if (invincible) return;
 
             invincible = true;
+
+            if (immuneVFX != null)
+            {
+                Debug.Log("IMMUNE VFX START");
+
+                // This combo guarantees the particle can be replayed
+                immuneVFX.gameObject.SetActive(false); // Reset in case CFX disables it
+                immuneVFX.gameObject.SetActive(true);  // Reactivate it
+
+                immuneVFX.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                immuneVFX.Clear(true);
+                immuneVFX.Play(true);
+            }
+
+            Debug.Log("invincible START");
             StartCoroutine(InvincibilityCoroutine(duration));
         }
 
@@ -370,7 +389,18 @@ namespace OctoberStudio
         {
             yield return new WaitForSeconds(duration);
             invincible = false;
+
+            if (immuneVFX != null)
+            {
+                immuneVFX.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                Debug.Log("IMMUNE VFX STOPPED");
+            }
+
+            Debug.Log("invincible END");
         }
+
+
+
 
     }
 }
