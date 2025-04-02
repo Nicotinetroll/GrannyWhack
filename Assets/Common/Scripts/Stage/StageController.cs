@@ -57,6 +57,7 @@ namespace OctoberStudio
         private void Start()
         {
             Stage = database.GetStage(stageSave.SelectedStageId);
+
             director.playableAsset = Stage.Timeline;
 
             spawner.Init(director);
@@ -67,33 +68,23 @@ namespace OctoberStudio
             cameraManager.Init(Stage);
 
             PlayerBehavior.Player.onPlayerDied += OnGameFailed;
-            experienceManager.onXpLevelChanged += OnPlayerLevelUp;
-
-            // ✅ Trigger invincibility after ability panel closes
-            GameScreen.AbilitiesWindow.onPanelClosed += () =>
-            {
-                PlayerBehavior.Player.StartInvincibility(1f);
-            };
 
             director.stopped += TimelineStopped;
-
-            if (testingPreset != null)
-            {
-                director.time = testingPreset.StartTime;
-            }
-            else
+            if (testingPreset != null) {
+                director.time = testingPreset.StartTime; 
+            } else
             {
                 var time = stageSave.Time;
 
                 var bossClips = director.GetClips<BossTrack, Boss>();
 
-                for (int i = 0; i < bossClips.Count; i++)
+                for(int i = 0; i < bossClips.Count; i++)
                 {
                     var bossClip = bossClips[i];
 
-                    if (time >= bossClip.start && time <= bossClip.end)
+                    if(time >= bossClip.start && time <= bossClip.end)
                     {
-                        time = (float)bossClip.start;
+                        time = (float) bossClip.start;
                         break;
                     }
                 }
@@ -102,13 +93,6 @@ namespace OctoberStudio
             }
 
             director.Play();
-        }
-
-        private void OnPlayerLevelUp(int level)
-        {
-            // The logic to show upgrade UI is already handled in AbilityManager
-            // This function is still good to have if you want to log or add effects later
-            Debug.Log($"Player leveled up to {level}.");
         }
 
         private void TimelineStopped(PlayableDirector director)
@@ -158,11 +142,12 @@ namespace OctoberStudio
         {
             director.stopped -= TimelineStopped;
         }
-
+        
         private void Update()
         {
             if (Time.timeScale > 0)
                 DamageStatsTracker.Update(Time.deltaTime);
         }
+        
     }
 }

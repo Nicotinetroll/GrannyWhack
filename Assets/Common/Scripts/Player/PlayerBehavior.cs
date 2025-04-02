@@ -7,8 +7,6 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.TextCore.Text;
-using System.Collections;
-
 
 namespace OctoberStudio
 {
@@ -357,20 +355,5 @@ namespace OctoberStudio
                 GameController.AudioManager.PlaySound(RECEIVING_DAMAGE_HASH);
             }
         }
-        
-        public void StartInvincibility(float duration)
-        {
-            if (invincible) return;
-
-            invincible = true;
-            StartCoroutine(InvincibilityCoroutine(duration));
-        }
-
-        private IEnumerator InvincibilityCoroutine(float duration)
-        {
-            yield return new WaitForSeconds(duration);
-            invincible = false;
-        }
-
     }
 }
