@@ -90,6 +90,7 @@ namespace OctoberStudio
         private CharactersSave charactersSave;
         public CharacterData Data { get; set; }
         private CharacterBehavior Character { get; set; }
+        
 
         private void Awake()
         {
@@ -368,22 +369,28 @@ namespace OctoberStudio
 
             invincible = true;
 
-            if (immuneVFX != null)
-            {
-                Debug.Log("IMMUNE VFX START");
+            int playerLevel = StageController.ExperienceManager.Level;
 
-                // This combo guarantees the particle can be replayed
-                immuneVFX.gameObject.SetActive(false); // Reset in case CFX disables it
-                immuneVFX.gameObject.SetActive(true);  // Reactivate it
+            if (playerLevel > 0 && immuneVFX != null)
+            {
+                Debug.Log($"IMMUNE VFX START (Player Level: {playerLevel})");
+
+                immuneVFX.gameObject.SetActive(false);
+                immuneVFX.gameObject.SetActive(true);
 
                 immuneVFX.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
                 immuneVFX.Clear(true);
                 immuneVFX.Play(true);
             }
+            else
+            {
+                Debug.Log($"IMMUNE VFX SKIPPED (Player Level: {playerLevel})");
+            }
 
             Debug.Log("invincible START");
             StartCoroutine(InvincibilityCoroutine(duration));
         }
+
 
         private IEnumerator InvincibilityCoroutine(float duration)
         {

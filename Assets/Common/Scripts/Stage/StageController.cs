@@ -46,6 +46,8 @@ namespace OctoberStudio
         public static StageData Stage { get; private set; }
 
         private StageSave stageSave;
+        
+        
 
         private void Awake()
         {
@@ -68,6 +70,7 @@ namespace OctoberStudio
 
             PlayerBehavior.Player.onPlayerDied += OnGameFailed;
             experienceManager.onXpLevelChanged += OnPlayerLevelUp;
+
 
             // ✅ Trigger invincibility after ability panel closes
             GameScreen.AbilitiesWindow.onPanelClosed += () =>
