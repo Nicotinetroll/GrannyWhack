@@ -12,6 +12,8 @@ namespace OctoberStudio.Abilities.UI
 {
     public class AbilitiesWindowBehavior : MonoBehaviour
     {
+        [SerializeField] private Button rerollButton;
+        
         [SerializeField] GameObject levelUpTextObject;
         [SerializeField] GameObject weaponSelectTextObject;
 
@@ -41,7 +43,18 @@ namespace OctoberStudio.Abilities.UI
 
             panelPosition = panelRect.anchoredPosition;
             panelRect.anchoredPosition = panelHiddenPosition;
+            
+            rerollButton.onClick.AddListener(OnRerollClicked);
+
         }
+        
+        private void OnRerollClicked()
+        {
+            var newAbilities = StageController.AbilityManager.GetRandomAbilities(3);
+            SetData(newAbilities);
+        }
+
+        
 
         public void SetData(List<AbilityData> abilities)
         {
@@ -70,6 +83,8 @@ namespace OctoberStudio.Abilities.UI
                 cards.Add(card);
             }
         }
+        
+        
 
         public void Show(bool isLevelUp)
         {

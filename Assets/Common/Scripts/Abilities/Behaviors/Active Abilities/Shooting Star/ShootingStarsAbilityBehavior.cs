@@ -50,43 +50,49 @@ namespace OctoberStudio.Abilities
                 float lifetime = AbilityLevel.ProjectileLifetime * PlayerBehavior.Player.DurationMultiplier;
                 float cooldown = AbilityLevel.AbilityCooldown * PlayerBehavior.Player.CooldownMultiplier;
 
+                // Spawn stars
                 for (int i = 0; i < AbilityLevel.ProjectilesCount; i++)
                 {
                     var star = projectilesPool.GetEntity();
 
                     star.Init();
-
                     star.DamageMultiplier = AbilityLevel.Damage;
                     star.KickBack = true;
-
                     star.Spawn();
 
                     stars.Add(star);
                 }
 
-                EasingManager.DoFloat(0, 1, 0.5f, value => radiusMultiplier = value).SetEasing(EasingType.SineOut);
+                // ✅ Play sound right after launching stars
+                GameController.AudioManager.PlaySound(SHOOTING_STARS_LAUNCH_HASH);
 
+                // Animate radius grow
+                EasingManager.DoFloat(0, 1, 0.5f, value => radiusMultiplier = value)
+                    .SetEasing(EasingType.SineOut);
+
+                // Wait for most of lifetime
                 yield return new WaitForSeconds(lifetime - 0.5f);
 
-                for(int i = 0; i < stars.Count; i++)
+                // Hide all stars
+                for (int i = 0; i < stars.Count; i++)
                 {
-                    var star = stars[i];
-
-                    star.Hide();
+                    stars[i].Hide();
                 }
 
-                EasingManager.DoFloat(1, 0, 0.5f, value => radiusMultiplier = value).SetEasing(EasingType.SineOut);
+                // Animate radius shrink
+                EasingManager.DoFloat(1, 0, 0.5f, value => radiusMultiplier = value)
+                    .SetEasing(EasingType.SineOut);
 
+                // Wait cooldown
                 float delay = cooldown - lifetime;
                 if (delay < 0.5f) delay = 0.5f;
-
-                GameController.AudioManager.PlaySound(SHOOTING_STARS_LAUNCH_HASH);
 
                 yield return new WaitForSeconds(delay);
 
                 stars.Clear();
             }
         }
+
 
         private void LateUpdate()
         {

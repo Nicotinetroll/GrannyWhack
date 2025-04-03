@@ -561,6 +561,21 @@ namespace OctoberStudio.Abilities
                 }
             }
         }
+        
+        public List<AbilityData> GetRandomAbilities(int count)
+        {
+            var availableAbilities = GetAvailableAbilities();
+
+            // Shuffle using Fisher-Yates
+            for (int i = 0; i < availableAbilities.Count; i++)
+            {
+                int randIndex = Random.Range(i, availableAbilities.Count);
+                (availableAbilities[i], availableAbilities[randIndex]) = (availableAbilities[randIndex], availableAbilities[i]);
+            }
+
+            return availableAbilities.GetRange(0, Mathf.Min(count, availableAbilities.Count));
+        }
+
     }
 
     [System.Serializable]
