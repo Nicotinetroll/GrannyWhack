@@ -22,25 +22,25 @@ MonoBehaviour:
   - name: Chest Ability Popup
     cooldown: 0
     audioClip:
-      audioClip: {fileID: 8300000, guid: 8cf2e4429702f7b47b92994cacc7ad94, type: 3}
+      audioClip: {fileID: 8300000, guid: dcbd6790cc373489e854c45819340a7f, type: 3}
       volume: {x: 0.3, y: 0.3}
       pitch: {x: 1, y: 1}
   - name: Chest Window Popup
     cooldown: 0
     audioClip:
-      audioClip: {fileID: 8300000, guid: 3ecc253b71770624397271cbb644656e, type: 3}
-      volume: {x: 0.4, y: 0.4}
+      audioClip: {fileID: 8300000, guid: 857745efc23d144599b497c4f3f9e426, type: 3}
+      volume: {x: 0.3, y: 0.3}
       pitch: {x: 1, y: 1}
   - name: Chest In Progress
     cooldown: 0
     audioClip:
-      audioClip: {fileID: 8300000, guid: d9e87b657521ce543b43a6a478573d05, type: 3}
+      audioClip: {fileID: 8300000, guid: bba729ed1de45446c9b2aae55553dfdd, type: 3}
       volume: {x: 0.1, y: 0.1}
       pitch: {x: 1, y: 1}
   - name: Stage Complete
     cooldown: 0
     audioClip:
-      audioClip: {fileID: 8300000, guid: 07413473d6486354eb213f8acef381f6, type: 3}
+      audioClip: {fileID: 8300000, guid: 857745efc23d144599b497c4f3f9e426, type: 3}
       volume: {x: 0.5, y: 0.5}
       pitch: {x: 1, y: 1}
   - name: Coin Pick Up
@@ -70,8 +70,14 @@ MonoBehaviour:
   - name: Bomb Pick Up
     cooldown: 0
     audioClip:
-      audioClip: {fileID: 8300000, guid: 13501cab7503f004b8dbb78f5cd24e43, type: 3}
-      volume: {x: 0.2, y: 0.3}
+      audioClip: {fileID: 8300000, guid: 3b3ada79e14d945cabd3e38d3a728781, type: 3}
+      volume: {x: 0.35, y: 0.35}
+      pitch: {x: 1, y: 1}
+  - name: Bomb Explode
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: 2391da29aac134ae3abfb03de1837597, type: 3}
+      volume: {x: 0.5, y: 0.5}
       pitch: {x: 1, y: 1}
   - name: Magnet Pick Up
     cooldown: 0
@@ -281,6 +287,6 @@ MonoBehaviour:
     name: Music
     cooldown: 0
     audioClip:
-      audioClip: {fileID: 8300000, guid: c55f3d3324d3e41efb4a8d0d5cb7d495, type: 3}
-      volume: {x: 0.07, y: 0.07}
-      pitch: {x: 0.9, y: 0.9}
+      audioClip: {fileID: 8300000, guid: 0de6b10639dc04d89862810f0f1445c8, type: 3}
+      volume: {x: 0.2, y: 0.2}
+      pitch: {x: 1, y: 1}
