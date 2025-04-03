@@ -34,41 +34,69 @@ namespace OctoberStudio.Pool
 
         protected override T CreateEntity()
         {
-            var entity = Object.Instantiate(prefab, parent).GetComponent<T>();
-            if(dontDestroyOnLoad && parent == null)
+            var go = Object.Instantiate(prefab, parent);
+
+            if (dontDestroyOnLoad && parent == null)
             {
-                Object.DontDestroyOnLoad(entity.gameObject);
+                Object.DontDestroyOnLoad(go);
             }
-            return entity;
+
+            var component = go.GetComponent<T>();
+
+            if (component == null)
+            {
+                Debug.LogError($"❌ [PoolComponent<{typeof(T).Name}>] Prefab '{prefab.name}' is missing required component on the root object.");
+            }
+
+            return component;
         }
 
         protected override void InitEntity(T entity)
         {
+            if (entity == null)
+            {
+                Debug.LogWarning($"⚠️ Tried to InitEntity but got null for type {typeof(T).Name}. Skipping.");
+                return;
+            }
+
             entity.gameObject.SetActive(false);
         }
 
         protected override bool ValidateEntity(T entity)
         {
-            return !entity.gameObject.activeSelf;
+            return entity != null && !entity.gameObject.activeSelf;
         }
 
         public override T GetEntity()
         {
             var entity = base.GetEntity();
 
-            entity.gameObject.SetActive(true);
+            if (entity != null)
+            {
+                entity.gameObject.SetActive(true);
+            }
+            else
+            {
+                Debug.LogWarning($"⚠️ [PoolComponent<{typeof(T).Name}>] GetEntity returned null!");
+            }
 
             return entity;
         }
 
         protected override void DisableEntity(T entity)
         {
-            entity.gameObject.SetActive(false);
+            if (entity != null)
+            {
+                entity.gameObject.SetActive(false);
+            }
         }
 
         protected override void DestroyEntity(T entity)
         {
-            if(entity != null) Object.Destroy(entity.gameObject);
+            if (entity != null)
+            {
+                Object.Destroy(entity.gameObject);
+            }
         }
     }
 }

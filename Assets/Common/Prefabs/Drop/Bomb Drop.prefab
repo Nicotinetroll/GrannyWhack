@@ -50,6 +50,10 @@ MonoBehaviour:
   particleDisableDelay: 1
   pickUpSoundName: Bomb Pick Up
   damageMultiplier: 100
+  slowMoDuration: 1
+  timeScaleDuringSlowMo: 0.2
+  explosionParticlePrefab: {fileID: 1805099874205508382, guid: 54f62d7dbac21b94db8c1cc82225ec68,
+    type: 3}
 --- !u!1 &4536960357966085956
 GameObject:
   m_ObjectHideFlags: 0
@@ -99,6 +103,9 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
