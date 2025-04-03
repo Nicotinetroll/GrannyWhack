@@ -1581,7 +1581,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45b91c72e28d046048e0f71e72ca9231, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dropType: 100
+  dropType: 20
   spawnDistance: 1.5
 --- !u!4 &1993539685 stripped
 Transform:
