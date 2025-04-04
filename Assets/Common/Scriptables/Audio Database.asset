@@ -82,8 +82,8 @@ MonoBehaviour:
   - name: Magnet Pick Up
     cooldown: 0
     audioClip:
-      audioClip: {fileID: 8300000, guid: a2ab213b5a95bb944a8db94bab5b927d, type: 3}
-      volume: {x: 0.05, y: 0.15}
+      audioClip: {fileID: 8300000, guid: e58d5938d12984953b18c5ca6327da51, type: 3}
+      volume: {x: 0.2, y: 0.3}
       pitch: {x: 1, y: 1}
   - name: Level Up
     cooldown: 0
@@ -118,9 +118,9 @@ MonoBehaviour:
   - name: Boomerang Throw
     cooldown: 0
     audioClip:
-      audioClip: {fileID: 0}
-      volume: {x: 1, y: 1}
-      pitch: {x: 1, y: 1}
+      audioClip: {fileID: 8300000, guid: e2ea9f159f75948d79624ef858eee7fa, type: 3}
+      volume: {x: 0.5, y: 0.6}
+      pitch: {x: 0.9, y: 1.1}
   - name: Fireball Launch
     cooldown: 0
     audioClip:
@@ -136,7 +136,7 @@ MonoBehaviour:
   - name: Flying Dagger Launch
     cooldown: 0
     audioClip:
-      audioClip: {fileID: 8300000, guid: cef43e94f07d04bafacb05a2dfcfb2d8, type: 3}
+      audioClip: {fileID: 8300000, guid: 2d49282fe4f5a4520b56eabd14e602e7, type: 3}
       volume: {x: 0.2, y: 0.2}
       pitch: {x: 0.95, y: 1.1}
   - name: Guardian Eye
@@ -148,27 +148,27 @@ MonoBehaviour:
   - name: Ice Shard Launch
     cooldown: 0
     audioClip:
-      audioClip: {fileID: 0}
-      volume: {x: 1, y: 1}
-      pitch: {x: 1, y: 1}
+      audioClip: {fileID: 8300000, guid: 8c3aab2ee552440a198e44966b8f9654, type: 3}
+      volume: {x: 0.6, y: 0.7}
+      pitch: {x: 0.95, y: 1.05}
   - name: Lightning Amulet
     cooldown: 0
     audioClip:
-      audioClip: {fileID: 0}
-      volume: {x: 1, y: 1}
-      pitch: {x: 1, y: 1}
+      audioClip: {fileID: 8300000, guid: 262fd10f9173f42ac98aa8de93f7c99c, type: 3}
+      volume: {x: 0.2, y: 0.4}
+      pitch: {x: 0.8, y: 1.5}
   - name: Magic Rune Setup
     cooldown: 0
     audioClip:
-      audioClip: {fileID: 0}
-      volume: {x: 1, y: 1}
-      pitch: {x: 1, y: 1}
+      audioClip: {fileID: 8300000, guid: 4bb54d24323e642c59af3ce068b6603e, type: 3}
+      volume: {x: 0.3, y: 0.4}
+      pitch: {x: 0.8, y: 1.2}
   - name: Magic Rune Explosion
     cooldown: 0.1
     audioClip:
-      audioClip: {fileID: 0}
-      volume: {x: 1, y: 1}
-      pitch: {x: 1, y: 1}
+      audioClip: {fileID: 8300000, guid: edebba095a9414484932c442baf0bb19, type: 3}
+      volume: {x: 0.3, y: 0.4}
+      pitch: {x: 0.8, y: 1.3}
   - name: Rolling Stone Launch
     cooldown: 0
     audioClip:
@@ -250,21 +250,21 @@ MonoBehaviour:
   - name: Spiky Trap Set Up
     cooldown: 0
     audioClip:
-      audioClip: {fileID: 0}
-      volume: {x: 1, y: 1}
-      pitch: {x: 1, y: 1}
+      audioClip: {fileID: 8300000, guid: 4bb54d24323e642c59af3ce068b6603e, type: 3}
+      volume: {x: 0.3, y: 0.4}
+      pitch: {x: 0.8, y: 1.2}
   - name: Spiky Trap Explosion
     cooldown: 0.1
     audioClip:
-      audioClip: {fileID: 0}
-      volume: {x: 1, y: 1}
-      pitch: {x: 1, y: 1}
+      audioClip: {fileID: 8300000, guid: edebba095a9414484932c442baf0bb19, type: 3}
+      volume: {x: 0.3, y: 0.4}
+      pitch: {x: 0.8, y: 1.3}
   - name: Thunder Ring Strike
     cooldown: 0
     audioClip:
-      audioClip: {fileID: 0}
-      volume: {x: 1, y: 1}
-      pitch: {x: 1, y: 1}
+      audioClip: {fileID: 8300000, guid: 262fd10f9173f42ac98aa8de93f7c99c, type: 3}
+      volume: {x: 0.2, y: 0.4}
+      pitch: {x: 0.8, y: 1.5}
   - name: Time Gazer
     cooldown: 0
     audioClip:
@@ -274,9 +274,9 @@ MonoBehaviour:
   - name: Twin Daggers Launch
     cooldown: 0
     audioClip:
-      audioClip: {fileID: 0}
-      volume: {x: 1, y: 1}
-      pitch: {x: 1, y: 1}
+      audioClip: {fileID: 8300000, guid: 2d49282fe4f5a4520b56eabd14e602e7, type: 3}
+      volume: {x: 0.3, y: 0.3}
+      pitch: {x: 0.9, y: 1.2}
   - name: Void Stars Launch
     cooldown: 0
     audioClip:
@@ -288,5 +288,5 @@ MonoBehaviour:
     cooldown: 0
     audioClip:
       audioClip: {fileID: 8300000, guid: 0de6b10639dc04d89862810f0f1445c8, type: 3}
-      volume: {x: 0.2, y: 0.2}
+      volume: {x: 0.15, y: 0.15}
       pitch: {x: 1, y: 1}

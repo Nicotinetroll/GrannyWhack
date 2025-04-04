@@ -655,8 +655,34 @@ MonoBehaviour:
   waveOverride:
     useDamageOverride: 0
     damageOverride: 0
-    useHPOverride: 0
-    hpOverride: 0
+    useHPOverride: 1
+    hpOverride: 3000
+    useSpeedOverride: 1
+    speedOverride: 0.55
+    useDropOverride: 1
+    dropOverride:
+    - dropType: 100
+      chance: 100
+    disableOffscreenTeleport: 0
+  circularSpawn: 0
+  enemiesCount: 1
+--- !u!114 &-8397725204039534359
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e14369e9041d3e74a96df20a5d208ec6, type: 3}
+  m_Name: MaintainWave(Clone)(Clone)
+  m_EditorClassIdentifier: 
+  waveOverride:
+    useDamageOverride: 0
+    damageOverride: 0
+    useHPOverride: 1
+    hpOverride: 100
     useSpeedOverride: 0
     speedOverride: 0
     useDropOverride: 0
@@ -719,10 +745,10 @@ MonoBehaviour:
     m_PreExtrapolationTime: 0
     m_DisplayName: Maintain
   - m_Version: 1
-    m_Start: 270
+    m_Start: 180
     m_ClipIn: 0
     m_Asset: {fileID: 7970935936969224680}
-    m_Duration: 60
+    m_Duration: 175
     m_TimeScale: 1
     m_ParentTrack: {fileID: -8342276710104939331}
     m_EaseInDuration: 0
@@ -995,30 +1021,6 @@ MonoBehaviour:
   circularSpawn: 1
   enemiesCount: 40
   burstCount: 1
---- !u!114 &-7129443663580706861
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e14369e9041d3e74a96df20a5d208ec6, type: 3}
-  m_Name: MaintainWave(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  waveOverride:
-    useDamageOverride: 0
-    damageOverride: 0
-    useHPOverride: 0
-    hpOverride: 0
-    useSpeedOverride: 0
-    speedOverride: 0
-    useDropOverride: 0
-    dropOverride: []
-    disableOffscreenTeleport: 0
-  circularSpawn: 0
-  enemiesCount: 1
 --- !u!114 &-7015120595038308490
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1091,6 +1093,32 @@ MonoBehaviour:
     disableOffscreenTeleport: 0
   circularSpawn: 1
   continuousSpawnPerSecond: 5
+--- !u!114 &-6131404565832800095
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e14369e9041d3e74a96df20a5d208ec6, type: 3}
+  m_Name: MaintainWave(Clone)
+  m_EditorClassIdentifier: 
+  waveOverride:
+    useDamageOverride: 0
+    damageOverride: 0
+    useHPOverride: 1
+    hpOverride: 3000
+    useSpeedOverride: 1
+    speedOverride: 0.55
+    useDropOverride: 1
+    dropOverride:
+    - dropType: 100
+      chance: 100
+    disableOffscreenTeleport: 0
+  circularSpawn: 0
+  enemiesCount: 1
 --- !u!114 &-5777297423517322422
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1172,7 +1200,7 @@ MonoBehaviour:
       chance: 5
     disableOffscreenTeleport: 0
   circularSpawn: 1
-  enemiesCount: 50
+  enemiesCount: 25
 --- !u!114 &-4426163411282975393
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1200,30 +1228,6 @@ MonoBehaviour:
   circularSpawn: 1
   enemiesCount: 8
   burstCount: 1
---- !u!114 &-4382134123742125290
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e14369e9041d3e74a96df20a5d208ec6, type: 3}
-  m_Name: MaintainWave(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  waveOverride:
-    useDamageOverride: 0
-    damageOverride: 0
-    useHPOverride: 0
-    hpOverride: 0
-    useSpeedOverride: 0
-    speedOverride: 0
-    useDropOverride: 0
-    dropOverride: []
-    disableOffscreenTeleport: 0
-  circularSpawn: 0
-  enemiesCount: 1
 --- !u!114 &-3780683128003735821
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1276,30 +1280,6 @@ MonoBehaviour:
   circularSpawn: 0
   enemiesCount: 12
   burstCount: 1
---- !u!114 &-3420753828754037787
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e14369e9041d3e74a96df20a5d208ec6, type: 3}
-  m_Name: MaintainWave(Clone)(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  waveOverride:
-    useDamageOverride: 0
-    damageOverride: 0
-    useHPOverride: 0
-    hpOverride: 0
-    useSpeedOverride: 0
-    speedOverride: 0
-    useDropOverride: 0
-    dropOverride: []
-    disableOffscreenTeleport: 0
-  circularSpawn: 0
-  enemiesCount: 2
 --- !u!114 &-3382263329105998322
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1316,7 +1296,7 @@ MonoBehaviour:
     useDamageOverride: 0
     damageOverride: 0
     useHPOverride: 1
-    hpOverride: 400
+    hpOverride: 120
     useSpeedOverride: 0
     speedOverride: 0
     useDropOverride: 1
@@ -1331,7 +1311,7 @@ MonoBehaviour:
       chance: 5
     disableOffscreenTeleport: 0
   circularSpawn: 1
-  enemiesCount: 120
+  enemiesCount: 50
 --- !u!114 &-2617382604981780893
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1407,73 +1387,7 @@ MonoBehaviour:
     m_Start: 20
     m_ClipIn: 0
     m_Asset: {fileID: 1546882341626723047}
-    m_Duration: 70.00000000000003
-    m_TimeScale: 1
-    m_ParentTrack: {fileID: -2186185848949501568}
-    m_EaseInDuration: 0
-    m_EaseOutDuration: 0
-    m_BlendInDuration: -1
-    m_BlendOutDuration: -1
-    m_MixInCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_MixOutCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_BlendInCurveMode: 0
-    m_BlendOutCurveMode: 0
-    m_ExposedParameterNames: []
-    m_AnimationCurves: {fileID: 0}
-    m_Recordable: 0
-    m_PostExtrapolationMode: 0
-    m_PreExtrapolationMode: 0
-    m_PostExtrapolationTime: 0
-    m_PreExtrapolationTime: 0
-    m_DisplayName: Maintain
-  - m_Version: 1
-    m_Start: 90.00000000000003
-    m_ClipIn: 0
-    m_Asset: {fileID: -4382134123742125290}
-    m_Duration: 84.99999999999997
-    m_TimeScale: 1
-    m_ParentTrack: {fileID: -2186185848949501568}
-    m_EaseInDuration: 0
-    m_EaseOutDuration: 0
-    m_BlendInDuration: -1
-    m_BlendOutDuration: -1
-    m_MixInCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_MixOutCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_BlendInCurveMode: 0
-    m_BlendOutCurveMode: 0
-    m_ExposedParameterNames: []
-    m_AnimationCurves: {fileID: 0}
-    m_Recordable: 0
-    m_PostExtrapolationMode: 0
-    m_PreExtrapolationMode: 0
-    m_PostExtrapolationTime: 0
-    m_PreExtrapolationTime: 0
-    m_DisplayName: Maintain
-  - m_Version: 1
-    m_Start: 180
-    m_ClipIn: 0
-    m_Asset: {fileID: -3420753828754037787}
-    m_Duration: 175
+    m_Duration: 155
     m_TimeScale: 1
     m_ParentTrack: {fileID: -2186185848949501568}
     m_EaseInDuration: 0
@@ -1515,49 +1429,13 @@ MonoBehaviour:
     m_BlendOutDuration: -1
     m_MixInCurve:
       serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
+      m_Curve: []
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
     m_MixOutCurve:
       serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
+      m_Curve: []
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -1757,6 +1635,39 @@ MonoBehaviour:
     m_PostExtrapolationTime: 0
     m_PreExtrapolationTime: 0
     m_DisplayName: Burst
+  - m_Version: 1
+    m_Start: 180
+    m_ClipIn: 0
+    m_Asset: {fileID: -8397725204039534359}
+    m_Duration: 175
+    m_TimeScale: 1
+    m_ParentTrack: {fileID: -2186185848949501568}
+    m_EaseInDuration: 0
+    m_EaseOutDuration: 0
+    m_BlendInDuration: -1
+    m_BlendOutDuration: -1
+    m_MixInCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_MixOutCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_BlendInCurveMode: 0
+    m_BlendOutCurveMode: 0
+    m_ExposedParameterNames: []
+    m_AnimationCurves: {fileID: 0}
+    m_Recordable: 0
+    m_PostExtrapolationMode: 0
+    m_PreExtrapolationMode: 0
+    m_PostExtrapolationTime: 0
+    m_PreExtrapolationTime: 0
+    m_DisplayName: Maintain
   m_Markers:
     m_Objects: []
   enemyType: 19
@@ -2394,25 +2305,7 @@ MonoBehaviour:
       m_RotationOrder: 4
     m_MixOutCurve:
       serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
+      m_Curve: []
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -2547,40 +2440,7 @@ MonoBehaviour:
     m_Start: 20
     m_ClipIn: 0
     m_Asset: {fileID: -8705282290435461178}
-    m_Duration: 70.00000000000003
-    m_TimeScale: 1
-    m_ParentTrack: {fileID: 1484819563811906424}
-    m_EaseInDuration: 0
-    m_EaseOutDuration: 0
-    m_BlendInDuration: -1
-    m_BlendOutDuration: -1
-    m_MixInCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_MixOutCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_BlendInCurveMode: 0
-    m_BlendOutCurveMode: 0
-    m_ExposedParameterNames: []
-    m_AnimationCurves: {fileID: 0}
-    m_Recordable: 0
-    m_PostExtrapolationMode: 0
-    m_PreExtrapolationMode: 0
-    m_PostExtrapolationTime: 0
-    m_PreExtrapolationTime: 0
-    m_DisplayName: Maintain
-  - m_Version: 1
-    m_Start: 90.00000000000003
-    m_ClipIn: 0
-    m_Asset: {fileID: -7129443663580706861}
-    m_Duration: 84.99999999999997
+    m_Duration: 155
     m_TimeScale: 1
     m_ParentTrack: {fileID: 1484819563811906424}
     m_EaseInDuration: 0
@@ -2612,7 +2472,7 @@ MonoBehaviour:
   - m_Version: 1
     m_Start: 180
     m_ClipIn: 0
-    m_Asset: {fileID: 2030853236782167161}
+    m_Asset: {fileID: -6131404565832800095}
     m_Duration: 175
     m_TimeScale: 1
     m_ParentTrack: {fileID: 1484819563811906424}
@@ -2660,8 +2520,8 @@ MonoBehaviour:
   waveOverride:
     useDamageOverride: 0
     damageOverride: 0
-    useHPOverride: 0
-    hpOverride: 0
+    useHPOverride: 1
+    hpOverride: 100
     useSpeedOverride: 0
     speedOverride: 0
     useDropOverride: 0
@@ -2693,32 +2553,6 @@ MonoBehaviour:
     disableOffscreenTeleport: 0
   circularSpawn: 0
   continuousSpawnPerSecond: 3
---- !u!114 &2030853236782167161
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e14369e9041d3e74a96df20a5d208ec6, type: 3}
-  m_Name: MaintainWave(Clone)(Clone)(Clone)
-  m_EditorClassIdentifier: 
-  waveOverride:
-    useDamageOverride: 0
-    damageOverride: 0
-    useHPOverride: 0
-    hpOverride: 0
-    useSpeedOverride: 0
-    speedOverride: 0
-    useDropOverride: 1
-    dropOverride:
-    - dropType: 3
-      chance: 100
-    disableOffscreenTeleport: 0
-  circularSpawn: 0
-  enemiesCount: 2
 --- !u!114 &2098314188529007907
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4193,17 +4027,23 @@ MonoBehaviour:
   m_Name: KeepAmountWave
   m_EditorClassIdentifier: 
   waveOverride:
-    useDamageOverride: 0
-    damageOverride: 0
-    useHPOverride: 0
-    hpOverride: 0
+    useDamageOverride: 1
+    damageOverride: 20
+    useHPOverride: 1
+    hpOverride: 40
     useSpeedOverride: 0
     speedOverride: 0
     useDropOverride: 0
-    dropOverride: []
+    dropOverride:
+    - dropType: 3
+      chance: 80
+    - dropType: 2
+      chance: 50
+    - dropType: 20
+      chance: 0.5
     disableOffscreenTeleport: 0
-  circularSpawn: 1
-  enemiesCount: 15
+  circularSpawn: 0
+  enemiesCount: 30
 --- !u!114 &8487286461575823994
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4246,7 +4086,7 @@ MonoBehaviour:
     useDamageOverride: 0
     damageOverride: 0
     useHPOverride: 1
-    hpOverride: 200
+    hpOverride: 100
     useSpeedOverride: 0
     speedOverride: 0
     useDropOverride: 1
@@ -4379,43 +4219,10 @@ MonoBehaviour:
     m_PreExtrapolationTime: 0
     m_DisplayName: Continuous
   - m_Version: 1
-    m_Start: 499.99999999999994
-    m_ClipIn: 0
-    m_Asset: {fileID: 8653470031898022253}
-    m_Duration: 80
-    m_TimeScale: 1
-    m_ParentTrack: {fileID: 8636216251335140267}
-    m_EaseInDuration: 0
-    m_EaseOutDuration: 0
-    m_BlendInDuration: -1
-    m_BlendOutDuration: -1
-    m_MixInCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_MixOutCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    m_BlendInCurveMode: 0
-    m_BlendOutCurveMode: 0
-    m_ExposedParameterNames: []
-    m_AnimationCurves: {fileID: 0}
-    m_Recordable: 0
-    m_PostExtrapolationMode: 0
-    m_PreExtrapolationMode: 0
-    m_PostExtrapolationTime: 0
-    m_PreExtrapolationTime: 0
-    m_DisplayName: Continuous
-  - m_Version: 1
     m_Start: 360
     m_ClipIn: 0
     m_Asset: {fileID: 8617694134872956177}
-    m_Duration: 139.99999999999994
+    m_Duration: 235
     m_TimeScale: 1
     m_ParentTrack: {fileID: 8636216251335140267}
     m_EaseInDuration: 0
@@ -4546,36 +4353,6 @@ MonoBehaviour:
   m_Markers:
     m_Objects: []
   enemyType: 20
---- !u!114 &8653470031898022253
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40b57a228c1563d419fd931d5187eac5, type: 3}
-  m_Name: ContinuousWave
-  m_EditorClassIdentifier: 
-  waveOverride:
-    useDamageOverride: 0
-    damageOverride: 0
-    useHPOverride: 0
-    hpOverride: 0
-    useSpeedOverride: 0
-    speedOverride: 0
-    useDropOverride: 1
-    dropOverride:
-    - dropType: 3
-      chance: 80
-    - dropType: 1
-      chance: 50
-    - dropType: 3
-      chance: 25
-    disableOffscreenTeleport: 0
-  circularSpawn: 0
-  continuousSpawnPerSecond: 10
 --- !u!114 &8941300733199599620
 MonoBehaviour:
   m_ObjectHideFlags: 1
