@@ -103,11 +103,13 @@ MonoBehaviour:
   animator: {fileID: 4741269966769933503}
   hitParticle: {fileID: 2614223878514317206}
   explosionParticle: {fileID: 442072665381009236}
-  explosionRadius: 1.5
-  explosionDamage: 10
+  explosionRadius: 1
+  explosionDamage: 40
+  enemyDamageMultiplier: 20
   damageMask:
     serializedVersion: 2
     m_Bits: 192
+  bossSelfDamageMultiplier: 20
   explodeDelay: 2
   postExplosionDelay: 0.3
   bombImpactSoundName: BossKing_BombImpact

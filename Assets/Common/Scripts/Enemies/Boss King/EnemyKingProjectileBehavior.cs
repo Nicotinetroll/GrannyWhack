@@ -20,7 +20,12 @@ namespace OctoberStudio.Enemy
         [Header("Explosion Damage")]
         [SerializeField] private float explosionRadius = 1.5f;
         [SerializeField] private float explosionDamage = 10f;
+        [SerializeField] private float enemyDamageMultiplier = 2f; // ✅ all enemies take more
         [SerializeField] private LayerMask damageMask;
+
+        
+        [Header("Boss Damage")]
+        [SerializeField] private float bossSelfDamageMultiplier = 2f;
 
 
         [Header("Explosion Settings")]
@@ -107,10 +112,9 @@ namespace OctoberStudio.Enemy
             if (exploded) return;
             exploded = true;
 
-            // 🫥 Hide bomb visuals
             visuals.SetActive(false);
 
-            // 💣 Explosion VFX
+            // 💥 Explosion VFX
             if (explosionParticle != null)
             {
                 explosionParticle.gameObject.SetActive(true);
@@ -118,33 +122,30 @@ namespace OctoberStudio.Enemy
                 explosionParticle.Play();
             }
 
-            // 🔊 Explosion SFX
+            // 🔊 Explosion sound
             GameController.AudioManager.PlaySound(bombExplosionSoundName.GetHashCode());
 
-            // 🧨 Damage in explosion radius
+            // ☠️ Deal damage
             Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, explosionRadius, damageMask);
 
             foreach (var hit in hits)
             {
-                // 💥 Damage Player
+                // 👤 Player takes normal damage
                 if (hit.TryGetComponent<PlayerBehavior>(out var player))
                 {
-                    player.TakeDamage(explosionDamage); // Your actual damage call
+                    player.TakeDamage(explosionDamage);
                     continue;
                 }
 
-                // 💥 Damage other enemies (but not self)
+                // 👾 All enemies take multiplied damage
                 if (hit.TryGetComponent<EnemyBehavior>(out var enemy))
                 {
-                    if (enemy != this.GetComponent<EnemyBehavior>()) // avoid hitting the boss
-                    {
-                        enemy.TakeDamage(explosionDamage);
-
-                    }
+                    float finalDamage = explosionDamage * enemyDamageMultiplier;
+                    enemy.TakeDamage(finalDamage);
                 }
             }
 
-            // ⏳ Wait for particle to finish, then despawn
+            // ⏳ Despawn after particle finishes
             float waitTime = explosionParticle != null ? explosionParticle.main.duration : 0.3f;
 
             EasingManager.DoAfter(waitTime, () =>
@@ -153,6 +154,9 @@ namespace OctoberStudio.Enemy
                 onFinished?.Invoke(this);
             });
         }
+
+
+
 
 
 
