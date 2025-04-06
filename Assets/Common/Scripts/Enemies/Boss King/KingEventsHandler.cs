@@ -9,7 +9,7 @@ namespace OctoberStudio.Enemy
 
         public void FireBomb()
         {
-            king?.FireBombFromEvent();
+            ///
         }
     }
 }

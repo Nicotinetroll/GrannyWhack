@@ -298,13 +298,13 @@ MonoBehaviour:
   - name: BossKing_BombImpact
     cooldown: 0
     audioClip:
-      audioClip: {fileID: 8300000, guid: 409959954a076534893c9b15fbc1cf3e, type: 3}
-      volume: {x: 0.6, y: 0.6}
-      pitch: {x: 1, y: 1}
+      audioClip: {fileID: 8300000, guid: 603419525e3db0f45ac689d115f786f6, type: 3}
+      volume: {x: 0.4, y: 0.4}
+      pitch: {x: 0.8, y: 1.3}
   - name: BossKing_BombExplosion
     cooldown: 0
     audioClip:
-      audioClip: {fileID: 8300000, guid: 2391da29aac134ae3abfb03de1837597, type: 3}
+      audioClip: {fileID: 8300000, guid: c8131415ab940224d9e9a86fa9293a24, type: 3}
       volume: {x: 0.6, y: 0.6}
       pitch: {x: 1, y: 1}
   music:

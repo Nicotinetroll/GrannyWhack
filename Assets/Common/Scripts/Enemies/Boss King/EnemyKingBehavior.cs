@@ -77,17 +77,21 @@ namespace OctoberStudio.Enemy
             isShooting = true;
             animator.SetBool("IsShooting", true);
 
-            // ✅ Let the animation play and fire shots via event
-            yield return new WaitForSeconds(shotsPerCast * timeBetweenShots);
+            for (int i = 0; i < shotsPerCast; i++)
+            {
+                FireBombFromCode();
+                yield return new WaitForSeconds(timeBetweenShots);
+            }
 
             animator.SetBool("IsShooting", false);
             isShooting = false;
         }
 
+
         /// <summary>
         /// Called from animation event
         /// </summary>
-        public void FireBombFromEvent()
+        private void FireBombFromCode()
         {
             var bomb = bombPool.GetEntity();
             bomb.Init(bombSpawnPoint.position, Vector2.up);
@@ -105,6 +109,7 @@ namespace OctoberStudio.Enemy
 
             GameController.AudioManager.PlaySound(BOSSKING_SHOOT_HASH);
         }
+
 
         private void OnBombFinished(EnemyKingProjectileBehavior bomb)
         {
@@ -165,5 +170,6 @@ namespace OctoberStudio.Enemy
 
             StopAllCoroutines();
         }
+        
     }
 }

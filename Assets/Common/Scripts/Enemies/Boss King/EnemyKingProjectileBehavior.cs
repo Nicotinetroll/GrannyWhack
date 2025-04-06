@@ -126,48 +126,53 @@ namespace OctoberStudio.Enemy
 
             visuals.SetActive(false);
 
-            // 💥 Explosion VFX
-            if (explosionParticle != null)
+            // 🛑 Fully stop and clear danger zone particle
+            if (dangerZoneParticle != null)
             {
-                explosionParticle.transform.position = transform.position;
-                explosionParticle.gameObject.SetActive(true);
-                explosionParticle.Play();
-
-                if (explosionParticle.TryGetComponent(out CartoonFX.CFXR_Effect effect))
-                    effect.Initialize();
+                dangerZoneParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                dangerZoneParticle.gameObject.SetActive(false);
             }
 
-            // 🔊 Explosion sound
+            // 💥 Play explosion VFX
+            if (explosionParticle != null)
+            {
+                explosionParticle.gameObject.SetActive(true);
+                explosionParticle.transform.position = transform.position;
+                explosionParticle.Play();
+            }
+
+            // 🔊 Play explosion sound
             GameController.AudioManager.PlaySound(bombExplosionSoundName.GetHashCode());
 
-            // ☠️ Apply explosion damage
+            // ☠️ Deal damage to Player + Enemies in radius
             Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, explosionRadius, damageMask);
+
             foreach (var hit in hits)
             {
                 if (hit.TryGetComponent<PlayerBehavior>(out var player))
                 {
                     player.TakeDamage(explosionDamage);
+                    continue;
                 }
-                else if (hit.TryGetComponent<EnemyBehavior>(out var enemy))
+
+                if (hit.TryGetComponent<EnemyBehavior>(out var enemy))
                 {
-                    enemy.TakeDamage(explosionDamage * enemyDamageMultiplier);
+                    float finalDamage = explosionDamage * enemyDamageMultiplier;
+                    enemy.TakeDamage(finalDamage);
                 }
             }
 
-            // 🧼 Stop danger zone particle
-            if (dangerZoneParticle != null)
-            {
-                dangerZoneParticle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
-            }
+            // ⏳ Wait for explosion VFX to finish before despawn
+            float waitTime = explosionParticle != null ? explosionParticle.main.duration : 0.3f;
 
-            // 🧹 Despawn after explosion finishes
-            float delay = explosionParticle != null ? explosionParticle.main.duration : postExplosionDelay;
-            EasingManager.DoAfter(delay, () =>
+            EasingManager.DoAfter(waitTime, () =>
             {
                 gameObject.SetActive(false);
                 onFinished?.Invoke(this);
             });
         }
+
+
 
         public void Clear()
         {
