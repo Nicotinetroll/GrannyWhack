@@ -49,3 +49,9 @@ MonoBehaviour:
       type: 3}
     fencePrefab: {fileID: 6967435664897069084, guid: 5558991dbcad058409cdcf21cd73dea0,
       type: 3}
+  - bossType: 6
+    displayName: THE KING
+    bossPrefab: {fileID: 5964416160108566549, guid: d9085bfe6442db54ea55e22d467c283d,
+      type: 3}
+    fencePrefab: {fileID: 6967435664897069084, guid: 5558991dbcad058409cdcf21cd73dea0,
+      type: 3}

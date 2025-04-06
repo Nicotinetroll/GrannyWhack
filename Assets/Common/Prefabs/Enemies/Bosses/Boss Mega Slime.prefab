@@ -376,6 +376,8 @@ MonoBehaviour:
   enemyCollider: {fileID: 5827178357725712972}
   hitScaleAmount: 0.05
   hitColor: {r: 1, g: 1, b: 1, a: 0.6156863}
+  hitParticlePrefab: {fileID: 0}
+  deathFXPoolName: GhostDeathFX
   animator: {fileID: 2992067885033876473}
   swordProjectilePrefab: {fileID: 7909275432813284331, guid: 8db5f51df9635c543a714609da6e2159,
     type: 3}
