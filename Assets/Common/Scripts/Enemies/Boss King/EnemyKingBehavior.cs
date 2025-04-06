@@ -1,3 +1,4 @@
+using OctoberStudio.Extensions;
 using OctoberStudio.Pool;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,10 +17,8 @@ namespace OctoberStudio.Enemy
         [SerializeField] float timeBetweenShots = 0.5f;
         [SerializeField] float bombDamageMultiplier = 1f;
         [SerializeField] private GameObject shootVFXPrefab;
-        private PoolComponent<ParticleSystem> shootVFXPool;
 
-
-        [Header("Enemy Spawning")]
+        [Header("Enemy Spawning (Slime Style)")]
         [SerializeField] EnemyType spawnedEnemyType = EnemyType.Slime;
         [SerializeField] int spawningWavesCount = 3;
         [SerializeField] int spawnedEnemiesCount = 3;
@@ -29,11 +28,17 @@ namespace OctoberStudio.Enemy
 
         [Header("Timing")]
         [SerializeField] float moveDuration = 5f;
+        [SerializeField] float shootCooldown = 1f;
 
         private PoolComponent<EnemyMegaSlimeProjectileBehavior> bombPool;
+        private PoolComponent<ParticleSystem> shootVFXPool;
         private List<EnemyMegaSlimeProjectileBehavior> activeProjectiles = new();
         private List<WarningCircleBehavior> warningCircles = new();
         private bool isShooting;
+
+        // 🔊 Audio hashes
+        public static readonly int BOSSKING_SHOOT_HASH = "BossKing_Shoot".GetHashCode();
+        public static readonly int BOSSKING_SPAWN_HASH = "BossKing_Spawn".GetHashCode();
 
         protected override void Awake()
         {
@@ -41,7 +46,6 @@ namespace OctoberStudio.Enemy
 
             bombPool = new PoolComponent<EnemyMegaSlimeProjectileBehavior>(bombProjectilePrefab, 6);
             shootVFXPool = new PoolComponent<ParticleSystem>(shootVFXPrefab, 6);
-
         }
 
         public override void Play()
@@ -54,14 +58,19 @@ namespace OctoberStudio.Enemy
         {
             while (true)
             {
+                // 🟧 Walking phase
                 IsMoving = true;
                 animator.SetBool("IsShooting", false);
                 yield return new WaitForSeconds(moveDuration);
 
+                // 🔫 Shooting phase
                 IsMoving = false;
                 yield return StartCoroutine(ShootingRoutine());
 
+                // 👾 Spawn enemies async
                 StartCoroutine(SpawnEnemyWaves());
+
+                yield return new WaitForSeconds(shootCooldown);
             }
         }
 
@@ -83,35 +92,31 @@ namespace OctoberStudio.Enemy
 
         private void FireBomb()
         {
-            // Spawn and init bomb
+            // 💣 Spawn projectile
             var sword = bombPool.GetEntity();
             sword.Init(bombSpawnPoint.position, Vector2.up);
             sword.Damage = StageController.Stage.EnemyDamage * bombDamageMultiplier;
             sword.onFinished += OnSwordFinished;
             activeProjectiles.Add(sword);
 
-            // 🔥 Play shoot VFX from pool
+            // 💥 Play VFX
             var vfx = shootVFXPool.GetEntity();
             if (vfx != null)
             {
                 vfx.transform.position = bombSpawnPoint.position;
                 vfx.transform.rotation = Quaternion.identity;
-                vfx.gameObject.SetActive(true); // Ensure it's enabled
                 vfx.Play();
             }
-        }
 
-
-        private void OnSwordFinished(EnemyMegaSlimeProjectileBehavior sword)
-        {
-            sword.onFinished -= OnSwordFinished;
-            activeProjectiles.Remove(sword);
+            // 🔊 Play shoot sound
+            GameController.AudioManager.PlaySound(BOSSKING_SHOOT_HASH);
         }
 
         private IEnumerator SpawnEnemyWaves()
         {
             for (int wave = 0; wave < spawningWavesCount; wave++)
             {
+                GameController.AudioManager.PlaySound(BOSSKING_SPAWN_HASH);
                 spawningParticle?.Play();
 
                 for (int i = 0; i < spawnedEnemiesCount; i++)
@@ -139,6 +144,12 @@ namespace OctoberStudio.Enemy
 
                 yield return new WaitForSeconds(durationBetweenSpawning);
             }
+        }
+
+        private void OnSwordFinished(EnemyMegaSlimeProjectileBehavior sword)
+        {
+            sword.onFinished -= OnSwordFinished;
+            activeProjectiles.Remove(sword);
         }
 
         protected override void Die(bool flash)
