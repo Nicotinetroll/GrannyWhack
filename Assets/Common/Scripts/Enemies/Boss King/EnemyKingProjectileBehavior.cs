@@ -16,21 +16,17 @@ namespace OctoberStudio.Enemy
         [SerializeField] private Animator animator;
         [SerializeField] private ParticleSystem hitParticle;
         [SerializeField] private ParticleSystem explosionParticle;
-        
+
         [Header("Explosion Damage")]
         [SerializeField] private float explosionRadius = 1.5f;
         [SerializeField] private float explosionDamage = 10f;
-        [SerializeField] private float enemyDamageMultiplier = 2f; // ✅ all enemies take more
+        [SerializeField] private float enemyDamageMultiplier = 2f;
         [SerializeField] private LayerMask damageMask;
-
-        
-        [Header("Boss Damage")]
-        [SerializeField] private float bossSelfDamageMultiplier = 2f;
-
 
         [Header("Explosion Settings")]
         [SerializeField] private float explodeDelay = 2f;
         [SerializeField] private float postExplosionDelay = 0.3f;
+        [SerializeField] private ParticleSystem dangerZoneParticle;
 
         [Header("Audio Names (from AudioDatabase)")]
         [SerializeField] private string bombImpactSoundName = "BossKing_BombImpact";
@@ -52,6 +48,7 @@ namespace OctoberStudio.Enemy
             exploded = false;
 
             Vector3 upPosition = transform.position.SetY(CameraManager.TopBound + 2f);
+
             easingCoroutine = transform.DoPosition(upPosition, 0.3f)
                 .SetEasing(EasingType.SineIn)
                 .SetOnFinish(HideAndStartFall);
@@ -67,14 +64,15 @@ namespace OctoberStudio.Enemy
         {
             warningCircle = StageController.PoolsManager.GetEntity<WarningCircleBehavior>("Warning Circle");
             warningCircle.transform.position = PlayerBehavior.Player.transform.position;
+
             warningCircle.Play(1f, 0.3f, 100, null);
             warningCircle.Follow(PlayerBehavior.Player.transform, Vector3.zero, Time.deltaTime * 3);
 
             yield return new WaitForSeconds(2f);
 
             warningCircle.StopFollowing();
-            Vector2 targetPosition = warningCircle.transform.position;
 
+            Vector2 targetPosition = warningCircle.transform.position;
             transform.position = targetPosition.SetY(CameraManager.TopBound + 2f);
             visuals.SetActive(true);
 
@@ -85,11 +83,14 @@ namespace OctoberStudio.Enemy
                 animator.SetBool(IS_FLYING_DOWN_BOOL, false);
                 projectileCollider.enabled = true;
 
-                // 🔊 Impact sound
+                // 🔊 Play impact sound
                 GameController.AudioManager.PlaySound(bombImpactSoundName.GetHashCode());
 
-                // 💥 Hit VFX
+                // 💥 Play hit VFX
                 hitParticle?.Play();
+
+                // ⚠️ Show danger zone VFX
+                StartWarning();
 
                 if (warningCircle != null)
                 {
@@ -102,9 +103,20 @@ namespace OctoberStudio.Enemy
                     projectileCollider.enabled = false;
                 });
 
-                // 💣 Schedule explosion after delay
+                // ⏱ Schedule explosion
                 EasingManager.DoAfter(explodeDelay, Explode);
             });
+        }
+
+        private void StartWarning()
+        {
+            if (dangerZoneParticle != null)
+            {
+                dangerZoneParticle.transform.position = transform.position;
+                dangerZoneParticle.transform.localScale = Vector3.one * explosionRadius * 2f;
+                dangerZoneParticle.gameObject.SetActive(true);
+                dangerZoneParticle.Play();
+            }
         }
 
         private void Explode()
@@ -117,49 +129,45 @@ namespace OctoberStudio.Enemy
             // 💥 Explosion VFX
             if (explosionParticle != null)
             {
-                explosionParticle.gameObject.SetActive(true);
                 explosionParticle.transform.position = transform.position;
+                explosionParticle.gameObject.SetActive(true);
                 explosionParticle.Play();
+
+                if (explosionParticle.TryGetComponent(out CartoonFX.CFXR_Effect effect))
+                    effect.Initialize();
             }
 
             // 🔊 Explosion sound
             GameController.AudioManager.PlaySound(bombExplosionSoundName.GetHashCode());
 
-            // ☠️ Deal damage
+            // ☠️ Apply explosion damage
             Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, explosionRadius, damageMask);
-
             foreach (var hit in hits)
             {
-                // 👤 Player takes normal damage
                 if (hit.TryGetComponent<PlayerBehavior>(out var player))
                 {
                     player.TakeDamage(explosionDamage);
-                    continue;
                 }
-
-                // 👾 All enemies take multiplied damage
-                if (hit.TryGetComponent<EnemyBehavior>(out var enemy))
+                else if (hit.TryGetComponent<EnemyBehavior>(out var enemy))
                 {
-                    float finalDamage = explosionDamage * enemyDamageMultiplier;
-                    enemy.TakeDamage(finalDamage);
+                    enemy.TakeDamage(explosionDamage * enemyDamageMultiplier);
                 }
             }
 
-            // ⏳ Despawn after particle finishes
-            float waitTime = explosionParticle != null ? explosionParticle.main.duration : 0.3f;
+            // 🧼 Stop danger zone particle
+            if (dangerZoneParticle != null)
+            {
+                dangerZoneParticle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+            }
 
-            EasingManager.DoAfter(waitTime, () =>
+            // 🧹 Despawn after explosion finishes
+            float delay = explosionParticle != null ? explosionParticle.main.duration : postExplosionDelay;
+            EasingManager.DoAfter(delay, () =>
             {
                 gameObject.SetActive(false);
                 onFinished?.Invoke(this);
             });
         }
-
-
-
-
-
-
 
         public void Clear()
         {
@@ -173,5 +181,13 @@ namespace OctoberStudio.Enemy
 
             gameObject.SetActive(false);
         }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = new Color(1f, 0.3f, 0.3f, 0.4f);
+            Gizmos.DrawWireSphere(transform.position, explosionRadius);
+        }
+#endif
     }
 }

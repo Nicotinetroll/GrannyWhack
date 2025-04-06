@@ -301,6 +301,12 @@ MonoBehaviour:
       audioClip: {fileID: 8300000, guid: 409959954a076534893c9b15fbc1cf3e, type: 3}
       volume: {x: 0.6, y: 0.6}
       pitch: {x: 1, y: 1}
+  - name: BossKing_BombExplosion
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: 2391da29aac134ae3abfb03de1837597, type: 3}
+      volume: {x: 0.6, y: 0.6}
+      pitch: {x: 1, y: 1}
   music:
     name: Music
     cooldown: 0

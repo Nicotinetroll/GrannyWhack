@@ -318,8 +318,8 @@ MonoBehaviour:
   bombProjectilePrefab: {fileID: 7909275432813284331, guid: eac86f1c47ec0b347b129726179e68eb,
     type: 3}
   bombSpawnPoint: {fileID: 8985548770496245497}
-  shotsPerCast: 6
-  timeBetweenShots: 0.3
+  shotsPerCast: 3
+  timeBetweenShots: 1
   bombDamageMultiplier: 1
   shootVFXPrefab: {fileID: 5124166242607940835, guid: 3b7507cbf49a98548a9440443ee9d843,
     type: 3}
