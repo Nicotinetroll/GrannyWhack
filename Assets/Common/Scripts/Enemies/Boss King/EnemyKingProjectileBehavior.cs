@@ -9,27 +9,38 @@ namespace OctoberStudio.Enemy
     public class EnemyKingProjectileBehavior : SimpleEnemyProjectileBehavior
     {
         private static readonly int IS_FLYING_DOWN_BOOL = Animator.StringToHash("Is Flying Down");
-        private static readonly int BOSSKING_IMPACT_HASH = "BossKing_BombImpact".GetHashCode();
 
-        [SerializeField] Collider2D projectileCollider;
-        [SerializeField] GameObject visuals;
-        [SerializeField] Animator animator;
-        [SerializeField] ParticleSystem hitParticle;
+        [Header("References")]
+        [SerializeField] private Collider2D projectileCollider;
+        [SerializeField] private GameObject visuals;
+        [SerializeField] private Animator animator;
+        [SerializeField] private ParticleSystem hitParticle;
+        [SerializeField] private ParticleSystem explosionParticle;
+
+        [Header("Explosion Settings")]
+        [SerializeField] private float explodeDelay = 2f;
+        [SerializeField] private float postExplosionDelay = 0.3f;
+
+        [Header("Audio Names (from AudioDatabase)")]
+        [SerializeField] private string bombImpactSoundName = "BossKing_BombImpact";
+        [SerializeField] private string bombExplosionSoundName = "BossKing_BombExplosion";
 
         private Coroutine attackCoroutine;
         public new UnityAction<EnemyKingProjectileBehavior> onFinished;
 
         private WarningCircleBehavior warningCircle;
         private IEasingCoroutine easingCoroutine;
+        private bool exploded;
 
         public override void Init(Vector2 position, Vector2 direction)
         {
             base.Init(position, direction);
 
             projectileCollider.enabled = false;
+            visuals.SetActive(true);
+            exploded = false;
 
             Vector3 upPosition = transform.position.SetY(CameraManager.TopBound + 2f);
-
             easingCoroutine = transform.DoPosition(upPosition, 0.3f)
                 .SetEasing(EasingType.SineIn)
                 .SetOnFinish(HideAndStartFall);
@@ -63,10 +74,10 @@ namespace OctoberStudio.Enemy
                 animator.SetBool(IS_FLYING_DOWN_BOOL, false);
                 projectileCollider.enabled = true;
 
-                // 🔊 Play impact sound
-                GameController.AudioManager.PlaySound(BOSSKING_IMPACT_HASH);
+                // 🔊 Impact sound
+                GameController.AudioManager.PlaySound(bombImpactSoundName.GetHashCode());
 
-                // 💥 Play hit VFX
+                // 💥 Hit VFX
                 hitParticle?.Play();
 
                 if (warningCircle != null)
@@ -79,25 +90,56 @@ namespace OctoberStudio.Enemy
                 {
                     projectileCollider.enabled = false;
                 });
+
+                // 💣 Schedule explosion after delay
+                EasingManager.DoAfter(explodeDelay, Explode);
             });
-
-            yield return new WaitForSeconds(2f);
-
-            gameObject.SetActive(false);
-            onFinished?.Invoke(this);
-
-            attackCoroutine = null;
         }
+
+        private void Explode()
+        {
+            if (exploded) return;
+            exploded = true;
+
+            // 🫥 Hide bomb visuals instantly
+            visuals.SetActive(false);
+
+            // 💣 Play explosion VFX
+            if (explosionParticle != null)
+            {
+                explosionParticle.gameObject.SetActive(true); // In case it was disabled
+                explosionParticle.transform.position = transform.position;
+                explosionParticle.Play();
+
+                // ⏳ Wait for particle duration to finish before deactivating bomb object
+                float waitTime = explosionParticle.main.duration;
+                EasingManager.DoAfter(waitTime, () =>
+                {
+                    gameObject.SetActive(false);
+                    onFinished?.Invoke(this);
+                });
+            }
+            else
+            {
+                // Fallback if no particle assigned
+                gameObject.SetActive(false);
+                onFinished?.Invoke(this);
+            }
+
+            // 🔊 Explosion SFX
+            GameController.AudioManager.PlaySound(bombExplosionSoundName.GetHashCode());
+        }
+
 
         public void Clear()
         {
             if (attackCoroutine != null)
                 StopCoroutine(attackCoroutine);
 
+            easingCoroutine.StopIfExists();
+
             if (warningCircle != null)
                 warningCircle.gameObject.SetActive(false);
-
-            easingCoroutine.StopIfExists();
 
             gameObject.SetActive(false);
         }
