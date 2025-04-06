@@ -107,6 +107,7 @@ namespace OctoberStudio.Enemy
             if (exploded) return;
             exploded = true;
 
+            // 🫥 Hide bomb visuals
             visuals.SetActive(false);
 
             // 💣 Explosion VFX
@@ -117,22 +118,34 @@ namespace OctoberStudio.Enemy
                 explosionParticle.Play();
             }
 
-            // 🔊 Explosion sound
+            // 🔊 Explosion SFX
             GameController.AudioManager.PlaySound(bombExplosionSoundName.GetHashCode());
 
-            // 🧨 Explosion Damage
+            // 🧨 Damage in explosion radius
             Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, explosionRadius, damageMask);
 
             foreach (var hit in hits)
             {
+                // 💥 Damage Player
                 if (hit.TryGetComponent<PlayerBehavior>(out var player))
                 {
-                    player.TakeDamage(explosionDamage); // ✅ your actual method
+                    player.TakeDamage(explosionDamage); // Your actual damage call
+                    continue;
+                }
+
+                // 💥 Damage other enemies (but not self)
+                if (hit.TryGetComponent<EnemyBehavior>(out var enemy))
+                {
+                    if (enemy != this.GetComponent<EnemyBehavior>()) // avoid hitting the boss
+                    {
+                        enemy.TakeDamage(explosionDamage);
+
+                    }
                 }
             }
 
-            // ⏳ Wait for VFX to finish
-            float waitTime = explosionParticle != null ? explosionParticle.main.duration : 0.2f;
+            // ⏳ Wait for particle to finish, then despawn
+            float waitTime = explosionParticle != null ? explosionParticle.main.duration : 0.3f;
 
             EasingManager.DoAfter(waitTime, () =>
             {
@@ -140,6 +153,7 @@ namespace OctoberStudio.Enemy
                 onFinished?.Invoke(this);
             });
         }
+
 
 
 
