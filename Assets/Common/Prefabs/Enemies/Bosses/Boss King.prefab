@@ -73,7 +73,7 @@ GameObject:
   - component: {fileID: 4031547412681415750}
   - component: {fileID: 3527613572021459250}
   - component: {fileID: 2992067885033876473}
-  - component: {fileID: 5935406666242280799}
+  - component: {fileID: 8655290823227382440}
   m_Layer: 0
   m_Name: enemy_king_0
   m_TagString: Untagged
@@ -175,7 +175,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &5935406666242280799
+--- !u!114 &8655290823227382440
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -184,10 +184,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2001252022695163026}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a5541af052d6e843ab111525a9705fe, type: 3}
+  m_Script: {fileID: 11500000, guid: d9709d16243aa6b48a6733e9d5c0fe67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  megaSlime: {fileID: 0}
+  king: {fileID: 1849195160239171124}
 --- !u!1 &5964416160108566549
 GameObject:
   m_ObjectHideFlags: 0
@@ -315,7 +315,7 @@ MonoBehaviour:
   hitParticlePrefab: {fileID: 0}
   deathFXPoolName: GhostDeathFX
   animator: {fileID: 2992067885033876473}
-  bombProjectilePrefab: {fileID: 7909275432813284331, guid: 8db5f51df9635c543a714609da6e2159,
+  bombProjectilePrefab: {fileID: 7909275432813284331, guid: eac86f1c47ec0b347b129726179e68eb,
     type: 3}
   bombSpawnPoint: {fileID: 8985548770496245497}
   shotsPerCast: 6
@@ -330,6 +330,7 @@ MonoBehaviour:
   durationBetweenWarningAndSpawning: 0.5
   spawningParticle: {fileID: 4086977011551362549}
   moveDuration: 5
+  shootCooldown: 1
 --- !u!1001 &6049744859993634310
 PrefabInstance:
   m_ObjectHideFlags: 0

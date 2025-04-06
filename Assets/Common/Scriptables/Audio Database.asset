@@ -283,6 +283,24 @@ MonoBehaviour:
       audioClip: {fileID: 0}
       volume: {x: 1, y: 1}
       pitch: {x: 1, y: 1}
+  - name: BossKing_Shoot
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: bace5e32804a7f24f9e142cec38311e5, type: 3}
+      volume: {x: 0.3, y: 0.45}
+      pitch: {x: 0.8, y: 1.1}
+  - name: BossKing_Spawn
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: 113f8d23b2ade2944a050d7321b6da13, type: 3}
+      volume: {x: 0.6, y: 0.6}
+      pitch: {x: 1, y: 1}
+  - name: BossKing_BombImpact
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: 409959954a076534893c9b15fbc1cf3e, type: 3}
+      volume: {x: 0.6, y: 0.6}
+      pitch: {x: 1, y: 1}
   music:
     name: Music
     cooldown: 0
