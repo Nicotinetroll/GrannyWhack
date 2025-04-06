@@ -103,7 +103,15 @@ MonoBehaviour:
   animator: {fileID: 4741269966769933503}
   hitParticle: {fileID: 2614223878514317206}
   explosionParticle: {fileID: 442072665381009236}
-  despawnDelay: 4
+  explosionRadius: 1.5
+  explosionDamage: 10
+  damageMask:
+    serializedVersion: 2
+    m_Bits: 64
+  explodeDelay: 2
+  postExplosionDelay: 0.3
+  bombImpactSoundName: BossKing_BombImpact
+  bombExplosionSoundName: BossKing_BombExplosion
 --- !u!1 &8883592004907039117
 GameObject:
   m_ObjectHideFlags: 0

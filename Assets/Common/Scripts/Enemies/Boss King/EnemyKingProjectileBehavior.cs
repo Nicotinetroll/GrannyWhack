@@ -16,6 +16,12 @@ namespace OctoberStudio.Enemy
         [SerializeField] private Animator animator;
         [SerializeField] private ParticleSystem hitParticle;
         [SerializeField] private ParticleSystem explosionParticle;
+        
+        [Header("Explosion Damage")]
+        [SerializeField] private float explosionRadius = 1.5f;
+        [SerializeField] private float explosionDamage = 10f;
+        [SerializeField] private LayerMask damageMask;
+
 
         [Header("Explosion Settings")]
         [SerializeField] private float explodeDelay = 2f;
@@ -101,34 +107,40 @@ namespace OctoberStudio.Enemy
             if (exploded) return;
             exploded = true;
 
-            // 🫥 Hide bomb visuals instantly
             visuals.SetActive(false);
 
-            // 💣 Play explosion VFX
+            // 💣 Explosion VFX
             if (explosionParticle != null)
             {
-                explosionParticle.gameObject.SetActive(true); // In case it was disabled
+                explosionParticle.gameObject.SetActive(true);
                 explosionParticle.transform.position = transform.position;
                 explosionParticle.Play();
-
-                // ⏳ Wait for particle duration to finish before deactivating bomb object
-                float waitTime = explosionParticle.main.duration;
-                EasingManager.DoAfter(waitTime, () =>
-                {
-                    gameObject.SetActive(false);
-                    onFinished?.Invoke(this);
-                });
             }
-            else
+
+            // 🔊 Explosion sound
+            GameController.AudioManager.PlaySound(bombExplosionSoundName.GetHashCode());
+
+            // 🧨 Explosion Damage
+            Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, explosionRadius, damageMask);
+
+            foreach (var hit in hits)
             {
-                // Fallback if no particle assigned
+                if (hit.TryGetComponent<PlayerBehavior>(out var player))
+                {
+                    player.TakeDamage(explosionDamage); // ✅ your actual method
+                }
+            }
+
+            // ⏳ Wait for VFX to finish
+            float waitTime = explosionParticle != null ? explosionParticle.main.duration : 0.2f;
+
+            EasingManager.DoAfter(waitTime, () =>
+            {
                 gameObject.SetActive(false);
                 onFinished?.Invoke(this);
-            }
-
-            // 🔊 Explosion SFX
-            GameController.AudioManager.PlaySound(bombExplosionSoundName.GetHashCode());
+            });
         }
+
 
 
         public void Clear()
