@@ -310,22 +310,22 @@ MonoBehaviour:
   dissolveSettings: {fileID: 11400000, guid: 2809f161967d6a0499a1a3061833468b, type: 2}
   shadowSprite: {fileID: 867366924932957528}
   enemyCollider: {fileID: 5827178357725712972}
-  hitScaleAmount: 0.2
-  hitColor: {r: 1, g: 1, b: 1, a: 1}
+  hitScaleAmount: 0
+  hitColor: {r: 1, g: 1, b: 1, a: 0.78431374}
   hitParticlePrefab: {fileID: 0}
   deathFXPoolName: GhostDeathFX
   animator: {fileID: 2992067885033876473}
   bombProjectilePrefab: {fileID: 7909275432813284331, guid: eac86f1c47ec0b347b129726179e68eb,
     type: 3}
   bombSpawnPoint: {fileID: 8985548770496245497}
-  shotsPerCast: 3
-  timeBetweenShots: 1
+  shotsPerCast: 4
+  timeBetweenShots: 0.3
   bombDamageMultiplier: 1
   shootVFXPrefab: {fileID: 5124166242607940835, guid: 3b7507cbf49a98548a9440443ee9d843,
     type: 3}
   spawnedEnemyType: 2
   spawningWavesCount: 3
-  spawnedEnemiesCount: 5
+  spawnedEnemiesCount: 3
   durationBetweenSpawning: 1
   durationBetweenWarningAndSpawning: 0.5
   spawningParticle: {fileID: 4086977011551362549}
