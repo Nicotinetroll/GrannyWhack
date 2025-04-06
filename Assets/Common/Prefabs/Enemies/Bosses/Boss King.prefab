@@ -142,7 +142,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 115506459, guid: 1d74955b8954b264590985c496ad0bd1, type: 3}
+  m_Sprite: {fileID: 1958778530, guid: c29f51cdb61c9bf4ab957d4984a9031a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
@@ -321,6 +321,8 @@ MonoBehaviour:
   shotsPerCast: 6
   timeBetweenShots: 0.3
   bombDamageMultiplier: 1
+  shootVFXPrefab: {fileID: 5124166242607940835, guid: 3b7507cbf49a98548a9440443ee9d843,
+    type: 3}
   spawnedEnemyType: 2
   spawningWavesCount: 3
   spawnedEnemiesCount: 5

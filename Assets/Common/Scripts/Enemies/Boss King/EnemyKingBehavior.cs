@@ -15,6 +15,9 @@ namespace OctoberStudio.Enemy
         [SerializeField] int shotsPerCast = 3;
         [SerializeField] float timeBetweenShots = 0.5f;
         [SerializeField] float bombDamageMultiplier = 1f;
+        [SerializeField] private GameObject shootVFXPrefab;
+        private PoolComponent<ParticleSystem> shootVFXPool;
+
 
         [Header("Enemy Spawning")]
         [SerializeField] EnemyType spawnedEnemyType = EnemyType.Slime;
@@ -35,7 +38,10 @@ namespace OctoberStudio.Enemy
         protected override void Awake()
         {
             base.Awake();
+
             bombPool = new PoolComponent<EnemyMegaSlimeProjectileBehavior>(bombProjectilePrefab, 6);
+            shootVFXPool = new PoolComponent<ParticleSystem>(shootVFXPrefab, 6);
+
         }
 
         public override void Play()
@@ -48,19 +54,14 @@ namespace OctoberStudio.Enemy
         {
             while (true)
             {
-                // 🔶 WALK
                 IsMoving = true;
                 animator.SetBool("IsShooting", false);
                 yield return new WaitForSeconds(moveDuration);
 
-                // 🔷 SHOOT instantly
                 IsMoving = false;
                 yield return StartCoroutine(ShootingRoutine());
 
-                // ✅ Start spawning in background (non-blocking)
                 StartCoroutine(SpawnEnemyWaves());
-
-                // 🔶 Go back to walking immediately
             }
         }
 
@@ -82,12 +83,24 @@ namespace OctoberStudio.Enemy
 
         private void FireBomb()
         {
+            // Spawn and init bomb
             var sword = bombPool.GetEntity();
             sword.Init(bombSpawnPoint.position, Vector2.up);
             sword.Damage = StageController.Stage.EnemyDamage * bombDamageMultiplier;
             sword.onFinished += OnSwordFinished;
             activeProjectiles.Add(sword);
+
+            // 🔥 Play shoot VFX from pool
+            var vfx = shootVFXPool.GetEntity();
+            if (vfx != null)
+            {
+                vfx.transform.position = bombSpawnPoint.position;
+                vfx.transform.rotation = Quaternion.identity;
+                vfx.gameObject.SetActive(true); // Ensure it's enabled
+                vfx.Play();
+            }
         }
+
 
         private void OnSwordFinished(EnemyMegaSlimeProjectileBehavior sword)
         {
@@ -105,6 +118,8 @@ namespace OctoberStudio.Enemy
                 {
                     var pos = StageController.FieldManager.Fence.GetRandomPointInside(0.5f);
                     var warning = StageController.PoolsManager.GetEntity<WarningCircleBehavior>("Warning Circle");
+
+                    if (warning == null) continue;
 
                     warning.transform.position = pos;
                     warning.Play(1f, 0.3f, 100, null);
