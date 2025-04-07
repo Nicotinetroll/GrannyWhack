@@ -420,20 +420,20 @@ MonoBehaviour:
     icon: {fileID: 21300000, guid: 2e82691c1cd3d4ae9a664b3f844a6395, type: 3}
     enemyDrop:
     - dropType: 2
-      chance: 60
+      chance: 0
     - dropType: 3
-      chance: 40
+      chance: 0
     - dropType: 20
       chance: 0
     - dropType: 30
-      chance: 0.5
-    - dropType: 40
-      chance: 5
-    - dropType: 100
       chance: 0
+    - dropType: 40
+      chance: 0
+    - dropType: 100
+      chance: 100
     - dropType: 0
-      chance: 80
-    deathParticlePrefab: {fileID: 4359775741450278212, guid: 96679bc10afc50845962599d04695343,
+      chance: 0
+    deathParticlePrefab: {fileID: 5921496098825735273, guid: 227fad7151fff3b47a12d078ea43eac4,
       type: 3}
     deathParticlePoolName: GhostDeathFX
   - type: 22

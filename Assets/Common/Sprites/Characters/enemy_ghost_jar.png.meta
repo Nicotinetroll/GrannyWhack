@@ -128,8 +128,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1293
-        height: 1470
+        width: 729
+        height: 1025
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -148,10 +148,10 @@ TextureImporter:
       name: enemy_ghost_jar_1
       rect:
         serializedVersion: 2
-        x: 1293
+        x: 729
         y: 0
-        width: 1293
-        height: 1470
+        width: 729
+        height: 1025
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -170,10 +170,10 @@ TextureImporter:
       name: enemy_ghost_jar_2
       rect:
         serializedVersion: 2
-        x: 2586
+        x: 1458
         y: 0
-        width: 1293
-        height: 1470
+        width: 729
+        height: 1025
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -192,10 +192,10 @@ TextureImporter:
       name: enemy_ghost_jar_3
       rect:
         serializedVersion: 2
-        x: 3879
+        x: 2187
         y: 0
-        width: 1293
-        height: 1470
+        width: 729
+        height: 1025
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -214,10 +214,10 @@ TextureImporter:
       name: enemy_ghost_jar_4
       rect:
         serializedVersion: 2
-        x: 5172
+        x: 2916
         y: 0
-        width: 1293
-        height: 1470
+        width: 729
+        height: 1025
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -236,10 +236,10 @@ TextureImporter:
       name: enemy_ghost_jar_5
       rect:
         serializedVersion: 2
-        x: 6465
+        x: 3645
         y: 0
-        width: 1293
-        height: 1470
+        width: 729
+        height: 1025
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -258,10 +258,10 @@ TextureImporter:
       name: enemy_ghost_jar_6
       rect:
         serializedVersion: 2
-        x: 7758
+        x: 4374
         y: 0
-        width: 1293
-        height: 1470
+        width: 729
+        height: 1025
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
