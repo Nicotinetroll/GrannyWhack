@@ -19,6 +19,7 @@ MonoBehaviour:
   prefab: {fileID: 6529486900185581019, guid: 8515069691b5ce04ab0103bcd493c550, type: 3}
   isActiveAbility: 0
   isWeaponAbility: 0
+  isEndgameAbility: 0
   isEvolution: 0
   evolutionRequirements: []
   levels:
@@ -26,4 +27,6 @@ MonoBehaviour:
   - cooldownMultiplier: 0.84
   - cooldownMultiplier: 0.76
   - cooldownMultiplier: 0.68
+  - cooldownMultiplier: 0.58
+  - cooldownMultiplier: 0.48
   - cooldownMultiplier: 0.6

@@ -72,17 +72,3 @@ MonoBehaviour:
     projectileLifetime: 5
     bounceCount: 7
     bounceRadius: 2
-  - abilityCooldown: 0.25
-    projectileSpeed: 8
-    damage: 60
-    projectileSize: 1
-    projectileLifetime: 5
-    bounceCount: 7
-    bounceRadius: 2
-  - abilityCooldown: 0.25
-    projectileSpeed: 8
-    damage: 80
-    projectileSize: 1.5
-    projectileLifetime: 6
-    bounceCount: 10
-    bounceRadius: 2.5

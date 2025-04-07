@@ -17,8 +17,8 @@ MonoBehaviour:
   description: Unleash a toxic cloud of ancient stink
   icon: {fileID: 21300000, guid: fe6710f24379a4828b2af79b9f88ebc4, type: 3}
   prefab: {fileID: 6046089768498997805, guid: e545bdbda405c4c278992dd3708e2fdc, type: 3}
-  isActiveAbility: 1
-  isWeaponAbility: 1
+  isActiveAbility: 0
+  isWeaponAbility: 0
   isEndgameAbility: 0
   isEvolution: 0
   evolutionRequirements: []
@@ -33,8 +33,14 @@ MonoBehaviour:
     damage: 15
     damageCooldown: 1
   - fieldRadius: 1.9
-    damage: 18
+    damage: 20
     damageCooldown: 1
   - fieldRadius: 2.2
-    damage: 24
+    damage: 26
+    damageCooldown: 1
+  - fieldRadius: 2.2
+    damage: 31
+    damageCooldown: 1
+  - fieldRadius: 2.2
+    damage: 37
     damageCooldown: 1

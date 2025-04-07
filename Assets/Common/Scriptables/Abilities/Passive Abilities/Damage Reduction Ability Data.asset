@@ -19,6 +19,7 @@ MonoBehaviour:
   prefab: {fileID: 9093015508192957762, guid: 14873e52654f8d74cb06443e5f7a6a5e, type: 3}
   isActiveAbility: 0
   isWeaponAbility: 0
+  isEndgameAbility: 0
   isEvolution: 0
   evolutionRequirements: []
   levels:
@@ -27,3 +28,5 @@ MonoBehaviour:
   - damageReductionPercent: 30
   - damageReductionPercent: 40
   - damageReductionPercent: 50
+  - damageReductionPercent: 55
+  - damageReductionPercent: 60

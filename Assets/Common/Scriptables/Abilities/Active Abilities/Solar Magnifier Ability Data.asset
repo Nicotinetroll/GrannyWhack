@@ -19,14 +19,15 @@ MonoBehaviour:
   prefab: {fileID: 3459857695509158651, guid: dca1e126c4f292044898a3114e53ce78, type: 3}
   isActiveAbility: 1
   isWeaponAbility: 0
+  isEndgameAbility: 0
   isEvolution: 0
   evolutionRequirements: []
   levels:
   - abilityCooldown: 10
     projectileLifetime: 5
     timeBetweenProjectiles: 1
-    projectileCount: 1
-    damagePerSecond: 7
+    projectileCount: 2
+    damagePerSecond: 10
     damageRate: 5
     additionalDamagePerSecond: 3
     additionalDamageRadius: 0.4
@@ -34,8 +35,8 @@ MonoBehaviour:
   - abilityCooldown: 10
     projectileLifetime: 5
     timeBetweenProjectiles: 1
-    projectileCount: 2
-    damagePerSecond: 9
+    projectileCount: 3
+    damagePerSecond: 14
     damageRate: 5
     additionalDamagePerSecond: 4
     additionalDamageRadius: 0.4
@@ -43,8 +44,8 @@ MonoBehaviour:
   - abilityCooldown: 10
     projectileLifetime: 7
     timeBetweenProjectiles: 1
-    projectileCount: 2
-    damagePerSecond: 11
+    projectileCount: 4
+    damagePerSecond: 18
     damageRate: 5
     additionalDamagePerSecond: 5
     additionalDamageRadius: 0.4
@@ -52,8 +53,8 @@ MonoBehaviour:
   - abilityCooldown: 10
     projectileLifetime: 7
     timeBetweenProjectiles: 1
-    projectileCount: 3
-    damagePerSecond: 13
+    projectileCount: 5
+    damagePerSecond: 22
     damageRate: 5
     additionalDamagePerSecond: 6
     additionalDamageRadius: 0.4
@@ -61,8 +62,26 @@ MonoBehaviour:
   - abilityCooldown: 10
     projectileLifetime: 8
     timeBetweenProjectiles: 1
-    projectileCount: 3
-    damagePerSecond: 16
+    projectileCount: 6
+    damagePerSecond: 26
+    damageRate: 5
+    additionalDamagePerSecond: 7
+    additionalDamageRadius: 0.4
+    projectileSpeed: 7
+  - abilityCooldown: 10
+    projectileLifetime: 8
+    timeBetweenProjectiles: 1
+    projectileCount: 6
+    damagePerSecond: 26
+    damageRate: 5
+    additionalDamagePerSecond: 7
+    additionalDamageRadius: 0.4
+    projectileSpeed: 7
+  - abilityCooldown: 10
+    projectileLifetime: 8
+    timeBetweenProjectiles: 1
+    projectileCount: 6
+    damagePerSecond: 26
     damageRate: 5
     additionalDamagePerSecond: 7
     additionalDamageRadius: 0.4
