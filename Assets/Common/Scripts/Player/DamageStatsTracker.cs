@@ -22,4 +22,5 @@ public static class DamageStatsTracker
     {
         elapsedTime += deltaTime;
     }
+    
 }

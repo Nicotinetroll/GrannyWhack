@@ -13,125 +13,125 @@ MonoBehaviour:
   m_Name: Experience Data
   m_EditorClassIdentifier: 
   levels:
-  - multiplier: 1.5
-    xp: 5
   - multiplier: 1
     xp: 5
-  - multiplier: 1.4
-    xp: 7
-  - multiplier: 0
-    xp: 9.8
-  - multiplier: 0
-    xp: 13.72
-  - multiplier: 0
-    xp: 19.208
-  - multiplier: 0
-    xp: 26.8912
-  - multiplier: 0
-    xp: 37.64768
-  - multiplier: 0
-    xp: 52.70675
-  - multiplier: 0
-    xp: 73.789444
-  - multiplier: 0
-    xp: 103.30522
-  - multiplier: 0
-    xp: 144.6273
-  - multiplier: 0
-    xp: 202.47823
-  - multiplier: 0
-    xp: 283.4695
-  - multiplier: 0
-    xp: 396.8573
-  - multiplier: 0
-    xp: 555.6002
-  - multiplier: 0
-    xp: 777.8403
-  - multiplier: 0
-    xp: 1088.9763
-  - multiplier: 0
-    xp: 1524.5668
-  - multiplier: 0
-    xp: 2134.3936
-  - multiplier: 0
-    xp: 2988.151
-  - multiplier: 0
-    xp: 4183.411
-  - multiplier: 0
-    xp: 5856.7754
-  - multiplier: 0
-    xp: 8199.485
-  - multiplier: 0
-    xp: 11479.279
-  - multiplier: 0
-    xp: 16070.991
-  - multiplier: 0
-    xp: 22499.387
-  - multiplier: 0
-    xp: 31499.14
-  - multiplier: 0
-    xp: 44098.797
-  - multiplier: 0
-    xp: 61738.316
-  - multiplier: 0
-    xp: 86433.64
-  - multiplier: 0
-    xp: 121007.09
-  - multiplier: 0
-    xp: 169409.92
-  - multiplier: 0
-    xp: 237173.89
-  - multiplier: 0
-    xp: 332043.44
-  - multiplier: 0
-    xp: 464860.8
-  - multiplier: 0
-    xp: 650805.1
-  - multiplier: 0
-    xp: 911127.2
-  - multiplier: 0
-    xp: 1275578
-  - multiplier: 0
-    xp: 1785809.1
-  - multiplier: 0
-    xp: 2500132.8
-  - multiplier: 0
-    xp: 3500185.8
-  - multiplier: 0
-    xp: 4900260
-  - multiplier: 0
-    xp: 6860364
-  - multiplier: 0
-    xp: 9604509
-  - multiplier: 0
-    xp: 13446312
-  - multiplier: 0
-    xp: 18824836
-  - multiplier: 0
-    xp: 26354770
-  - multiplier: 0
-    xp: 36896676
-  - multiplier: 0
-    xp: 51655344
-  - multiplier: 0
-    xp: 72317480
   - multiplier: 2
-    xp: 144634960
-  - multiplier: 2
-    xp: 289269920
-  - multiplier: 2
-    xp: 578539840
-  - multiplier: 2
-    xp: 1.1570797e+9
-  - multiplier: 2
-    xp: 2.3141594e+9
-  - multiplier: 2
-    xp: 4.6283187e+9
-  - multiplier: 2
-    xp: 9.256637e+9
-  - multiplier: 2
-    xp: 1.8513275e+10
-  - multiplier: 2
-    xp: 3.702655e+10
-  - multiplier: 2
-    xp: 7.40531e+10
+    xp: 10
+  - multiplier: 1.5
+    xp: 15
+  - multiplier: 1.5
+    xp: 22.5
+  - multiplier: 1.5
+    xp: 33.75
+  - multiplier: 1.5
+    xp: 50.625
+  - multiplier: 1.5
+    xp: 75.9375
+  - multiplier: 1.1
+    xp: 83.53125
+  - multiplier: 1.1
+    xp: 91.88438
+  - multiplier: 1.1
+    xp: 101.072815
+  - multiplier: 1.1
+    xp: 111.1801
+  - multiplier: 0
+    xp: 122.29811
+  - multiplier: 0
+    xp: 134.52792
+  - multiplier: 0
+    xp: 147.98071
+  - multiplier: 0
+    xp: 162.7788
+  - multiplier: 0
+    xp: 179.05667
+  - multiplier: 0
+    xp: 196.96234
+  - multiplier: 0
+    xp: 216.65858
+  - multiplier: 0
+    xp: 238.32445
+  - multiplier: 0
+    xp: 262.1569
+  - multiplier: 0
+    xp: 288.3726
+  - multiplier: 0
+    xp: 317.20987
+  - multiplier: 0
+    xp: 348.93088
+  - multiplier: 0
+    xp: 383.82397
+  - multiplier: 0
+    xp: 422.2064
+  - multiplier: 0
+    xp: 464.42703
+  - multiplier: 0
+    xp: 510.86975
+  - multiplier: 0
+    xp: 561.9567
+  - multiplier: 0
+    xp: 618.1524
+  - multiplier: 0
+    xp: 679.96765
+  - multiplier: 0
+    xp: 747.9644
+  - multiplier: 0
+    xp: 822.76086
+  - multiplier: 0
+    xp: 905.037
+  - multiplier: 0
+    xp: 995.5407
+  - multiplier: 0
+    xp: 1095.0948
+  - multiplier: 0
+    xp: 1204.6044
+  - multiplier: 0
+    xp: 1325.0648
+  - multiplier: 0
+    xp: 1457.5713
+  - multiplier: 0
+    xp: 1603.3285
+  - multiplier: 0
+    xp: 1763.6614
+  - multiplier: 0
+    xp: 1940.0276
+  - multiplier: 0
+    xp: 2134.0303
+  - multiplier: 0
+    xp: 2347.4333
+  - multiplier: 0
+    xp: 2582.1768
+  - multiplier: 0
+    xp: 2840.3945
+  - multiplier: 0
+    xp: 3124.434
+  - multiplier: 0
+    xp: 3436.8777
+  - multiplier: 0
+    xp: 3780.5654
+  - multiplier: 0
+    xp: 4158.622
+  - multiplier: 0
+    xp: 4574.4844
+  - multiplier: 0
+    xp: 5031.933
+  - multiplier: 0
+    xp: 5535.1265
+  - multiplier: 0
+    xp: 6088.639
+  - multiplier: 0
+    xp: 6697.5034
+  - multiplier: 0
+    xp: 7367.254
+  - multiplier: 0
+    xp: 8103.9795
+  - multiplier: 0
+    xp: 8914.378
+  - multiplier: 0
+    xp: 9805.816
+  - multiplier: 0
+    xp: 10786.398
+  - multiplier: 0
+    xp: 11865.038
+  - multiplier: 0
+    xp: 13051.542
