@@ -21,7 +21,7 @@ MonoBehaviour:
     m_Value: 1
   intensity:
     m_OverrideState: 1
-    m_Value: 15
+    m_Value: 10
   scatter:
     m_OverrideState: 1
     m_Value: 0.419
@@ -87,7 +87,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29fa0085f50d5e54f8144f766051a691, type: 3}
   m_Name: FilmGrain
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   type:
     m_OverrideState: 1
     m_Value: 0
@@ -197,7 +197,7 @@ MonoBehaviour:
     m_Value: 10.1
   colorFilter:
     m_OverrideState: 1
-    m_Value: {r: 2, g: 2, b: 2, a: 1}
+    m_Value: {r: 2.1185474, g: 2.1185474, b: 2.1185474, a: 1}
   hueShift:
     m_OverrideState: 0
     m_Value: 12.1
