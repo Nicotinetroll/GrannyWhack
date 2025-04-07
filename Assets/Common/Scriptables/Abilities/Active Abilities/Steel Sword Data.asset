@@ -63,8 +63,8 @@ MonoBehaviour:
     damage: 24
     slashSize: 2
     timeBetweenSlashes: 0.2
-  - abilityCooldown: 1.4
-    slashesCount: 9
-    damage: 35
-    slashSize: 2.5
+  - abilityCooldown: 2
+    slashesCount: 7
+    damage: 40
+    slashSize: 3
     timeBetweenSlashes: 0.15

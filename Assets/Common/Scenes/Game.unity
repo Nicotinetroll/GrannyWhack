@@ -826,12 +826,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1322520481}
   m_PrefabAsset: {fileID: 0}
---- !u!224 &1149035562 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4562006102300694749, guid: 24deeb7ea64b4df49994e80e9e1a9403,
-    type: 3}
-  m_PrefabInstance: {fileID: 6795864787202576071}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1246814600
 GameObject:
   m_ObjectHideFlags: 0
@@ -1417,7 +1411,7 @@ MonoBehaviour:
       type: 3}
     size: 100
   - name: GhostDeathFX
-    prefab: {fileID: 4359775741450278212, guid: 96679bc10afc50845962599d04695343,
+    prefab: {fileID: 5921496098825735273, guid: 227fad7151fff3b47a12d078ea43eac4,
       type: 3}
     size: 5
 --- !u!1 &1846095498
@@ -1595,7 +1589,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1149035562}
+    m_TransformParent: {fileID: 6795864787202576073}
     m_Modifications:
     - target: {fileID: 2914113387218929541, guid: ccf79a3d112cb42a59624710392ba476,
         type: 3}
@@ -2117,9 +2111,9 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 4562006102300694749, guid: 24deeb7ea64b4df49994e80e9e1a9403,
+    - targetCorrespondingSourceObject: {fileID: 5833270890349018489, guid: 24deeb7ea64b4df49994e80e9e1a9403,
         type: 3}
-      insertIndex: 0
+      insertIndex: 2
       addedObject: {fileID: 1574518503}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 24deeb7ea64b4df49994e80e9e1a9403, type: 3}

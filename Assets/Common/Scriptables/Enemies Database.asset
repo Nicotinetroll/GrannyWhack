@@ -19,15 +19,15 @@ MonoBehaviour:
     icon: {fileID: 21300000, guid: 2e82691c1cd3d4ae9a664b3f844a6395, type: 3}
     enemyDrop:
     - dropType: 0
-      chance: 80
+      chance: 0
     - dropType: 10
       chance: 0
     - dropType: 20
       chance: 0
     - dropType: 30
-      chance: 1
+      chance: 0
     - dropType: 40
-      chance: 1
+      chance: 0
     - dropType: 100
       chance: 0
     deathParticlePrefab: {fileID: 0}
@@ -38,15 +38,15 @@ MonoBehaviour:
     icon: {fileID: 21300000, guid: c7314c840a31eb342ae17551898d7fe1, type: 3}
     enemyDrop:
     - dropType: 0
-      chance: 80
+      chance: 0
     - dropType: 10
       chance: 0
     - dropType: 20
       chance: 0
     - dropType: 30
-      chance: 1
+      chance: 0
     - dropType: 40
-      chance: 1
+      chance: 0
     - dropType: 100
       chance: 0
     deathParticlePrefab: {fileID: 0}
@@ -57,15 +57,15 @@ MonoBehaviour:
     icon: {fileID: 21300000, guid: 148058df3a6abb446b4e99942a200b65, type: 3}
     enemyDrop:
     - dropType: 0
-      chance: 60
+      chance: 0
     - dropType: 10
       chance: 0
     - dropType: 20
       chance: 0
     - dropType: 30
-      chance: 1
+      chance: 0
     - dropType: 40
-      chance: 1
+      chance: 0
     - dropType: 100
       chance: 0
     deathParticlePrefab: {fileID: 0}
@@ -76,19 +76,19 @@ MonoBehaviour:
     icon: {fileID: 21300000, guid: 128a46be89fd93a42bc096292ec61c82, type: 3}
     enemyDrop:
     - dropType: 0
-      chance: 90
+      chance: 0
     - dropType: 1
-      chance: 70
+      chance: 0
     - dropType: 2
-      chance: 20
+      chance: 0
     - dropType: 10
       chance: 0
     - dropType: 20
       chance: 0
     - dropType: 30
-      chance: 1
+      chance: 0
     - dropType: 40
-      chance: 1
+      chance: 0
     - dropType: 100
       chance: 0
     deathParticlePrefab: {fileID: 0}
@@ -99,19 +99,19 @@ MonoBehaviour:
     icon: {fileID: 21300000, guid: 3086c2163f612aa4eab4a1cc537a2874, type: 3}
     enemyDrop:
     - dropType: 0
-      chance: 90
+      chance: 0
     - dropType: 1
-      chance: 70
+      chance: 0
     - dropType: 2
-      chance: 35
+      chance: 0
     - dropType: 10
-      chance: 1
+      chance: 0
     - dropType: 20
       chance: 0
     - dropType: 30
-      chance: 1
+      chance: 0
     - dropType: 40
-      chance: 1
+      chance: 0
     - dropType: 100
       chance: 0
     deathParticlePrefab: {fileID: 0}
@@ -122,21 +122,21 @@ MonoBehaviour:
     icon: {fileID: 21300000, guid: c1add2dcde28f2a4a9eb8db6532bc6af, type: 3}
     enemyDrop:
     - dropType: 0
-      chance: 50
+      chance: 0
     - dropType: 1
-      chance: 90
+      chance: 0
     - dropType: 2
-      chance: 70
+      chance: 0
     - dropType: 3
-      chance: 10
+      chance: 0
     - dropType: 10
-      chance: 1
+      chance: 0
     - dropType: 20
-      chance: 1
+      chance: 0
     - dropType: 30
-      chance: 1
+      chance: 0
     - dropType: 40
-      chance: 1
+      chance: 0
     - dropType: 100
       chance: 0
     deathParticlePrefab: {fileID: 0}
@@ -147,19 +147,19 @@ MonoBehaviour:
     icon: {fileID: 21300000, guid: 4bc01c02d515fb5499cabb92c17bda38, type: 3}
     enemyDrop:
     - dropType: 1
-      chance: 80
+      chance: 0
     - dropType: 2
-      chance: 80
+      chance: 0
     - dropType: 3
-      chance: 80
+      chance: 0
     - dropType: 10
-      chance: 2
+      chance: 0
     - dropType: 20
-      chance: 2
+      chance: 0
     - dropType: 30
-      chance: 3
+      chance: 0
     - dropType: 40
-      chance: 5
+      chance: 0
     - dropType: 100
       chance: 0
     deathParticlePrefab: {fileID: 0}
@@ -170,17 +170,17 @@ MonoBehaviour:
     icon: {fileID: 21300000, guid: b1352c1e3ffc6894e9772ac7c32bcb98, type: 3}
     enemyDrop:
     - dropType: 0
-      chance: 70
+      chance: 0
     - dropType: 1
-      chance: 1
+      chance: 0
     - dropType: 10
       chance: 0
     - dropType: 20
       chance: 0
     - dropType: 30
-      chance: 1
+      chance: 0
     - dropType: 40
-      chance: 1
+      chance: 0
     - dropType: 100
       chance: 0
     deathParticlePrefab: {fileID: 0}
@@ -191,17 +191,17 @@ MonoBehaviour:
     icon: {fileID: 21300000, guid: 54387ce7f86e6a445b53a6ce866ed863, type: 3}
     enemyDrop:
     - dropType: 0
-      chance: 80
+      chance: 0
     - dropType: 1
-      chance: 5
+      chance: 0
     - dropType: 10
       chance: 0
     - dropType: 20
       chance: 0
     - dropType: 30
-      chance: 1
+      chance: 0
     - dropType: 40
-      chance: 1
+      chance: 0
     - dropType: 100
       chance: 0
     deathParticlePrefab: {fileID: 0}
@@ -212,17 +212,17 @@ MonoBehaviour:
     icon: {fileID: 21300000, guid: 6f24555dc7c21274e996d2f67d1972cd, type: 3}
     enemyDrop:
     - dropType: 0
-      chance: 100
+      chance: 0
     - dropType: 1
-      chance: 90
+      chance: 0
     - dropType: 10
-      chance: 1
+      chance: 0
     - dropType: 20
       chance: 0
     - dropType: 30
-      chance: 1
+      chance: 0
     - dropType: 40
-      chance: 1
+      chance: 0
     - dropType: 100
       chance: 0
     deathParticlePrefab: {fileID: 0}
@@ -233,17 +233,17 @@ MonoBehaviour:
     icon: {fileID: 21300000, guid: 417fa5adf2f4fd84ca8cebb330cdcf06, type: 3}
     enemyDrop:
     - dropType: 1
-      chance: 100
+      chance: 0
     - dropType: 2
-      chance: 40
+      chance: 0
     - dropType: 10
       chance: 0
     - dropType: 20
       chance: 0
     - dropType: 30
-      chance: 1
+      chance: 0
     - dropType: 40
-      chance: 1
+      chance: 0
     - dropType: 100
       chance: 0
     deathParticlePrefab: {fileID: 0}
@@ -254,19 +254,19 @@ MonoBehaviour:
     icon: {fileID: 21300000, guid: 3af945337b8033c47b7ff9be6dda0a30, type: 3}
     enemyDrop:
     - dropType: 1
-      chance: 100
+      chance: 0
     - dropType: 2
-      chance: 80
+      chance: 0
     - dropType: 3
-      chance: 25
+      chance: 0
     - dropType: 10
-      chance: 1
+      chance: 0
     - dropType: 20
-      chance: 1
+      chance: 0
     - dropType: 30
-      chance: 1
+      chance: 0
     - dropType: 40
-      chance: 1
+      chance: 0
     - dropType: 100
       chance: 0
     deathParticlePrefab: {fileID: 0}
@@ -277,17 +277,17 @@ MonoBehaviour:
     icon: {fileID: 21300000, guid: fd6da456e46a8f14f9c3557339a413e0, type: 3}
     enemyDrop:
     - dropType: 1
-      chance: 100
+      chance: 0
     - dropType: 2
-      chance: 80
+      chance: 0
     - dropType: 10
-      chance: 1
+      chance: 0
     - dropType: 20
-      chance: 1
+      chance: 0
     - dropType: 30
-      chance: 1
+      chance: 0
     - dropType: 40
-      chance: 1
+      chance: 0
     - dropType: 100
       chance: 0
     deathParticlePrefab: {fileID: 0}
