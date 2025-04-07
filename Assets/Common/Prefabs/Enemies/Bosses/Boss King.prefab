@@ -300,7 +300,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 475f6f634bca8214089d8ef4bdf342a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0.8
+  speed: 0.7
   damage: 100
   hp: 16000
   canBeKickedBack: 0
@@ -324,12 +324,12 @@ MonoBehaviour:
   shootVFXPrefab: {fileID: 5124166242607940835, guid: 3b7507cbf49a98548a9440443ee9d843,
     type: 3}
   spawnedEnemyType: 22
-  spawningWavesCount: 3
-  spawnedEnemiesCount: 2
+  spawningWavesCount: 5
+  spawnedEnemiesCount: 1
   durationBetweenSpawning: 1
-  durationBetweenWarningAndSpawning: 0.5
+  durationBetweenWarningAndSpawning: 1
   spawningParticle: {fileID: 4086977011551362549}
-  moveDuration: 5
+  moveDuration: 10
   shootCooldown: 1
 --- !u!1001 &6049744859993634310
 PrefabInstance:
