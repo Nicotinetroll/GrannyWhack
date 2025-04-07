@@ -734,7 +734,7 @@ MonoBehaviour:
     useDamageOverride: 0
     damageOverride: 0
     useHPOverride: 1
-    hpOverride: 14000
+    hpOverride: 5000
     useSpeedOverride: 1
     speedOverride: 0.7
     useDropOverride: 0
@@ -1282,7 +1282,7 @@ MonoBehaviour:
     useDamageOverride: 0
     damageOverride: 0
     useHPOverride: 1
-    hpOverride: 7000
+    hpOverride: 4500
     useSpeedOverride: 1
     speedOverride: 0.7
     useDropOverride: 0
@@ -1697,7 +1697,7 @@ MonoBehaviour:
     useDamageOverride: 0
     damageOverride: 0
     useHPOverride: 1
-    hpOverride: 3500
+    hpOverride: 2000
     useSpeedOverride: 1
     speedOverride: 0.7
     useDropOverride: 0
