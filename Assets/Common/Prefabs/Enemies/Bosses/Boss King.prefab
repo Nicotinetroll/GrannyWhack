@@ -142,7 +142,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1958778530, guid: c29f51cdb61c9bf4ab957d4984a9031a, type: 3}
+  m_Sprite: {fileID: 115506459, guid: 1d74955b8954b264590985c496ad0bd1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
@@ -300,9 +300,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 475f6f634bca8214089d8ef4bdf342a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
-  damage: 2
-  hp: 3000
+  speed: 0.8
+  damage: 100
+  hp: 16000
   canBeKickedBack: 0
   shouldFadeIn: 0
   rb: {fileID: 2700873241517360941}
@@ -320,12 +320,12 @@ MonoBehaviour:
   bombSpawnPoint: {fileID: 8985548770496245497}
   shotsPerCast: 4
   timeBetweenShots: 0.3
-  bombDamageMultiplier: 1
+  bombDamageMultiplier: 30
   shootVFXPrefab: {fileID: 5124166242607940835, guid: 3b7507cbf49a98548a9440443ee9d843,
     type: 3}
-  spawnedEnemyType: 2
+  spawnedEnemyType: 22
   spawningWavesCount: 3
-  spawnedEnemiesCount: 3
+  spawnedEnemiesCount: 2
   durationBetweenSpawning: 1
   durationBetweenWarningAndSpawning: 0.5
   spawningParticle: {fileID: 4086977011551362549}

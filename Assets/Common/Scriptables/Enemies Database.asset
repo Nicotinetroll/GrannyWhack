@@ -436,3 +436,10 @@ MonoBehaviour:
     deathParticlePrefab: {fileID: 4359775741450278212, guid: 96679bc10afc50845962599d04695343,
       type: 3}
     deathParticlePoolName: GhostDeathFX
+  - type: 22
+    prefab: {fileID: 1090571174421192766, guid: 0c480055b3afc48c9ba2bc10e479e979,
+      type: 3}
+    icon: {fileID: -1316427822, guid: e87b27f939e044d96af9844da63d1d81, type: 3}
+    enemyDrop: []
+    deathParticlePrefab: {fileID: 0}
+    deathParticlePoolName: 
