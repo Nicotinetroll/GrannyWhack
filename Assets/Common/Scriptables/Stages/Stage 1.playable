@@ -267,7 +267,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d2f03e263ce34a43b59974120a9344c, type: 3}
   m_Name: CameraControl(Clone)(Clone)(Clone)(Clone)(Clone)(Clone)
   m_EditorClassIdentifier: 
-  targetCameraSize: 6.4
+  targetCameraSize: 5.5
   easingType: 0
 --- !u!114 &-8803894874215066732
 MonoBehaviour:
@@ -700,7 +700,7 @@ MonoBehaviour:
     useDamageOverride: 1
     damageOverride: 10
     useHPOverride: 1
-    hpOverride: 200
+    hpOverride: 300
     useSpeedOverride: 0
     speedOverride: 0
     useDropOverride: 1
@@ -915,7 +915,7 @@ MonoBehaviour:
     useDamageOverride: 1
     damageOverride: 30
     useHPOverride: 1
-    hpOverride: 200
+    hpOverride: 400
     useSpeedOverride: 0
     speedOverride: 0
     useDropOverride: 1
@@ -949,7 +949,7 @@ MonoBehaviour:
     useDamageOverride: 1
     damageOverride: 30
     useHPOverride: 1
-    hpOverride: 500
+    hpOverride: 1000
     useSpeedOverride: 0
     speedOverride: 0
     useDropOverride: 1
@@ -1006,7 +1006,7 @@ MonoBehaviour:
     useDamageOverride: 1
     damageOverride: 30
     useHPOverride: 1
-    hpOverride: 250
+    hpOverride: 500
     useSpeedOverride: 0
     speedOverride: 0
     useDropOverride: 1
@@ -1070,7 +1070,7 @@ MonoBehaviour:
     useDamageOverride: 1
     damageOverride: 30
     useHPOverride: 1
-    hpOverride: 500
+    hpOverride: 1000
     useSpeedOverride: 0
     speedOverride: 0
     useDropOverride: 1
@@ -1372,7 +1372,7 @@ MonoBehaviour:
     useDamageOverride: 1
     damageOverride: 30
     useHPOverride: 1
-    hpOverride: 200
+    hpOverride: 400
     useSpeedOverride: 0
     speedOverride: 0
     useDropOverride: 1
@@ -1695,7 +1695,7 @@ MonoBehaviour:
     useDamageOverride: 1
     damageOverride: 60
     useHPOverride: 1
-    hpOverride: 450
+    hpOverride: 1300
     useSpeedOverride: 1
     speedOverride: 0
     useDropOverride: 0
@@ -1721,7 +1721,7 @@ MonoBehaviour:
     useDamageOverride: 1
     damageOverride: 30
     useHPOverride: 1
-    hpOverride: 350
+    hpOverride: 800
     useSpeedOverride: 1
     speedOverride: 0.5
     useDropOverride: 1
@@ -2251,7 +2251,7 @@ MonoBehaviour:
     useDamageOverride: 1
     damageOverride: 30
     useHPOverride: 1
-    hpOverride: 350
+    hpOverride: 500
     useSpeedOverride: 0
     speedOverride: 0
     useDropOverride: 1
@@ -2286,7 +2286,7 @@ MonoBehaviour:
     useDamageOverride: 1
     damageOverride: 50
     useHPOverride: 1
-    hpOverride: 600
+    hpOverride: 1300
     useSpeedOverride: 1
     speedOverride: 0.5
     useDropOverride: 1
@@ -2664,7 +2664,7 @@ MonoBehaviour:
     useDamageOverride: 1
     damageOverride: 30
     useHPOverride: 1
-    hpOverride: 250
+    hpOverride: 600
     useSpeedOverride: 1
     speedOverride: 0.5
     useDropOverride: 1
@@ -3201,7 +3201,7 @@ MonoBehaviour:
     useDamageOverride: 1
     damageOverride: 30
     useHPOverride: 1
-    hpOverride: 250
+    hpOverride: 500
     useSpeedOverride: 0
     speedOverride: 0
     useDropOverride: 1
@@ -3776,7 +3776,7 @@ MonoBehaviour:
     useDamageOverride: 1
     damageOverride: 60
     useHPOverride: 1
-    hpOverride: 700
+    hpOverride: 2000
     useSpeedOverride: 1
     speedOverride: 0
     useDropOverride: 0

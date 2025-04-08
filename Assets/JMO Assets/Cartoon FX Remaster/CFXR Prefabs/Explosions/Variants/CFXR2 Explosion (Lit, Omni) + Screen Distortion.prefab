@@ -306,17 +306,17 @@ PrefabInstance:
     - target: {fileID: 3765637054241222525, guid: a2c54af0fefc68747813073754ebe949,
         type: 3}
       propertyPath: cameraShake.shakeStrength.x
-      value: 1
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 3765637054241222525, guid: a2c54af0fefc68747813073754ebe949,
         type: 3}
       propertyPath: cameraShake.shakeStrength.y
-      value: 1
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 3765637054241222525, guid: a2c54af0fefc68747813073754ebe949,
         type: 3}
       propertyPath: cameraShake.shakeStrength.z
-      value: 0.5
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 3765637054241222525, guid: a2c54af0fefc68747813073754ebe949,
         type: 3}
