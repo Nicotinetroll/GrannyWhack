@@ -58,6 +58,7 @@ CircleCollider2D:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7689937814049821681}
   m_Enabled: 1
+  serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -81,9 +82,9 @@ CircleCollider2D:
     m_Bits: 4294967295
   m_IsTrigger: 1
   m_UsedByEffector: 0
-  m_UsedByComposite: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
   m_Radius: 0.5
 --- !u!1001 &4710014374807108512
 PrefabInstance:
@@ -153,6 +154,36 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6959525691067059841, guid: 2adf6c05becf39f43b9df61b1d33c5b5,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.b
+      value: 0.12096617
+      objectReference: {fileID: 0}
+    - target: {fileID: 6959525691067059841, guid: 2adf6c05becf39f43b9df61b1d33c5b5,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6959525691067059841, guid: 2adf6c05becf39f43b9df61b1d33c5b5,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
+      value: 0.7137255
+      objectReference: {fileID: 0}
+    - target: {fileID: 8719204535872136716, guid: 2adf6c05becf39f43b9df61b1d33c5b5,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.b
+      value: 0.109519295
+      objectReference: {fileID: 0}
+    - target: {fileID: 8719204535872136716, guid: 2adf6c05becf39f43b9df61b1d33c5b5,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8719204535872136716, guid: 2adf6c05becf39f43b9df61b1d33c5b5,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
+      value: 0.90800005
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -183,10 +214,40 @@ PrefabInstance:
       propertyPath: playOnAwake
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 695542823581027385, guid: 9b5a9885917ce284499415438a50220e,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.b
+      value: 0.43477005
+      objectReference: {fileID: 0}
+    - target: {fileID: 695542823581027385, guid: 9b5a9885917ce284499415438a50220e,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 0.319
+      objectReference: {fileID: 0}
+    - target: {fileID: 695542823581027385, guid: 9b5a9885917ce284499415438a50220e,
+        type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1156237603634205808, guid: 9b5a9885917ce284499415438a50220e,
         type: 3}
       propertyPath: playOnAwake
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1156237603634205808, guid: 9b5a9885917ce284499415438a50220e,
+        type: 3}
+      propertyPath: InitialModule.startColor.minColor.b
+      value: 0.12156863
+      objectReference: {fileID: 0}
+    - target: {fileID: 1156237603634205808, guid: 9b5a9885917ce284499415438a50220e,
+        type: 3}
+      propertyPath: InitialModule.startColor.minColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1156237603634205808, guid: 9b5a9885917ce284499415438a50220e,
+        type: 3}
+      propertyPath: InitialModule.startColor.minColor.r
+      value: 0.7137255
       objectReference: {fileID: 0}
     - target: {fileID: 2840114444586249407, guid: 9b5a9885917ce284499415438a50220e,
         type: 3}
