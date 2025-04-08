@@ -105,7 +105,7 @@ MonoBehaviour:
   hitParticle: {fileID: 2614223878514317206}
   explosionParticle: {fileID: 442072665381009236}
   explosionRadius: 1
-  explosionDamage: 40
+  explosionDamage: 70
   enemyDamageMultiplier: 20
   damageMask:
     serializedVersion: 2

@@ -16,8 +16,16 @@ public class TimelineDebugDisplay : MonoBehaviour
     private float timeElapsed;
     private int frameCount;
 
+    private string versionText;
+
     private void Start()
     {
+        // 🆕 Show Unity-defined version number (from Project Settings > Player > Version)
+        versionText = $"v{Application.version}";
+        
+        // If you're using Unity 2022.2+, you can also include build GUID like this:
+        // versionText += $" (Build: {Application.buildGUID})";
+
         ResetDebugStats();
     }
 
@@ -25,7 +33,7 @@ public class TimelineDebugDisplay : MonoBehaviour
     {
         DamageStatsTracker.Reset();
         if (debugText != null)
-            debugText.text = "[Debug] Reset at game start\n";
+            debugText.text = $"[Debug] Reset at game start ({versionText})\n";
     }
 
     private void Update()
@@ -69,6 +77,7 @@ public class TimelineDebugDisplay : MonoBehaviour
             float fps = frameCount / timeElapsed;
 
             debugText.text =
+                $"[v{Application.version}]\n" +
                 $"FPS: {fps:F1}\n" +
                 $"Hit Particles (Active): {activeHit}\n" +
                 $"Total Damage: {DamageStatsTracker.TotalDamage:F0}\n" +
@@ -80,11 +89,11 @@ public class TimelineDebugDisplay : MonoBehaviour
         else if (!string.IsNullOrEmpty(debugText.text))
         {
             string[] lines = debugText.text.Split('\n');
-            if (lines.Length >= 4)
+            if (lines.Length >= 5)
             {
-                lines[1] = $"Hit Particles (Active): {activeHit}";
-                lines[2] = $"Total Damage: {DamageStatsTracker.TotalDamage:F0}";
-                lines[3] = $"DPS: {DamageStatsTracker.DPS:F1}";
+                lines[2] = $"Hit Particles (Active): {activeHit}";
+                lines[3] = $"Total Damage: {DamageStatsTracker.TotalDamage:F0}";
+                lines[4] = $"DPS: {DamageStatsTracker.DPS:F1}";
                 debugText.text = string.Join("\n", lines);
             }
         }

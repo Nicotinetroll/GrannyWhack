@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e675658e5d57a9046b3324c0c946a620, type: 3}
   m_Name: Stage 1
   m_EditorClassIdentifier: 
-  icon: {fileID: 21300000, guid: 2972e1eaf74064e54936f26b27dff322, type: 3}
-  displayName: S1 cool name
+  icon: {fileID: 21300000, guid: bff1caf6224894e58b24f5acae1fc4c2, type: 3}
+  displayName: Blast Throne
   timeline: {fileID: 11400000, guid: fa599a9bdd46a7b4886ff5ecbdfbe895, type: 2}
   stageType: 0
   stageFieldData: {fileID: 11400000, guid: 52c7b0006b996a04681b47c761528a3d, type: 2}
