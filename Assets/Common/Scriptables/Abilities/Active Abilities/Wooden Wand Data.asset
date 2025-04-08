@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Wooden Wand Data
   m_EditorClassIdentifier: 
   type: 1000
-  title: Wooden Wand
-  description: Shoots a magic projectile in nearby enemy
+  title: Shuriken
+  description: "Blades aren\u2019t supposed to bounce... This one does"
   icon: {fileID: 21300000, guid: 0d11faf1f53fabf458ed6205557339c5, type: 3}
   prefab: {fileID: 8295970409944387311, guid: fef53c88fbaf9b74d8f8b7ace6957279, type: 3}
   isActiveAbility: 1
