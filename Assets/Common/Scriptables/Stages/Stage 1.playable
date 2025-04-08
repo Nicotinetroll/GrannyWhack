@@ -1068,7 +1068,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waveOverride:
     useDamageOverride: 1
-    damageOverride: 30
+    damageOverride: 60
     useHPOverride: 1
     hpOverride: 1000
     useSpeedOverride: 0
@@ -1693,9 +1693,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waveOverride:
     useDamageOverride: 1
-    damageOverride: 60
+    damageOverride: 120
     useHPOverride: 1
-    hpOverride: 1300
+    hpOverride: 1600
     useSpeedOverride: 1
     speedOverride: 0
     useDropOverride: 0
@@ -2214,9 +2214,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waveOverride:
     useDamageOverride: 1
-    damageOverride: 30
+    damageOverride: 60
     useHPOverride: 1
-    hpOverride: 600
+    hpOverride: 2200
     useSpeedOverride: 0
     speedOverride: 0
     useDropOverride: 1
@@ -2284,7 +2284,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waveOverride:
     useDamageOverride: 1
-    damageOverride: 50
+    damageOverride: 80
     useHPOverride: 1
     hpOverride: 1300
     useSpeedOverride: 1
@@ -3774,9 +3774,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waveOverride:
     useDamageOverride: 1
-    damageOverride: 60
+    damageOverride: 120
     useHPOverride: 1
-    hpOverride: 2000
+    hpOverride: 2400
     useSpeedOverride: 1
     speedOverride: 0
     useDropOverride: 0

@@ -30,45 +30,45 @@ MonoBehaviour:
     projectileLifetime: 5
     bounceCount: 1
     bounceRadius: 1.2
-  - abilityCooldown: 0.5
+  - abilityCooldown: 0.8
     projectileSpeed: 6
     damage: 12
     projectileSize: 1
     projectileLifetime: 5
     bounceCount: 2
-    bounceRadius: 1.4
-  - abilityCooldown: 0.4
+    bounceRadius: 1.2
+  - abilityCooldown: 0.6
     projectileSpeed: 7
     damage: 18
     projectileSize: 1
     projectileLifetime: 5
     bounceCount: 3
-    bounceRadius: 1.6
-  - abilityCooldown: 0.35
+    bounceRadius: 1.3
+  - abilityCooldown: 0.5
     projectileSpeed: 8
     damage: 23
     projectileSize: 1
     projectileLifetime: 5
     bounceCount: 4
-    bounceRadius: 1.8
-  - abilityCooldown: 0.25
+    bounceRadius: 1.4
+  - abilityCooldown: 0.4
     projectileSpeed: 8
     damage: 30
     projectileSize: 1
     projectileLifetime: 5
     bounceCount: 5
-    bounceRadius: 2
-  - abilityCooldown: 0.25
+    bounceRadius: 1.4
+  - abilityCooldown: 0.4
     projectileSpeed: 8
     damage: 40
     projectileSize: 1
     projectileLifetime: 5
     bounceCount: 6
-    bounceRadius: 2
-  - abilityCooldown: 0.25
+    bounceRadius: 1.4
+  - abilityCooldown: 0.4
     projectileSpeed: 8
     damage: 50
     projectileSize: 1
     projectileLifetime: 5
     bounceCount: 7
-    bounceRadius: 2
+    bounceRadius: 1.4
