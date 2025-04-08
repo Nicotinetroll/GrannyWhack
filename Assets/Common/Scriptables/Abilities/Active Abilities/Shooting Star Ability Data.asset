@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Shooting Star Ability Data
   m_EditorClassIdentifier: 
   type: 0
-  title: Shooting Star
-  description: Orbits around, damaging enemies
+  title: "Buzz Cuttin\u2019"
+  description: "This ain't your barber\u2019s buzzcut. Unless your barber is really
+    intense"
   icon: {fileID: 21300000, guid: 8142a6c24c1cc7149a27153a8e0d8c2f, type: 3}
   prefab: {fileID: 8808691205632778037, guid: 84c63e5479c7eae46bf3db3b9662f6ca, type: 3}
   isActiveAbility: 1

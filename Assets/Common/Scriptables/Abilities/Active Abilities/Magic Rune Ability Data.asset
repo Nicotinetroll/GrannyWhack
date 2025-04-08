@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Magic Rune Ability Data
   m_EditorClassIdentifier: 
   type: 5
-  title: Magic Rune
-  description: Leaves an explosive symbol on the floor
+  title: Pentagram
+  description: Leaves an explosive pentagram on the floor
   icon: {fileID: 21300000, guid: 41b11da08bfbd71468e55b3dc58c105d, type: 3}
   prefab: {fileID: 6119386174245202466, guid: 460c16e3997ff1d43b013c9b00f6ec69, type: 3}
   isActiveAbility: 1
