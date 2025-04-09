@@ -640,6 +640,52 @@ Transform:
   - {fileID: 1889658389}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &808867511
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 808867512}
+  - component: {fileID: 808867513}
+  m_Layer: 0
+  m_Name: Player Stats Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &808867512
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 808867511}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 491.4121, y: 525.9725, z: -1.5996493}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1472040405}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &808867513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 808867511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d73671a6ec1d6cc4d9eb5400561cd80f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageText: {fileID: 0}
+  dpsText: {fileID: 0}
 --- !u!1 &879346761
 GameObject:
   m_ObjectHideFlags: 0
@@ -1070,6 +1116,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 808867512}
   - {fileID: 1463805597}
   - {fileID: 134028217}
   - {fileID: 1075212946}
@@ -1106,6 +1153,7 @@ MonoBehaviour:
   gameScreen: {fileID: 1597437559}
   stageFailedScreen: {fileID: 7926813176137370766}
   stageCompletedScreen: {fileID: 73902015}
+  playerStats: {fileID: 0}
   testingPreset: {fileID: 0}
 --- !u!1 &1478012300
 GameObject:
@@ -1594,18 +1642,16 @@ PrefabInstance:
     - target: {fileID: 2914113387218929541, guid: ccf79a3d112cb42a59624710392ba476,
         type: 3}
       propertyPath: m_text
-      value: 'Game Frame
+      value: '[vX.X.X]
 
-        Game Frame
+        FPS: 240
 
-        Game Frame
+        Hit Particles (Active): 20
 
-        Game Frame
+        Total
+        Damage: 500314
 
-        Game
-        Frame
-
-        Game Frame'
+        DPS: 512.4'
       objectReference: {fileID: 0}
     - target: {fileID: 2914113387218929541, guid: ccf79a3d112cb42a59624710392ba476,
         type: 3}
@@ -1722,6 +1768,11 @@ PrefabInstance:
       propertyPath: director
       value: 
       objectReference: {fileID: 218967352}
+    - target: {fileID: 6453396958354178636, guid: ccf79a3d112cb42a59624710392ba476,
+        type: 3}
+      propertyPath: playerStats
+      value: 
+      objectReference: {fileID: 808867513}
     - target: {fileID: 7483542502024276673, guid: ccf79a3d112cb42a59624710392ba476,
         type: 3}
       propertyPath: m_Name
