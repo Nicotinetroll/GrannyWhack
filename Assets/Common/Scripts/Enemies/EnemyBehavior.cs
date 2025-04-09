@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
 using CartoonFX;
+using OctoberStudio.UI;
 
 
 namespace OctoberStudio
@@ -50,7 +51,7 @@ namespace OctoberStudio
         [SerializeField] GameObject hitParticlePrefab;
         
         [Header("Death")]
-        [SerializeField] private string deathFXPoolName = "GhostDeathFX";
+        //[SerializeField] private string deathFXPoolName = "GhostDeathFX";
 
 
 
@@ -232,7 +233,9 @@ namespace OctoberStudio
 
         public void TakeDamage(float damage)
         {
-            DamageStatsTracker.AddDamage(damage);
+            if (PlayerStatsManager.Instance != null)
+                PlayerStatsManager.Instance.AddDamage(damage);
+
             
             if (!IsAlive) return;
             if (IsInvulnerable) return;

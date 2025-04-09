@@ -18,6 +18,10 @@ namespace OctoberStudio
         [SerializeField] int xpLevel;
         [SerializeField] float xp;
         [SerializeField] int enemiesKilled;
+        
+        [SerializeField] private float timeAlive; // Add this to the top with the other fields
+        
+
 
         public bool loadedBefore = false;
 
@@ -42,6 +46,13 @@ namespace OctoberStudio
             get => rerollCharges;
             set => rerollCharges = value;
         }
+        
+        public float TimeAlive
+        {
+            get => timeAlive;
+            set => timeAlive = value;
+        }
+        
         // DAMAGE
         [SerializeField] private float totalDamage;
         [SerializeField] private float dps;

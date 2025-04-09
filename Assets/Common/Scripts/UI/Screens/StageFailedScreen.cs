@@ -37,7 +37,11 @@ namespace OctoberStudio.UI
         {
             gameObject.SetActive(true);
             
-            totalDamageText.text = $"{Mathf.RoundToInt(DamageStatsTracker.TotalDamage):N0}";
+            if (PlayerStatsManager.Instance != null)
+                totalDamageText.text = $"{Mathf.RoundToInt(PlayerStatsManager.Instance.TotalDamage):N0}";
+            else
+                totalDamageText.text = "0";
+
 
 
             canvasGroup.alpha = 0;

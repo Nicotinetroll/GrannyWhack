@@ -163,7 +163,8 @@ namespace OctoberStudio.Enemy
             }
 
             // ⏳ Wait for explosion VFX to finish before despawn
-            float waitTime = explosionParticle != null ? explosionParticle.main.duration : 0.3f;
+            float waitTime = postExplosionDelay > 0f ? postExplosionDelay :
+                (explosionParticle != null ? explosionParticle.main.duration : 0.3f);
 
             EasingManager.DoAfter(waitTime, () =>
             {

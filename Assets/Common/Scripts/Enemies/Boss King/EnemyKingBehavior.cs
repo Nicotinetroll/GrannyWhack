@@ -34,7 +34,6 @@ namespace OctoberStudio.Enemy
         private PoolComponent<ParticleSystem> shootVFXPool;
         private List<EnemyKingProjectileBehavior> activeProjectiles = new();
         private List<WarningCircleBehavior> warningCircles = new();
-        private bool isShooting;
 
         // 🔊 Audio hashes
         public static readonly int BOSSKING_SHOOT_HASH = "BossKing_Shoot".GetHashCode();
@@ -74,7 +73,6 @@ namespace OctoberStudio.Enemy
 
         private IEnumerator ShootingRoutine()
         {
-            isShooting = true;
             animator.SetBool("IsShooting", true);
 
             for (int i = 0; i < shotsPerCast; i++)
@@ -84,8 +82,8 @@ namespace OctoberStudio.Enemy
             }
 
             animator.SetBool("IsShooting", false);
-            isShooting = false;
         }
+
 
 
         /// <summary>

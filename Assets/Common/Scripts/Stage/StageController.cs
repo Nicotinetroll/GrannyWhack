@@ -23,6 +23,15 @@ namespace OctoberStudio
         [SerializeField] WorldSpaceTextManager worldSpaceTextManager;
         [SerializeField] CameraManager cameraManager;
 
+        [Header("UI")]
+        [SerializeField] GameScreenBehavior gameScreen;
+        [SerializeField] StageFailedScreen stageFailedScreen;
+        [SerializeField] StageCompleteScreen stageCompletedScreen;
+        [SerializeField] PlayerStatsManager playerStats; // ✅ Reference to new system
+
+        [Header("Testing")]
+        [SerializeField] PresetData testingPreset;
+
         public static EnemiesSpawner EnemiesSpawner => instance.spawner;
         public static ExperienceManager ExperienceManager => instance.experienceManager;
         public static AbilityManager AbilityManager => instance.abilityManager;
@@ -32,43 +41,32 @@ namespace OctoberStudio
         public static WorldSpaceTextManager WorldSpaceTextManager => instance.worldSpaceTextManager;
         public static CameraManager CameraController => instance.cameraManager;
         public static DropManager DropManager => instance.dropManager;
-
-        [Header("UI")]
-        [SerializeField] GameScreenBehavior gameScreen;
-        [SerializeField] StageFailedScreen stageFailedScreen;
-        [SerializeField] StageCompleteScreen stageCompletedScreen;
-
-        [Header("Testing")]
-        [SerializeField] PresetData testingPreset;
-
         public static GameScreenBehavior GameScreen => instance.gameScreen;
-
         public static StageData Stage { get; private set; }
 
         private StageSave stageSave;
-        
-        
 
         private void Awake()
         {
             instance = this;
-
             stageSave = GameController.SaveManager.GetSave<StageSave>("Stage");
+
+            if (playerStats == null)
+                playerStats = Object.FindFirstObjectByType<PlayerStatsManager>();
         }
 
         private void Start()
         {
             Stage = database.GetStage(stageSave.SelectedStageId);
-            
-            // ✅ Only reset damage stats if this is a new game
-            if (stageSave.ResetStageData)
+
+            // ✅ Reset PlayerStatsManager only on new game
+            if (stageSave.ResetStageData && playerStats != null)
             {
-                DamageStatsTracker.Reset();
-                stageSave.TotalDamage = 0;
-                stageSave.DPS = 0;
-                stageSave.Flush();
+                playerStats.ResetStats();
+                stageSave.ResetStageData = false;
+                GameController.SaveManager.Save(true); // Save the cleared flag
             }
-            
+
             director.playableAsset = Stage.Timeline;
 
             spawner.Init(director);
@@ -81,8 +79,6 @@ namespace OctoberStudio
             PlayerBehavior.Player.onPlayerDied += OnGameFailed;
             experienceManager.onXpLevelChanged += OnPlayerLevelUp;
 
-
-            // ✅ Trigger invincibility after ability panel closes
             GameScreen.AbilitiesWindow.onPanelClosed += () =>
             {
                 PlayerBehavior.Player.StartInvincibility(1f);
@@ -97,13 +93,10 @@ namespace OctoberStudio
             else
             {
                 var time = stageSave.Time;
-
                 var bossClips = director.GetClips<BossTrack, Boss>();
 
-                for (int i = 0; i < bossClips.Count; i++)
+                foreach (var bossClip in bossClips)
                 {
-                    var bossClip = bossClips[i];
-
                     if (time >= bossClip.start && time <= bossClip.end)
                     {
                         time = (float)bossClip.start;
@@ -119,33 +112,30 @@ namespace OctoberStudio
 
         private void OnPlayerLevelUp(int level)
         {
-            // The logic to show upgrade UI is already handled in AbilityManager
-            // This function is still good to have if you want to log or add effects later
             Debug.Log($"Player leveled up to {level}.");
         }
 
         private void TimelineStopped(PlayableDirector director)
         {
-            if (gameObject.activeSelf)
+            if (!gameObject.activeSelf) return;
+
+            if (stageSave.MaxReachedStageId < stageSave.SelectedStageId + 1 &&
+                stageSave.SelectedStageId + 1 < database.StagesCount)
             {
-                if (stageSave.MaxReachedStageId < stageSave.SelectedStageId + 1 && stageSave.SelectedStageId + 1 < database.StagesCount)
-                {
-                    stageSave.SetMaxReachedStageId(stageSave.SelectedStageId + 1);
-                }
-
-                stageSave.IsPlaying = false;
-                GameController.SaveManager.Save(true);
-
-                gameScreen.Hide();
-                stageCompletedScreen.Show();
-                Time.timeScale = 0;
+                stageSave.SetMaxReachedStageId(stageSave.SelectedStageId + 1);
             }
+
+            stageSave.IsPlaying = false;
+            GameController.SaveManager.Save(true);
+
+            gameScreen.Hide();
+            stageCompletedScreen.Show();
+            Time.timeScale = 0;
         }
 
         private void OnGameFailed()
         {
             Time.timeScale = 0;
-
             stageSave.IsPlaying = false;
             GameController.SaveManager.Save(true);
 
@@ -156,7 +146,6 @@ namespace OctoberStudio
         public static void ResurrectPlayer()
         {
             EnemiesSpawner.DealDamageToAllEnemies(PlayerBehavior.Player.Damage * 1000);
-
             GameScreen.Show();
             PlayerBehavior.Player.Revive();
             Time.timeScale = 1;
@@ -172,10 +161,6 @@ namespace OctoberStudio
             director.stopped -= TimelineStopped;
         }
 
-        private void Update()
-        {
-            if (Time.timeScale > 0)
-                DamageStatsTracker.Update(Time.deltaTime);
-        }
+        // ❌ No need for Update() for damage anymore — handled in PlayerStatsManager!
     }
 }

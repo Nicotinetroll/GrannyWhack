@@ -3,6 +3,7 @@ using UnityEngine.Playables;
 using TMPro;
 using System.Linq;
 using OctoberStudio;
+using OctoberStudio.UI;
 
 public class TimelineDebugDisplay : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class TimelineDebugDisplay : MonoBehaviour
     [SerializeField] private PlayableDirector director;
     [SerializeField] private TMP_Text debugText;
     [SerializeField] private GameObject hitParticlePrefab;
+    [SerializeField] private PlayerStatsManager playerStats; // 👈 new reference
 
     [Header("Settings")]
     [SerializeField] private float updateRate = 0.5f;
@@ -26,35 +28,35 @@ public class TimelineDebugDisplay : MonoBehaviour
 
         stageSave = GameController.SaveManager.GetSave<StageSave>("Stage Save");
 
-        RestoreDamageStats();      // ✅ Restore saved damage/DPS
-        UpdateInitialDisplay();    // ✅ Show restored stats in UI
-    }
+        if (playerStats == null)
+        {
+            playerStats = FindFirstObjectByType<PlayerStatsManager>();
+        }
 
-    private void RestoreDamageStats()
-    {
-        if (stageSave == null) return;
+        if (playerStats != null)
+        {
+            playerStats.RestoreFromSave(); // 👈 Optional method to expose in your script
+        }
 
-        DamageStatsTracker.Restore(stageSave.TotalDamage, stageSave.DPS); // ✅ Uses safe method
-
-        Debug.Log($"[Restore] Damage: {stageSave.TotalDamage}, DPS: {stageSave.DPS}");
+        UpdateInitialDisplay();
     }
 
     private void UpdateInitialDisplay()
     {
-        if (debugText != null)
+        if (debugText != null && playerStats != null)
         {
             debugText.text =
                 $"[v{Application.version}]\n" +
                 $"FPS: 0\n" +
                 $"Hit Particles (Active): 0\n" +
-                $"Total Damage: {DamageStatsTracker.TotalDamage:F0}\n" +
-                $"DPS: {DamageStatsTracker.DPS:F1}";
+                $"Total Damage: {playerStats.TotalDamage:F0}\n" +
+                $"DPS: {playerStats.DPS:F1}";
         }
     }
 
     private void Update()
     {
-        if (director == null || debugText == null || hitParticlePrefab == null) return;
+        if (director == null || debugText == null || hitParticlePrefab == null || playerStats == null) return;
 
         var allParticles = Object.FindObjectsByType<ParticleSystem>(FindObjectsSortMode.None);
         int totalParticles = allParticles.Sum(ps => ps.particleCount);
@@ -93,28 +95,25 @@ public class TimelineDebugDisplay : MonoBehaviour
                 $"[v{Application.version}]\n" +
                 $"FPS: {fps:F1}\n" +
                 $"Hit Particles (Active): {activeHit}\n" +
-                $"Total Damage: {DamageStatsTracker.TotalDamage:F0}\n" +
-                $"DPS: {DamageStatsTracker.DPS:F1}";
+                $"Total Damage: {playerStats.TotalDamage:F0}\n" +
+                $"DPS: {playerStats.DPS:F1}";
 
-            if (stageSave != null)
-            {
-                stageSave.TotalDamage = DamageStatsTracker.TotalDamage;
-                stageSave.DPS = DamageStatsTracker.DPS;
-                stageSave.Flush(); // ✅ This saves the values to disk!
-            }
+            // Save to StageSave
+            stageSave.TotalDamage = playerStats.TotalDamage;
+            stageSave.TimeAlive = playerStats.ElapsedTime;
+            GameController.SaveManager.Save(true); // Optional flush
 
             frameCount = 0;
             timeElapsed = 0;
         }
-
         else if (!string.IsNullOrEmpty(debugText.text))
         {
             string[] lines = debugText.text.Split('\n');
             if (lines.Length >= 5)
             {
                 lines[2] = $"Hit Particles (Active): {activeHit}";
-                lines[3] = $"Total Damage: {DamageStatsTracker.TotalDamage:F0}";
-                lines[4] = $"DPS: {DamageStatsTracker.DPS:F1}";
+                lines[3] = $"Total Damage: {playerStats.TotalDamage:F0}";
+                lines[4] = $"DPS: {playerStats.DPS:F1}";
                 debugText.text = string.Join("\n", lines);
             }
         }

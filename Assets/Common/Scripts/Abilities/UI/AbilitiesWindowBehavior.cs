@@ -50,7 +50,7 @@ namespace OctoberStudio.Abilities.UI
             abilitiesSave = GameController.SaveManager.GetSave<AbilitiesSave>("Abilities Save");
             stageSave = GameController.SaveManager.GetSave<StageSave>("Stage Save");
 
-            player = FindObjectOfType<PlayerBehavior>();
+            player = FindFirstObjectByType<PlayerBehavior>();
             panelPosition = panelRect.anchoredPosition;
             panelRect.anchoredPosition = panelHiddenPosition;
 
