@@ -100,11 +100,13 @@ public class TimelineDebugDisplay : MonoBehaviour
             {
                 stageSave.TotalDamage = DamageStatsTracker.TotalDamage;
                 stageSave.DPS = DamageStatsTracker.DPS;
+                stageSave.Flush(); // ✅ This saves the values to disk!
             }
 
             frameCount = 0;
             timeElapsed = 0;
         }
+
         else if (!string.IsNullOrEmpty(debugText.text))
         {
             string[] lines = debugText.text.Split('\n');

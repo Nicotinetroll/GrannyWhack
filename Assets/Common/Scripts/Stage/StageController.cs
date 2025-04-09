@@ -59,6 +59,16 @@ namespace OctoberStudio
         private void Start()
         {
             Stage = database.GetStage(stageSave.SelectedStageId);
+            
+            // ✅ Only reset damage stats if this is a new game
+            if (stageSave.ResetStageData)
+            {
+                DamageStatsTracker.Reset();
+                stageSave.TotalDamage = 0;
+                stageSave.DPS = 0;
+                stageSave.Flush();
+            }
+            
             director.playableAsset = Stage.Timeline;
 
             spawner.Init(director);
