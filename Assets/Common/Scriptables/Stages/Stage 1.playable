@@ -857,8 +857,8 @@ MonoBehaviour:
       chance: 0.5
     - dropType: 40
       chance: 1
-    - dropType: 2
-      chance: 0
+    - dropType: 1
+      chance: 4
     - dropType: 3
       chance: 0
     disableOffscreenTeleport: 0
@@ -960,8 +960,8 @@ MonoBehaviour:
       chance: 0.5
     - dropType: 40
       chance: 1
-    - dropType: 2
-      chance: 3
+    - dropType: 3
+      chance: 5
     disableOffscreenTeleport: 0
   circularSpawn: 1
   enemiesCount: 135
@@ -1016,9 +1016,9 @@ MonoBehaviour:
     - dropType: 30
       chance: 0.5
     - dropType: 40
-      chance: 1
-    - dropType: 2
-      chance: 3
+      chance: 4
+    - dropType: 3
+      chance: 5
     disableOffscreenTeleport: 0
   circularSpawn: 1
   enemiesCount: 90
@@ -1050,7 +1050,7 @@ MonoBehaviour:
     - dropType: 40
       chance: 1
     - dropType: 1
-      chance: 10
+      chance: 15
     disableOffscreenTeleport: 0
   circularSpawn: 1
   enemiesCount: 80
@@ -1382,9 +1382,9 @@ MonoBehaviour:
     - dropType: 30
       chance: 0.5
     - dropType: 40
-      chance: 1
-    - dropType: 2
       chance: 3
+    - dropType: 3
+      chance: 5
     disableOffscreenTeleport: 0
   circularSpawn: 1
   enemiesCount: 90
@@ -1416,7 +1416,7 @@ MonoBehaviour:
     - dropType: 40
       chance: 1
     - dropType: 1
-      chance: 3
+      chance: 6
     - dropType: 2
       chance: 0
     - dropType: 3
@@ -1830,7 +1830,7 @@ MonoBehaviour:
     - dropType: 40
       chance: 1
     - dropType: 1
-      chance: 10
+      chance: 15
     - dropType: 2
       chance: 0
     - dropType: 3
@@ -2563,8 +2563,8 @@ MonoBehaviour:
       chance: 0.5
     - dropType: 40
       chance: 1
-    - dropType: 2
-      chance: 0
+    - dropType: 1
+      chance: 4
     - dropType: 3
       chance: 0
     disableOffscreenTeleport: 0
@@ -3752,7 +3752,7 @@ MonoBehaviour:
     - dropType: 40
       chance: 1
     - dropType: 1
-      chance: 3
+      chance: 6
     - dropType: 2
       chance: 0
     - dropType: 3

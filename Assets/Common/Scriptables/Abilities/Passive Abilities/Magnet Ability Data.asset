@@ -23,10 +23,10 @@ MonoBehaviour:
   isEvolution: 0
   evolutionRequirements: []
   levels:
-  - radiusMultiplier: 2
+  - radiusMultiplier: 1.2
+  - radiusMultiplier: 1.6
+  - radiusMultiplier: 1.9
+  - radiusMultiplier: 2.2
+  - radiusMultiplier: 2.5
+  - radiusMultiplier: 2.8
   - radiusMultiplier: 3
-  - radiusMultiplier: 4
-  - radiusMultiplier: 5
-  - radiusMultiplier: 6
-  - radiusMultiplier: 6.5
-  - radiusMultiplier: 7

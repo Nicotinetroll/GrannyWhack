@@ -73,7 +73,7 @@ MonoBehaviour:
     xp: 618.1524
   - multiplier: 0
     xp: 679.96765
-  - multiplier: 0
+  - multiplier: 1.1
     xp: 747.9644
   - multiplier: 0
     xp: 822.76086
@@ -93,45 +93,45 @@ MonoBehaviour:
     xp: 1603.3285
   - multiplier: 0
     xp: 1763.6614
+  - multiplier: 1
+    xp: 1763.6614
   - multiplier: 0
-    xp: 1940.0276
+    xp: 1763.6614
   - multiplier: 0
-    xp: 2134.0303
+    xp: 1763.6614
   - multiplier: 0
-    xp: 2347.4333
+    xp: 1763.6614
   - multiplier: 0
-    xp: 2582.1768
+    xp: 1763.6614
   - multiplier: 0
-    xp: 2840.3945
+    xp: 1763.6614
   - multiplier: 0
-    xp: 3124.434
+    xp: 1763.6614
   - multiplier: 0
-    xp: 3436.8777
+    xp: 1763.6614
   - multiplier: 0
-    xp: 3780.5654
+    xp: 1763.6614
   - multiplier: 0
-    xp: 4158.622
+    xp: 1763.6614
+  - multiplier: 1.08
+    xp: 1904.7544
   - multiplier: 0
-    xp: 4574.4844
+    xp: 2057.1348
   - multiplier: 0
-    xp: 5031.933
+    xp: 2221.7056
   - multiplier: 0
-    xp: 5535.1265
+    xp: 2399.4421
   - multiplier: 0
-    xp: 6088.639
+    xp: 2591.3977
   - multiplier: 0
-    xp: 6697.5034
+    xp: 2798.7097
   - multiplier: 0
-    xp: 7367.254
+    xp: 3022.6067
   - multiplier: 0
-    xp: 8103.9795
+    xp: 3264.4153
   - multiplier: 0
-    xp: 8914.378
+    xp: 3525.5686
   - multiplier: 0
-    xp: 9805.816
+    xp: 3807.6143
   - multiplier: 0
-    xp: 10786.398
-  - multiplier: 0
-    xp: 11865.038
-  - multiplier: 0
-    xp: 13051.542
+    xp: 4112.2236

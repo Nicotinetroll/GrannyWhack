@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f769f2d35f4a354ab98600d8c1dbb7d, type: 3}
   m_Name: Abilities Database
   m_EditorClassIdentifier: 
-  activeAbilitiesCapacity: 5
-  passiveAbilitiesCapacity: 5
+  activeAbilitiesCapacity: 6
+  passiveAbilitiesCapacity: 6
   firstLevelsActiveAbilityWeightMultiplier: 1.1
   aquiredAbilityWeightMultiplier: 2
   lessAbilitiesOfTypeWeightMultiplier: 1.1
