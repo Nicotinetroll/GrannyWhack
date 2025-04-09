@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Playables;
 using TMPro;
 using System.Linq;
+using OctoberStudio;
 
 public class TimelineDebugDisplay : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class TimelineDebugDisplay : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private float updateRate = 0.5f;
 
+    private StageSave stageSave;
     private float timeElapsed;
     private int frameCount;
 
@@ -20,28 +22,39 @@ public class TimelineDebugDisplay : MonoBehaviour
 
     private void Start()
     {
-        // 🆕 Show Unity-defined version number (from Project Settings > Player > Version)
         versionText = $"v{Application.version}";
-        
-        // If you're using Unity 2022.2+, you can also include build GUID like this:
-        // versionText += $" (Build: {Application.buildGUID})";
 
-        ResetDebugStats();
+        stageSave = GameController.SaveManager.GetSave<StageSave>("Stage Save");
+
+        RestoreDamageStats();      // ✅ Restore saved damage/DPS
+        UpdateInitialDisplay();    // ✅ Show restored stats in UI
     }
 
-    private void ResetDebugStats()
+    private void RestoreDamageStats()
     {
-        DamageStatsTracker.Reset();
+        if (stageSave == null) return;
+
+        DamageStatsTracker.Restore(stageSave.TotalDamage, stageSave.DPS); // ✅ Uses safe method
+
+        Debug.Log($"[Restore] Damage: {stageSave.TotalDamage}, DPS: {stageSave.DPS}");
+    }
+
+    private void UpdateInitialDisplay()
+    {
         if (debugText != null)
-            debugText.text = $"[Debug] Reset at game start ({versionText})\n";
+        {
+            debugText.text =
+                $"[v{Application.version}]\n" +
+                $"FPS: 0\n" +
+                $"Hit Particles (Active): 0\n" +
+                $"Total Damage: {DamageStatsTracker.TotalDamage:F0}\n" +
+                $"DPS: {DamageStatsTracker.DPS:F1}";
+        }
     }
 
     private void Update()
     {
         if (director == null || debugText == null || hitParticlePrefab == null) return;
-
-        double timelineTime = director.time;
-        int timelineFrame = Mathf.FloorToInt((float)(timelineTime * 60f));
 
         var allParticles = Object.FindObjectsByType<ParticleSystem>(FindObjectsSortMode.None);
         int totalParticles = allParticles.Sum(ps => ps.particleCount);
@@ -82,6 +95,12 @@ public class TimelineDebugDisplay : MonoBehaviour
                 $"Hit Particles (Active): {activeHit}\n" +
                 $"Total Damage: {DamageStatsTracker.TotalDamage:F0}\n" +
                 $"DPS: {DamageStatsTracker.DPS:F1}";
+
+            if (stageSave != null)
+            {
+                stageSave.TotalDamage = DamageStatsTracker.TotalDamage;
+                stageSave.DPS = DamageStatsTracker.DPS;
+            }
 
             frameCount = 0;
             timeElapsed = 0;

@@ -36,7 +36,10 @@ namespace OctoberStudio
         
         [Header("Reroll Settings")]
         [SerializeField] private int rerollUnlockLevel = 2;
-        public int RerollUnlockLevel => rerollUnlockLevel; // ✅ Exposed read-only
+        [SerializeField] private int maxRerollCharges = 3;
+        public int RerollUnlockLevel => rerollUnlockLevel;
+        public int MaxRerollCharges => maxRerollCharges;
+
 
 
         [Header("References")]

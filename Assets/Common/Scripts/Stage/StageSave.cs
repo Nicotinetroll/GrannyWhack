@@ -12,6 +12,9 @@ namespace OctoberStudio
         [SerializeField] bool isPlaying;
         [SerializeField] float time;
         [SerializeField] bool resetAbilities;
+
+        [SerializeField] int rerollCharges; // ✅ Stored reroll charges
+
         [SerializeField] int xpLevel;
         [SerializeField] float xp;
         [SerializeField] int enemiesKilled;
@@ -20,12 +23,11 @@ namespace OctoberStudio
 
         public event UnityAction<int> onSelectedStageChanged;
 
+        // STAGES
         public int SelectedStageId => selectedStageId;
         public int MaxReachedStageId => maxReachedStageId;
-
         public bool IsFirstStageSelected => selectedStageId == 0;
         public bool IsMaxReachedStageSelected => selectedStageId == maxReachedStageId;
-
         public bool IsPlaying { get => isPlaying; set => isPlaying = value; }
 
         public float Time { get => time; set => time = value; }
@@ -33,11 +35,24 @@ namespace OctoberStudio
         public int XPLEVEL { get => xpLevel; set => xpLevel = value; }
         public float XP { get => xp; set => xp = value; }
         public int EnemiesKilled { get => enemiesKilled; set => enemiesKilled = value; }
+        
+        /// 🔁 Reroll Charges: Stored during a game run (per session).
+        public int RerollCharges
+        {
+            get => rerollCharges;
+            set => rerollCharges = value;
+        }
+        // DAMAGE
+        [SerializeField] private float totalDamage;
+        [SerializeField] private float dps;
+
+        public float TotalDamage { get => totalDamage; set => totalDamage = value; }
+        public float DPS { get => dps; set => dps = value; }
+
 
         public void SetSelectedStageId(int selectedStageId)
         {
             this.selectedStageId = selectedStageId;
-
             onSelectedStageChanged?.Invoke(selectedStageId);
         }
 
@@ -48,7 +63,7 @@ namespace OctoberStudio
 
         public void Flush()
         {
-
+            // Optional: implement custom flushing if needed
         }
     }
 }

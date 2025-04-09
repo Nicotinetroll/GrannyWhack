@@ -22,5 +22,17 @@ public static class DamageStatsTracker
     {
         elapsedTime += deltaTime;
     }
-    
+
+    /// <summary>
+    /// ✅ Allows restoring values from save system.
+    /// </summary>
+    public static void Restore(float totalDamage, float dps)
+    {
+        TotalDamage = totalDamage;
+        elapsedTime = dps > 0 ? totalDamage / dps : 0f;
+
+#if UNITY_EDITOR
+        Debug.Log($"[DamageStatsTracker] Restored TotalDamage: {TotalDamage}, Reconstructed Time: {elapsedTime}, DPS: {DPS}");
+#endif
+    }
 }

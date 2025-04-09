@@ -7,17 +7,20 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using TMPro; // ✅ Required for TextMeshPro
+using TMPro;
 
 namespace OctoberStudio.Abilities.UI
 {
     public class AbilitiesWindowBehavior : MonoBehaviour
     {
+        private PlayerBehavior player;
+        private StageSave stageSave;
+
         [Header("UI Elements")]
         [SerializeField] private GameObject rerollButtonPrefab;
         private GameObject rerollButtonInstance;
         private Button rerollButton;
-        private TextMeshProUGUI rerollButtonText; // ✅ TMP version
+        private TextMeshProUGUI rerollButtonText;
 
         [SerializeField] private GameObject levelUpTextObject;
         [SerializeField] private GameObject weaponSelectTextObject;
@@ -36,35 +39,29 @@ namespace OctoberStudio.Abilities.UI
         private List<AbilityCardBehavior> cards = new List<AbilityCardBehavior>();
 
         private AbilitiesSave abilitiesSave;
-
         public UnityAction onPanelClosed;
         public UnityAction onPanelStartedClosing;
 
-        // 🔁 Reroll system
         private int rerollCharges;
-        private const int maxRerollCharges = 3;
-        private PlayerBehavior player;
-
 
         public void Init()
         {
             cardsPool = new PoolComponent<AbilityCardBehavior>(abilityCardPrefab, 3);
             abilitiesSave = GameController.SaveManager.GetSave<AbilitiesSave>("Abilities Save");
+            stageSave = GameController.SaveManager.GetSave<StageSave>("Stage Save");
 
+            player = FindObjectOfType<PlayerBehavior>();
             panelPosition = panelRect.anchoredPosition;
             panelRect.anchoredPosition = panelHiddenPosition;
 
-            rerollCharges = maxRerollCharges;
+            // Init reroll charges if invalid or out of bounds
+            if (stageSave.RerollCharges <= 0 || stageSave.RerollCharges > player.MaxRerollCharges)
+            {
+                stageSave.RerollCharges = player.MaxRerollCharges;
+                stageSave.Flush(); // ✅ Save right away
+            }
 
-            // 🔍 Locate the player in scene
-            player = FindObjectOfType<PlayerBehavior>();
-        }
-
-
-        public void ResetRerollCharges()
-        {
-            rerollCharges = maxRerollCharges;
-            UpdateRerollButtonUI();
+            rerollCharges = stageSave.RerollCharges;
         }
 
         private void OnRerollClicked()
@@ -72,12 +69,15 @@ namespace OctoberStudio.Abilities.UI
             if (rerollCharges > 0)
             {
                 rerollCharges--;
+                stageSave.RerollCharges = rerollCharges;
+                stageSave.Flush(); // ✅ Save updated value
+
                 var newAbilities = StageController.AbilityManager.GetRandomAbilities(3);
                 SetData(newAbilities);
             }
             else
             {
-                Debug.Log("Out of rerolls. Show ad or deny.");
+                Debug.Log("Out of rerolls. Show ad maybe?");
             }
 
             UpdateRerollButtonUI();
@@ -99,9 +99,17 @@ namespace OctoberStudio.Abilities.UI
             }
         }
 
+        public void ResetRerollCharges()
+        {
+            rerollCharges = player.MaxRerollCharges;
+            stageSave.RerollCharges = rerollCharges;
+            stageSave.Flush();
+
+            UpdateRerollButtonUI();
+        }
+
         public void SetData(List<AbilityData> abilities)
         {
-            // Clear old cards
             foreach (var card in cards)
             {
                 card.transform.SetParent(null);
@@ -109,19 +117,13 @@ namespace OctoberStudio.Abilities.UI
             }
             cards.Clear();
 
-            // Destroy old reroll button
             if (rerollButtonInstance != null)
             {
                 Destroy(rerollButtonInstance);
                 rerollButtonInstance = null;
             }
 
-            // 🧠 Only show reroll if player is level 2+
-            if (rerollButtonPrefab != null && this.player != null && StageController.ExperienceManager.Level >= this.player.RerollUnlockLevel)
-
-
-
-
+            if (rerollButtonPrefab != null && player != null && StageController.ExperienceManager.Level >= player.RerollUnlockLevel)
             {
                 rerollButtonInstance = Instantiate(rerollButtonPrefab, abilitiesHolder);
                 rerollButtonInstance.transform.ResetLocal();
@@ -137,8 +139,6 @@ namespace OctoberStudio.Abilities.UI
                 }
             }
 
-
-            // Spawn ability cards
             foreach (var ability in abilities)
             {
                 var card = cardsPool.GetEntity();
@@ -156,11 +156,9 @@ namespace OctoberStudio.Abilities.UI
             }
         }
 
-
         public void Show(bool isLevelUp)
         {
             Time.timeScale = 0;
-
             gameObject.SetActive(true);
 
             levelUpTextObject.SetActive(isLevelUp);
@@ -178,12 +176,10 @@ namespace OctoberStudio.Abilities.UI
             {
                 for (int i = 0; i < cards.Count; i++)
                 {
-                    var navigation = new Navigation { mode = Navigation.Mode.Explicit };
-
-                    if (i != 0) navigation.selectOnUp = cards[i - 1].Selectable;
-                    if (i != cards.Count - 1) navigation.selectOnDown = cards[i + 1].Selectable;
-
-                    cards[i].Selectable.navigation = navigation;
+                    var nav = new Navigation { mode = Navigation.Mode.Explicit };
+                    if (i != 0) nav.selectOnUp = cards[i - 1].Selectable;
+                    if (i != cards.Count - 1) nav.selectOnDown = cards[i + 1].Selectable;
+                    cards[i].Selectable.navigation = nav;
                 }
 
                 EventSystem.current.SetSelectedGameObject(cards[0].gameObject);
