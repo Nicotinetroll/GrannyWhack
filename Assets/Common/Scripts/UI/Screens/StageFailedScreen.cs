@@ -1,58 +1,68 @@
+using System;
+using System.Collections.Generic;
+using OctoberStudio.Abilities.UI;
 using OctoberStudio.Audio;
 using OctoberStudio.Easing;
 using OctoberStudio.Input;
 using OctoberStudio.Upgrades;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using TMPro;
-
 
 namespace OctoberStudio.UI
 {
     public class StageFailedScreen : MonoBehaviour
     {
-        [SerializeField] CanvasGroup canvasGroup;
-        [SerializeField] Button reviveButton;
-        [SerializeField] Button exitButton;
+        [Header("UI Elements")]
+        [SerializeField] private CanvasGroup canvasGroup;
+        [SerializeField] private Button reviveButton;
+        [SerializeField] private Button exitButton;
         [SerializeField] private TextMeshProUGUI totalDamageText;
+        [SerializeField] private TextMeshProUGUI levelText;
+        [SerializeField] private TextMeshProUGUI timeSurvivedText;
 
-
-        private Canvas canvas;
+        [Header("Abilities List (Same as Pause)")]
+        [SerializeField] private List<AbilitiesIndicatorsListBehavior> abilityLists;
 
         private bool revivedAlready = false;
 
         private void Awake()
         {
-            canvas = GetComponent<Canvas>();
-
             reviveButton.onClick.AddListener(ReviveButtonClick);
             exitButton.onClick.AddListener(ExitButtonClick);
-
-            revivedAlready = false;
         }
 
         public void Show()
         {
             gameObject.SetActive(true);
-            
-            if (PlayerStatsManager.Instance != null)
-                totalDamageText.text = $"{Mathf.RoundToInt(PlayerStatsManager.Instance.TotalDamage):N0}";
-            else
-                totalDamageText.text = "0";
 
+            totalDamageText.text = PlayerStatsManager.Instance != null
+                ? $"{Mathf.RoundToInt(PlayerStatsManager.Instance.TotalDamage):N0}"
+                : "0";
 
+            levelText.text = $"Level {StageController.ExperienceManager.Level + 1}";
+
+            var time = TimeSpan.FromSeconds(GameController.SaveManager.GetSave<StageSave>("Stage").Time);
+            timeSurvivedText.text = $"Time: {time:mm\\:ss}";
+
+            foreach (var list in abilityLists)
+            {
+                if (list == null) continue;
+                list.Show();
+                list.Refresh();
+            }
 
             canvasGroup.alpha = 0;
-            canvasGroup.DoAlpha(1, 0.3f).SetUnscaledTime(true);
+            canvasGroup.DoAlpha(1f, 0.3f).SetUnscaledTime(true);
 
             if (GameController.UpgradesManager.IsUpgradeAquired(UpgradeType.Revive) && !revivedAlready)
             {
                 reviveButton.gameObject.SetActive(true);
-
                 EventSystem.current.SetSelectedGameObject(reviveButton.gameObject);
-            } else
+            }
+            else
             {
                 reviveButton.gameObject.SetActive(false);
                 EventSystem.current.SetSelectedGameObject(exitButton.gameObject);
@@ -63,7 +73,11 @@ namespace OctoberStudio.UI
 
         public void Hide(UnityAction onFinish)
         {
-            canvasGroup.DoAlpha(0, 0.3f).SetUnscaledTime(true).SetOnFinish(() => {
+            foreach (var list in abilityLists)
+                list?.Hide();
+
+            canvasGroup.DoAlpha(0f, 0.3f).SetUnscaledTime(true).SetOnFinish(() =>
+            {
                 gameObject.SetActive(false);
                 onFinish?.Invoke();
             });
@@ -81,25 +95,18 @@ namespace OctoberStudio.UI
         private void ExitButtonClick()
         {
             GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
-            Time.timeScale = 1;
+            Time.timeScale = 1f;
             StageController.ReturnToMainMenu();
-
             GameController.InputManager.onInputChanged -= OnInputChanged;
         }
 
         private void OnInputChanged(InputType prevInput, InputType inputType)
         {
-            if (prevInput == InputType.UIJoystick)
-            {
-                if (GameController.UpgradesManager.IsUpgradeAquired(UpgradeType.Revive) && !revivedAlready)
-                {
-                    EventSystem.current.SetSelectedGameObject(reviveButton.gameObject);
-                }
-                else
-                {
-                    EventSystem.current.SetSelectedGameObject(exitButton.gameObject);
-                }
-            }
+            EventSystem.current.SetSelectedGameObject(
+                GameController.UpgradesManager.IsUpgradeAquired(UpgradeType.Revive) && !revivedAlready
+                    ? reviveButton.gameObject
+                    : exitButton.gameObject
+            );
         }
     }
 }
