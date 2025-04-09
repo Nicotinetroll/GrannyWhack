@@ -33,6 +33,11 @@ namespace OctoberStudio
         [SerializeField, Min(1f)] float initialSizeMultiplier = 1f;
         [SerializeField, Min(1f)] float initialDurationMultiplier = 1f;
         [SerializeField, Min(1f)] float initialGoldMultiplier = 1;
+        
+        [Header("Reroll Settings")]
+        [SerializeField] private int rerollUnlockLevel = 2;
+        public int RerollUnlockLevel => rerollUnlockLevel; // ✅ Exposed read-only
+
 
         [Header("References")]
         [SerializeField] HealthbarBehavior healthbar;
@@ -65,6 +70,8 @@ namespace OctoberStudio
         [SerializeField] Vector2 fenceOffset;
         [SerializeField] Color hitColor;
         [SerializeField] float enemyInsideDamageInterval = 2f;
+        
+        
 
         public event UnityAction onPlayerDied;
 

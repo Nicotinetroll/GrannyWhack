@@ -43,6 +43,8 @@ namespace OctoberStudio.Abilities.UI
         // 🔁 Reroll system
         private int rerollCharges;
         private const int maxRerollCharges = 3;
+        private PlayerBehavior player;
+
 
         public void Init()
         {
@@ -53,7 +55,11 @@ namespace OctoberStudio.Abilities.UI
             panelRect.anchoredPosition = panelHiddenPosition;
 
             rerollCharges = maxRerollCharges;
+
+            // 🔍 Locate the player in scene
+            player = FindObjectOfType<PlayerBehavior>();
         }
+
 
         public void ResetRerollCharges()
         {
@@ -110,15 +116,19 @@ namespace OctoberStudio.Abilities.UI
                 rerollButtonInstance = null;
             }
 
-            // Spawn reroll button
-            if (rerollButtonPrefab != null)
+            // 🧠 Only show reroll if player is level 2+
+            if (rerollButtonPrefab != null && this.player != null && StageController.ExperienceManager.Level >= this.player.RerollUnlockLevel)
+
+
+
+
             {
                 rerollButtonInstance = Instantiate(rerollButtonPrefab, abilitiesHolder);
                 rerollButtonInstance.transform.ResetLocal();
                 rerollButtonInstance.transform.SetAsFirstSibling();
 
                 rerollButton = rerollButtonInstance.GetComponent<Button>();
-                rerollButtonText = rerollButtonInstance.GetComponentInChildren<TextMeshProUGUI>(); // ✅ TMP version
+                rerollButtonText = rerollButtonInstance.GetComponentInChildren<TextMeshProUGUI>();
 
                 if (rerollButton != null)
                 {
@@ -126,6 +136,7 @@ namespace OctoberStudio.Abilities.UI
                     UpdateRerollButtonUI();
                 }
             }
+
 
             // Spawn ability cards
             foreach (var ability in abilities)
@@ -144,6 +155,7 @@ namespace OctoberStudio.Abilities.UI
                 cards.Add(card);
             }
         }
+
 
         public void Show(bool isLevelUp)
         {
