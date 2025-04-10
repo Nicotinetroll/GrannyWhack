@@ -196,9 +196,9 @@ MonoBehaviour:
   - name: Wand Projectile Launch
     cooldown: 0
     audioClip:
-      audioClip: {fileID: 8300000, guid: 47b0e8e571609467eb32699b9c2f61c3, type: 3}
-      volume: {x: 0.13, y: 0.2}
-      pitch: {x: 0.9, y: 1.15}
+      audioClip: {fileID: 8300000, guid: 74d25945ecf3a2345becae572ae05e4f, type: 3}
+      volume: {x: 0.15, y: 0.15}
+      pitch: {x: 1, y: 1.5}
   - name: Eclipse Ray Launch
     cooldown: 0
     audioClip:

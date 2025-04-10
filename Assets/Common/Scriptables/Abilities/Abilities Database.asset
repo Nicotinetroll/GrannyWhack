@@ -15,7 +15,7 @@ MonoBehaviour:
   activeAbilitiesCapacity: 6
   passiveAbilitiesCapacity: 6
   firstLevelsActiveAbilityWeightMultiplier: 1.1
-  aquiredAbilityWeightMultiplier: 2
+  aquiredAbilityWeightMultiplier: 2.5
   lessAbilitiesOfTypeWeightMultiplier: 1.1
   evolutionAbilityWeightMultiplier: 15
   requiredForEvolutionWeightMultiplier: 1.2

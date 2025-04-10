@@ -13,14 +13,12 @@ namespace OctoberStudio.Abilities
         [SerializeField] GameObject starPrefab;
         public GameObject StarPrefab => starPrefab;
 
-        private List<ShootingStarProjectile> stars = new List<ShootingStarProjectile>();
-        float angle = 0;
-
-        private float radiusMultiplier = 1;
-
         private PoolComponent<ShootingStarProjectile> projectilesPool;
-
         private Coroutine abilityCoroutine;
+
+        private float angle = 0f;
+        private float radiusMultiplier = 1f;
+        private List<ShootingStarProjectile> activeStars = new();
 
         private void Awake()
         {
@@ -31,14 +29,10 @@ namespace OctoberStudio.Abilities
         {
             base.SetAbilityLevel(stageId);
 
-            if(abilityCoroutine != null) StopCoroutine(abilityCoroutine);
+            if (abilityCoroutine != null) StopCoroutine(abilityCoroutine);
 
-            for(int i = 0; i < stars.Count; i++)
-            {
-                stars[i].gameObject.SetActive(false);
-            }
-
-            stars.Clear();
+            DeactivateAllStars();
+            activeStars.Clear();
 
             abilityCoroutine = StartCoroutine(AbilityCoroutine());
         }
@@ -50,6 +44,8 @@ namespace OctoberStudio.Abilities
                 float lifetime = AbilityLevel.ProjectileLifetime * PlayerBehavior.Player.DurationMultiplier;
                 float cooldown = AbilityLevel.AbilityCooldown * PlayerBehavior.Player.CooldownMultiplier;
 
+                activeStars.Clear();
+
                 // Spawn stars
                 for (int i = 0; i < AbilityLevel.ProjectilesCount; i++)
                 {
@@ -60,39 +56,30 @@ namespace OctoberStudio.Abilities
                     star.KickBack = true;
                     star.Spawn();
 
-                    stars.Add(star);
+                    activeStars.Add(star);
                 }
 
-                // ✅ Play sound right after launching stars
                 GameController.AudioManager.PlaySound(SHOOTING_STARS_LAUNCH_HASH);
 
-                // Animate radius grow
-                EasingManager.DoFloat(0, 1, 0.5f, value => radiusMultiplier = value)
+                // Animate radius expand
+                EasingManager.DoFloat(0f, 1f, 0.5f, value => radiusMultiplier = value)
                     .SetEasing(EasingType.SineOut);
 
-                // Wait for most of lifetime
                 yield return new WaitForSeconds(lifetime - 0.5f);
 
-                // Hide all stars
-                for (int i = 0; i < stars.Count; i++)
-                {
-                    stars[i].Hide();
-                }
+                // Shrink radius and hide stars
+                foreach (var star in activeStars)
+                    star.Hide();
 
-                // Animate radius shrink
-                EasingManager.DoFloat(1, 0, 0.5f, value => radiusMultiplier = value)
+                EasingManager.DoFloat(1f, 0f, 0.5f, value => radiusMultiplier = value)
                     .SetEasing(EasingType.SineOut);
 
-                // Wait cooldown
                 float delay = cooldown - lifetime;
                 if (delay < 0.5f) delay = 0.5f;
 
                 yield return new WaitForSeconds(delay);
-
-                stars.Clear();
             }
         }
-
 
         private void LateUpdate()
         {
@@ -100,30 +87,33 @@ namespace OctoberStudio.Abilities
 
             angle += AbilityLevel.AngularSpeed * PlayerBehavior.Player.ProjectileSpeedMultiplier * Time.deltaTime;
 
-            for (int i = 0; i < stars.Count; i++)
+            for (int i = 0; i < activeStars.Count; i++)
             {
-                float projectileAngle = 360f / stars.Count * i;
-
+                float projectileAngle = 360f / activeStars.Count * i;
                 projectileAngle += angle;
 
-                stars[i].transform.localPosition = transform.position + Quaternion.Euler(0, 0, projectileAngle) * Vector3.up * AbilityLevel.Radius * radiusMultiplier * PlayerBehavior.Player.SizeMultiplier;
+                var star = activeStars[i];
+                star.transform.localPosition = transform.position + Quaternion.Euler(0, 0, projectileAngle) * Vector3.up * AbilityLevel.Radius * radiusMultiplier * PlayerBehavior.Player.SizeMultiplier;
             }
         }
 
         public override void Clear()
         {
             if (abilityCoroutine != null) StopCoroutine(abilityCoroutine);
+            abilityCoroutine = null;
 
-            for (int i = 0; i < stars.Count; i++)
-            {
-                stars[i].Clear();
-            }
-
-            stars.Clear();
+            DeactivateAllStars();
+            activeStars.Clear();
 
             projectilesPool.Destroy();
 
             base.Clear();
+        }
+
+        private void DeactivateAllStars()
+        {
+            foreach (var star in activeStars)
+                star.Clear();
         }
     }
 }

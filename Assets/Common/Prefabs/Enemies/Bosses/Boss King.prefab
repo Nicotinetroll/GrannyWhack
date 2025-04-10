@@ -302,7 +302,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 0.7
   damage: 200
-  hp: 100000
+  hp: 150000
   canBeKickedBack: 0
   shouldFadeIn: 0
   rb: {fileID: 2700873241517360941}
@@ -313,7 +313,7 @@ MonoBehaviour:
   hitScaleAmount: 0
   hitColor: {r: 1, g: 1, b: 1, a: 0.78431374}
   hitParticlePrefab: {fileID: 0}
-  deathFXPoolName: GhostDeathFX
+  eliteHealthbar: {fileID: 0}
   animator: {fileID: 2992067885033876473}
   bombProjectilePrefab: {fileID: 7909275432813284331, guid: eac86f1c47ec0b347b129726179e68eb,
     type: 3}

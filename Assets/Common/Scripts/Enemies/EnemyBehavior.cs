@@ -177,6 +177,9 @@ namespace OctoberStudio
             if (projectile == null) return;
 
             TakeDamage(PlayerBehavior.Player.Damage * projectile.DamageMultiplier);
+            
+            // ✅ Let the projectile trigger its own hit VFX
+            projectile.SendMessage("OnEnemyHit", this, SendMessageOptions.DontRequireReceiver);
 
             if (HP > 0)
             {
