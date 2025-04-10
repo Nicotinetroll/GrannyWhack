@@ -23,10 +23,10 @@ MonoBehaviour:
   isEvolution: 1
   evolutionRequirements:
   - abilityType: 1
-    requiredAbilityLevel: 10
+    requiredAbilityLevel: 5
     shouldRemoveAfterEvolution: 1
   - abilityType: 105
-    requiredAbilityLevel: 0
+    requiredAbilityLevel: 1
     shouldRemoveAfterEvolution: 0
   levels:
   - fieldRadius: 1.75

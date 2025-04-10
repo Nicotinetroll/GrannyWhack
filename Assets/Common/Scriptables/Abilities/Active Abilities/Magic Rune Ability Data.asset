@@ -23,22 +23,6 @@ MonoBehaviour:
   isEvolution: 0
   evolutionRequirements: []
   levels:
-  - minesCount: 2
-    abilityCooldown: 5
-    mineSpawnRadius: 2
-    mineLifetime: 5
-    damage: 20
-    mineSize: 1
-    mineTriggerRadius: 0.3
-    mineDamageRadius: 1
-  - minesCount: 2
-    abilityCooldown: 5
-    mineSpawnRadius: 2
-    mineLifetime: 6
-    damage: 25
-    mineSize: 1.2
-    mineTriggerRadius: 0.35
-    mineDamageRadius: 1.2
   - minesCount: 3
     abilityCooldown: 5
     mineSpawnRadius: 2.5

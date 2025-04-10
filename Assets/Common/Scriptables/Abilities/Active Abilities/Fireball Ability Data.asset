@@ -23,22 +23,6 @@ MonoBehaviour:
   isEvolution: 0
   evolutionRequirements: []
   levels:
-  - projectilesCount: 1
-    timeBetweenFireballs: 0.2
-    abilityCooldown: 5
-    fireballLifetime: 5
-    speed: 3
-    damage: 15
-    projectileSize: 1
-    explosionRadius: 1
-  - projectilesCount: 2
-    timeBetweenFireballs: 0.2
-    abilityCooldown: 5
-    fireballLifetime: 5
-    speed: 3
-    damage: 25
-    projectileSize: 1
-    explosionRadius: 1
   - projectilesCount: 2
     timeBetweenFireballs: 0.2
     abilityCooldown: 5

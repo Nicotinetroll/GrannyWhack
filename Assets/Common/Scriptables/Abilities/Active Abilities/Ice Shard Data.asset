@@ -24,18 +24,6 @@ MonoBehaviour:
   evolutionRequirements: []
   levels:
   - abilityCooldown: 8
-    projectileSpeed: 5
-    damage: 20
-    projectileSize: 1
-    projectilesCount: 1
-    projectileLifetime: 7
-  - abilityCooldown: 8
-    projectileSpeed: 6
-    damage: 25
-    projectileSize: 1
-    projectilesCount: 2
-    projectileLifetime: 7
-  - abilityCooldown: 8
     projectileSpeed: 7
     damage: 35
     projectileSize: 1

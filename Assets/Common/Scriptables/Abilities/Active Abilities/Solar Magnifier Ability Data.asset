@@ -24,24 +24,6 @@ MonoBehaviour:
   evolutionRequirements: []
   levels:
   - abilityCooldown: 10
-    projectileLifetime: 5
-    timeBetweenProjectiles: 1
-    projectileCount: 2
-    damagePerSecond: 10
-    damageRate: 5
-    additionalDamagePerSecond: 3
-    additionalDamageRadius: 0.4
-    projectileSpeed: 5
-  - abilityCooldown: 10
-    projectileLifetime: 5
-    timeBetweenProjectiles: 1
-    projectileCount: 3
-    damagePerSecond: 14
-    damageRate: 5
-    additionalDamagePerSecond: 4
-    additionalDamageRadius: 0.4
-    projectileSpeed: 6
-  - abilityCooldown: 10
     projectileLifetime: 7
     timeBetweenProjectiles: 1
     projectileCount: 4

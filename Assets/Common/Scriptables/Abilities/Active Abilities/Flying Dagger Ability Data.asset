@@ -23,22 +23,6 @@ MonoBehaviour:
   isEvolution: 0
   evolutionRequirements: []
   levels:
-  - projectileCount: 1
-    projectileLifetime: 4
-    timeBetweenProjectiles: 0.2
-    abilityCooldown: 5
-    throwingForce: 8
-    spread: 20
-    damage: 15
-    projectileSize: 1
-  - projectileCount: 2
-    projectileLifetime: 4
-    timeBetweenProjectiles: 0.2
-    abilityCooldown: 5
-    throwingForce: 8
-    spread: 20
-    damage: 20
-    projectileSize: 1
   - projectileCount: 2
     projectileLifetime: 4
     timeBetweenProjectiles: 0.2

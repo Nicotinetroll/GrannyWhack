@@ -20,9 +20,15 @@ MonoBehaviour:
   isActiveAbility: 0
   isWeaponAbility: 0
   isEndgameAbility: 1
-  isEvolution: 0
-  evolutionRequirements: []
+  isEvolution: 1
+  evolutionRequirements:
+  - abilityType: 200
+    requiredAbilityLevel: 1
+    shouldRemoveAfterEvolution: 1
+  - abilityType: 201
+    requiredAbilityLevel: 1
+    shouldRemoveAfterEvolution: 1
   levels:
-  - fieldRadius: 4
-    damage: 50
-    damageCooldown: 1
+  - fieldRadius: 3
+    damage: 150
+    damageCooldown: 0.5
