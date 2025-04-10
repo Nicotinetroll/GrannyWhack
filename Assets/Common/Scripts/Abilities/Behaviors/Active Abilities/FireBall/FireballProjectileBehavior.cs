@@ -9,7 +9,6 @@ namespace OctoberStudio.Abilities
 {
     public class FireballProjectileBehavior : MonoBehaviour
     {
-        // ✅ Use exact string names from AudioDatabase
         private static readonly int FIREBALL_LAUNCH_HASH = "Fireball Launch".GetHashCode();
         private static readonly int FIREBALL_EXPLOSION_HASH = "Fireball Explosion".GetHashCode();
 
@@ -17,8 +16,14 @@ namespace OctoberStudio.Abilities
         [SerializeField] private Collider2D fireballCollider;
         [SerializeField] private GameObject visuals;
 
+        [Header("VFX")]
+        [SerializeField] private GameObject flashEffect;
+        [SerializeField] private string hitEffectPoolName = "FireballHit";
+        [SerializeField] private ParticleSystem projectileVFX;
+        [SerializeField] private float hitEffectOffset = 0.1f;
+
         [Header("Settings")]
-        [SerializeField] private string explosionPoolName = "FireballExplosion"; // 👈 Name used in PoolsManager
+        [SerializeField] private float disableDelay = 0.5f;
 
         private IEasingCoroutine movementCoroutine;
         private IEasingCoroutine disableCoroutine;
@@ -41,17 +46,28 @@ namespace OctoberStudio.Abilities
             movementCoroutine = transform.DoPosition(selfDestructPosition, Lifetime / PlayerBehavior.Player.ProjectileSpeedMultiplier)
                 .SetOnFinish(Explode);
 
+            // Enable visuals
             visuals.SetActive(true);
             fireballCollider.enabled = true;
 
-            // ✅ Play correct launch sound
+            // Play launch flash VFX
+            if (flashEffect != null)
+            {
+                flashEffect.SetActive(true);
+                var flashParticles = flashEffect.GetComponent<ParticleSystem>();
+                if (flashParticles != null) flashParticles.Play();
+            }
+
+            // Play looping projectile effect
+            if (projectileVFX != null)
+                projectileVFX.Play();
+
             GameController.AudioManager.PlaySound(FIREBALL_LAUNCH_HASH);
         }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            var enemy = other.GetComponent<EnemyBehavior>();
-            if (enemy != null)
+            if (other.TryGetComponent(out EnemyBehavior enemy))
             {
                 movementCoroutine.Stop();
                 Explode();
@@ -69,24 +85,23 @@ namespace OctoberStudio.Abilities
                 enemies[i].TakeDamage(PlayerBehavior.Player.Damage * DamageMultiplier);
             }
 
-            // ✅ Spawn explosion VFX via pool
-            var fxGO = StageController.PoolsManager.GetEntity(explosionPoolName);
-            if (fxGO != null)
+            // Spawn hit VFX from pool
+            var hitVFX = StageController.PoolsManager.GetEntity(hitEffectPoolName);
+            if (hitVFX != null)
             {
-                fxGO.transform.position = transform.position;
-                fxGO.transform.rotation = Quaternion.identity;
-                fxGO.SetActive(true);
+                hitVFX.transform.position = transform.position + Vector3.up * hitEffectOffset;
+                hitVFX.transform.rotation = Quaternion.identity;
+                hitVFX.SetActive(true);
 
-                if (fxGO.TryGetComponent<CFXR_Effect>(out var fx))
+                if (hitVFX.TryGetComponent(out CFXR_Effect fx))
                     fx.Initialize();
                 else
-                    fxGO.GetComponent<ParticleSystem>()?.Play();
+                    hitVFX.GetComponent<ParticleSystem>()?.Play();
             }
 
-            // ✅ Play correct explosion sound
             GameController.AudioManager.PlaySound(FIREBALL_EXPLOSION_HASH);
 
-            disableCoroutine = EasingManager.DoAfter(1f, () =>
+            disableCoroutine = EasingManager.DoAfter(disableDelay, () =>
             {
                 gameObject.SetActive(false);
                 onFinished?.Invoke(this);
