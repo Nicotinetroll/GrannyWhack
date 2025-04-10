@@ -109,7 +109,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slashPrefab: {fileID: 4820644130497675587, guid: 9622bd132014406458723d0ecb2322e1,
     type: 3}
-  slashes: []
   shashDirections:
   - {fileID: 5442387312611786086}
   - {fileID: 7701217201406663459}
