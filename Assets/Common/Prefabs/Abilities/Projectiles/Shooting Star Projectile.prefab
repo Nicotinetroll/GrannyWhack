@@ -82,6 +82,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23757c72e7951d94da38b954ecbb16f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hitEffect: {fileID: 198131504142204048, guid: ae2b13f9ecf0d2444b46bdcb21f42ce3,
+    type: 3}
+  projectileEffect: {fileID: 2987006068995612690}
+  hitOffset: 0.1
 --- !u!1001 &2989172577223398762
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -154,24 +158,31 @@ PrefabInstance:
     - target: {fileID: 7226336089529587898, guid: bc2714e5c329c764dbedba866cc02850,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.4
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7226336089529587898, guid: bc2714e5c329c764dbedba866cc02850,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.4
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7226336089529587898, guid: bc2714e5c329c764dbedba866cc02850,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.4
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 1478475927705875481, guid: bc2714e5c329c764dbedba866cc02850, type: 3}
+    - {fileID: 7231808931115384776, guid: bc2714e5c329c764dbedba866cc02850, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bc2714e5c329c764dbedba866cc02850, type: 3}
+--- !u!198 &2987006068995612690 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 2347107316282744, guid: bc2714e5c329c764dbedba866cc02850,
+    type: 3}
+  m_PrefabInstance: {fileID: 2989172577223398762}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2987279175392817196 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4325521886848326, guid: bc2714e5c329c764dbedba866cc02850,
