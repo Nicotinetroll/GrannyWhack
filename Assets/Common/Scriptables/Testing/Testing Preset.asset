@@ -15,5 +15,5 @@ MonoBehaviour:
   startTime: 60
   xpLevel: 4
   abilities:
-  - abilityType: 6
-    level: 4
+  - abilityType: 1001
+    level: 6
