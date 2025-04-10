@@ -12,6 +12,12 @@ public class WandProjectileBehavior : SimplePlayerProjectileBehavior
 
     private const float damageFalloffPerBounce = 0.8f;
 
+    [Header("VFX")]
+    [SerializeField] private GameObject flashEffect;
+    [SerializeField] private GameObject hitEffect;
+    [SerializeField] private ParticleSystem projectileEffect;
+    [SerializeField] private float hitOffset = 0.1f;
+
     public void InitBounce(
         Vector2 position,
         Vector2 direction,
@@ -37,7 +43,7 @@ public class WandProjectileBehavior : SimplePlayerProjectileBehavior
             this.baseMultiplier = damageMultiplier;
         }
 
-        this.spawnTime = Time.time;
+        spawnTime = Time.time;
         alreadyHit.Clear();
         selfDestructOnHit = false;
 
@@ -52,6 +58,27 @@ public class WandProjectileBehavior : SimplePlayerProjectileBehavior
             p.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             p.Clear();
             p.Play();
+        }
+
+        // 🔥 Flash effect (play once and detach)
+        if (flashEffect != null)
+        {
+            flashEffect.transform.SetParent(null);
+            flashEffect.SetActive(true);
+
+            if (flashEffect.TryGetComponent(out ParticleSystem flashPS))
+            {
+                flashPS.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                flashPS.Play();
+            }
+        }
+
+        // 🔁 Reset projectile effect
+        if (projectileEffect != null)
+        {
+            projectileEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            projectileEffect.Clear();
+            projectileEffect.Play();
         }
 
         gameObject.SetActive(true);
@@ -80,6 +107,20 @@ public class WandProjectileBehavior : SimplePlayerProjectileBehavior
             float finalDamage = PlayerBehavior.Player.Damage * finalMultiplier;
 
             enemy.TakeDamage(finalDamage);
+
+            // 💥 Hit effect (play and stay detached)
+            if (hitEffect != null)
+            {
+                hitEffect.transform.position = transform.position + (Vector3)(direction * hitOffset);
+                hitEffect.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
+                hitEffect.SetActive(true);
+
+                if (hitEffect.TryGetComponent(out ParticleSystem hitPS))
+                {
+                    hitPS.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                    hitPS.Play();
+                }
+            }
         }
 
         if (remainingBounces > 0)
@@ -124,6 +165,12 @@ public class WandProjectileBehavior : SimplePlayerProjectileBehavior
 
     private void FinishProjectile()
     {
+        // 💨 Stop projectile effect
+        if (projectileEffect != null)
+        {
+            projectileEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
+
         Clear();
         onFinished?.Invoke(this);
     }

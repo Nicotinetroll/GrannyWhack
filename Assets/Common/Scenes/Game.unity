@@ -1462,6 +1462,12 @@ MonoBehaviour:
     prefab: {fileID: 5921496098825735273, guid: 227fad7151fff3b47a12d078ea43eac4,
       type: 3}
     size: 5
+  - name: FireballHit
+    prefab: {fileID: 1845764070681338, guid: ac2312a3e32471549882f1a6da5568e6, type: 3}
+    size: 10
+  - name: FireballVFX
+    prefab: {fileID: 1254724754748870, guid: ead2eb1ec6d8ee54fa5d36c7f5e30eef, type: 3}
+    size: 10
 --- !u!1 &1846095498
 GameObject:
   m_ObjectHideFlags: 0
