@@ -195,60 +195,82 @@ namespace OctoberStudio
             WaveOverride != null ? WaveOverride.ApplyDropOverride(Data.EnemyDrop) : Data.EnemyDrop;
 
         public void TakeDamage(float damage)
+{
+    if (!IsAlive || IsInvulnerable) return;
+
+    PlayerStatsManager.Instance?.AddDamage(damage);
+
+    // Spawn hit particle
+    if (hitParticlePrefab != null && poolsManager != null)
+    {
+        var pooled = poolsManager.GetEntity("ParticlePrefab");
+        if (pooled != null)
         {
-            if (!IsAlive || IsInvulnerable) return;
-
-            PlayerStatsManager.Instance?.AddDamage(damage);
-
-            if (hitParticlePrefab != null && poolsManager != null)
-            {
-                var pooled = poolsManager.GetEntity("ParticlePrefab");
-                if (pooled != null)
-                {
-                    pooled.transform.position = Center;
-                    pooled.transform.rotation = Quaternion.identity;
-                    pooled.SetActive(true);
-                    pooled.GetComponent<ParticleSystem>()?.Play();
-                }
-            }
-
-            HP -= damage;
-            onHealthChanged?.Invoke(HP, MaxHP);
-
-            // ✅ NEW - Update elite bar if available
-            eliteHealthbar?.Subtract(damage);
-
-            if (Time.unscaledTime - lastTimeDamageText > 0.2f && damageTextValue >= 1)
-            {
-                var txt = Mathf.RoundToInt(damageTextValue).ToString();
-                StageController.WorldSpaceTextManager.SpawnText(transform.position + new Vector3(Random.Range(-0.1f, 0.1f), Random.value * 0.1f), txt);
-                damageTextValue = 0;
-                lastTimeDamageText = Time.unscaledTime;
-            }
-            else damageTextValue += damage;
-
-            if (Time.frameCount != lastFrameHitSound && Time.unscaledTime - lastTimeHitSound > 0.2f)
-            {
-                GameController.AudioManager.PlaySound(HIT_HASH);
-                lastFrameHitSound = Time.frameCount;
-                lastTimeHitSound = Time.unscaledTime;
-            }
-
-            if (HP <= 0) Die(true);
-            else
-            {
-                if (!damageCoroutine.ExistsAndActive()) FlashHit(true);
-                if (!scaleCoroutine.ExistsAndActive())
-                {
-                    var x = transform.localScale.x;
-                    scaleCoroutine = transform.DoLocalScale(new Vector3(x * (1 - hitScaleAmount), (1 + hitScaleAmount), 1), 0.07f)
-                        .SetEasing(EasingType.SineOut)
-                        .SetOnFinish(() =>
-                            scaleCoroutine = transform.DoLocalScale(new Vector3(x, 1, 1), 0.07f).SetEasing(EasingType.SineInOut)
-                        );
-                }
-            }
+            pooled.transform.position = Center;
+            pooled.transform.rotation = Quaternion.identity;
+            pooled.SetActive(true);
+            pooled.GetComponent<ParticleSystem>()?.Play();
         }
+    }
+
+    HP -= damage;
+    HP = Mathf.Max(0, HP); // Prevent negatives
+
+    onHealthChanged?.Invoke(HP, MaxHP);
+
+    // Update healthbar
+    eliteHealthbar?.Subtract(damage);
+
+    // Damage Text (rounded and clamped)
+    damageTextValue += damage;
+    if (Time.unscaledTime - lastTimeDamageText > 0.2f && damageTextValue >= 0.5f)
+    {
+        int rounded = Mathf.RoundToInt(damageTextValue);
+        if (rounded > 0) // ✅ Don't show 0 damage
+        {
+            Vector3 pos = transform.position + new Vector3(Random.Range(-0.2f, 0.2f), Random.Range(0.05f, 0.35f));
+            StageController.WorldSpaceTextManager.SpawnText(pos, rounded.ToString());
+        }
+
+        damageTextValue = 0;
+        lastTimeDamageText = Time.unscaledTime;
+    }
+
+    // Hit sound
+    if (Time.frameCount != lastFrameHitSound && Time.unscaledTime - lastTimeHitSound > 0.2f)
+    {
+        GameController.AudioManager.PlaySound(HIT_HASH);
+        lastFrameHitSound = Time.frameCount;
+        lastTimeHitSound = Time.unscaledTime;
+    }
+
+    // Death or feedback
+    if (HP <= 0)
+    {
+        Die(true);
+    }
+    else
+    {
+        // Flash hit
+        if (!damageCoroutine.ExistsAndActive())
+        {
+            FlashHit(true);
+        }
+
+        // Scale on hit
+        if (!scaleCoroutine.ExistsAndActive())
+        {
+            var x = transform.localScale.x;
+            scaleCoroutine = transform.DoLocalScale(new Vector3(x * (1 - hitScaleAmount), (1 + hitScaleAmount), 1), 0.07f)
+                .SetEasing(EasingType.SineOut)
+                .SetOnFinish(() =>
+                    scaleCoroutine = transform.DoLocalScale(new Vector3(x, 1, 1), 0.07f).SetEasing(EasingType.SineInOut)
+                );
+        }
+    }
+}
+
+
 
         private void FlashHit(bool resetMaterial, UnityAction onFinish = null)
         {

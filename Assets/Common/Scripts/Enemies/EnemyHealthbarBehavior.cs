@@ -173,15 +173,21 @@ namespace OctoberStudio.UI
         // ✅ Prevent flipping with enemy sprite
         private void LateUpdate()
         {
-            // Prevent flipping when parent flips (e.g., negative scale.x)
-            var parent = transform.parent;
-            if (parent != null)
+            if (fillImage != null)
             {
-                Vector3 localScale = transform.localScale;
-                localScale.x = Mathf.Abs(localScale.x) * Mathf.Sign(parent.lossyScale.x); // Cancel out parent flip
-                transform.localScale = localScale;
+                Vector3 scale = fillImage.transform.localScale;
+                scale.x = Mathf.Abs(scale.x);
+                fillImage.transform.localScale = scale;
+            }
+
+            if (backgroundImage != null)
+            {
+                Vector3 scale = backgroundImage.transform.localScale;
+                scale.x = Mathf.Abs(scale.x);
+                backgroundImage.transform.localScale = scale;
             }
         }
+
 
     }
 }
