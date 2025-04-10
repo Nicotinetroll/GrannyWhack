@@ -67,7 +67,7 @@ MonoBehaviour:
     bounceRadius: 1.4
   - abilityCooldown: 0.3
     projectileSpeed: 8
-    damage: 55
+    damage: 60
     projectileSize: 1
     projectileLifetime: 5
     bounceCount: 7

@@ -72,7 +72,7 @@ MonoBehaviour:
     projectileLifetime: 8
     timeBetweenProjectiles: 1
     projectileCount: 6
-    damagePerSecond: 26
+    damagePerSecond: 35
     damageRate: 5
     additionalDamagePerSecond: 7
     additionalDamageRadius: 0.4
@@ -81,7 +81,7 @@ MonoBehaviour:
     projectileLifetime: 8
     timeBetweenProjectiles: 1
     projectileCount: 6
-    damagePerSecond: 26
+    damagePerSecond: 70
     damageRate: 5
     additionalDamagePerSecond: 7
     additionalDamageRadius: 0.4

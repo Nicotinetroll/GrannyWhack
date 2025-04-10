@@ -59,7 +59,7 @@ MonoBehaviour:
     lightningsCount: 8
     abilityCooldown: 5
     durationBetweenHits: 0.15
-  - damage: 70
+  - damage: 95
     additionalDamage: 25
     additionalDamageRadius: 0.5
     lightningsCount: 9

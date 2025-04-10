@@ -61,7 +61,7 @@ MonoBehaviour:
     projectileLifetime: 7
   - abilityCooldown: 8
     projectileSpeed: 9
-    damage: 60
+    damage: 70
     projectileSize: 1.25
     projectilesCount: 5
     projectileLifetime: 7

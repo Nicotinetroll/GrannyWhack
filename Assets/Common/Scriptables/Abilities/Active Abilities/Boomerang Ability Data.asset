@@ -63,12 +63,12 @@ MonoBehaviour:
     timeBetweenProjectiles: 0.3
     abilityCooldown: 5
     projectileTravelDistance: 3.5
-    damage: 46
+    damage: 55
     projectileSize: 1.25
   - projectileCount: 3
     projectileLifetime: 2
     timeBetweenProjectiles: 0.3
     abilityCooldown: 5
     projectileTravelDistance: 3.5
-    damage: 46
+    damage: 70
     projectileSize: 1.25
