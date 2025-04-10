@@ -13,13 +13,15 @@ MonoBehaviour:
   m_Name: Testing Preset
   m_EditorClassIdentifier: 
   startTime: 150
-  xpLevel: 30
+  xpLevel: 1
   abilities:
   - abilityType: 0
-    level: 6
+    level: 4
   - abilityType: 101
-    level: 4
+    level: 1
   - abilityType: 103
-    level: 4
+    level: 1
   - abilityType: 105
+    level: 1
+  - abilityType: 1000
     level: 4

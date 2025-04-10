@@ -23,10 +23,10 @@ MonoBehaviour:
   isEvolution: 1
   evolutionRequirements:
   - abilityType: 8
-    requiredAbilityLevel: 6
+    requiredAbilityLevel: 4
     shouldRemoveAfterEvolution: 1
   - abilityType: 101
-    requiredAbilityLevel: 1
+    requiredAbilityLevel: 0
     shouldRemoveAfterEvolution: 0
   levels:
   - projectileCount: 10
