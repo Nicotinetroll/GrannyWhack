@@ -23,7 +23,7 @@ MonoBehaviour:
   isEvolution: 1
   evolutionRequirements:
   - abilityType: 6
-    requiredAbilityLevel: 10
+    requiredAbilityLevel: 5
     shouldRemoveAfterEvolution: 1
   - abilityType: 109
     requiredAbilityLevel: 0
@@ -31,6 +31,11 @@ MonoBehaviour:
   levels:
   - projectilesCount: 4
     timeBetweenProjectiles: 0.5
-    abilityCooldown: 6
-    damage: 30
+    abilityCooldown: 5
+    damage: 50
     explosionRadius: 1.5
+  - projectilesCount: 6
+    timeBetweenProjectiles: 0.5
+    abilityCooldown: 4
+    damage: 150
+    explosionRadius: 2

@@ -23,7 +23,7 @@ MonoBehaviour:
   isEvolution: 1
   evolutionRequirements:
   - abilityType: 5
-    requiredAbilityLevel: 10
+    requiredAbilityLevel: 5
     shouldRemoveAfterEvolution: 1
   - abilityType: 108
     requiredAbilityLevel: 0
@@ -35,6 +35,26 @@ MonoBehaviour:
     mineSpawnRadius: 3
     mineLifetime: 10
     damage: 50
+    spikeDamage: 10
+    mineSize: 2
+    mineTriggerRadius: 0.6
+    mineDamageRadius: 2
+  - minesCount: 4
+    spikesCount: 10
+    abilityCooldown: 6
+    mineSpawnRadius: 3
+    mineLifetime: 10
+    damage: 150
+    spikeDamage: 10
+    mineSize: 2
+    mineTriggerRadius: 0.6
+    mineDamageRadius: 2
+  - minesCount: 4
+    spikesCount: 10
+    abilityCooldown: 6
+    mineSpawnRadius: 3
+    mineLifetime: 10
+    damage: 400
     spikeDamage: 10
     mineSize: 2
     mineTriggerRadius: 0.6

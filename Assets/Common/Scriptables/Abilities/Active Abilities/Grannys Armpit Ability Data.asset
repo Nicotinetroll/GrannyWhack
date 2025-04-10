@@ -32,3 +32,6 @@ MonoBehaviour:
   - fieldRadius: 3
     damage: 150
     damageCooldown: 0.5
+  - fieldRadius: 3
+    damage: 250
+    damageCooldown: 0.5

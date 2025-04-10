@@ -23,13 +23,17 @@ MonoBehaviour:
   isEvolution: 1
   evolutionRequirements:
   - abilityType: 4
-    requiredAbilityLevel: 10
+    requiredAbilityLevel: 5
     shouldRemoveAfterEvolution: 1
   - abilityType: 107
     requiredAbilityLevel: 0
     shouldRemoveAfterEvolution: 0
   levels:
-  - projectileSpeed: 12
-    damage: 30
+  - projectileSpeed: 16
+    damage: 90
+    projectileSize: 0.75
+    projectilesCount: 5
+  - projectileSpeed: 16
+    damage: 150
     projectileSize: 0.75
     projectilesCount: 5

@@ -23,7 +23,7 @@ MonoBehaviour:
   isEvolution: 1
   evolutionRequirements:
   - abilityType: 7
-    requiredAbilityLevel: 10
+    requiredAbilityLevel: 5
     shouldRemoveAfterEvolution: 1
   - abilityType: 100
     requiredAbilityLevel: 0
@@ -33,5 +33,11 @@ MonoBehaviour:
     abilityCooldown: 5
     projectileTravelDistance: 4
     angularSpeed: -300
-    damage: 30
+    damage: 100
+    projectileSize: 1.2
+  - projectileLifetime: 4
+    abilityCooldown: 5
+    projectileTravelDistance: 4
+    angularSpeed: -300
+    damage: 200
     projectileSize: 1.2

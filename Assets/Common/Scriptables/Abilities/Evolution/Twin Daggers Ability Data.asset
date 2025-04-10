@@ -23,12 +23,12 @@ MonoBehaviour:
   isEvolution: 1
   evolutionRequirements:
   - abilityType: 8
-    requiredAbilityLevel: 10
+    requiredAbilityLevel: 5
     shouldRemoveAfterEvolution: 1
   - abilityType: 101
-    requiredAbilityLevel: 0
+    requiredAbilityLevel: 1
     shouldRemoveAfterEvolution: 0
   levels:
   - projectileCount: 10
-    abilityCooldown: 5
-    damage: 25
+    abilityCooldown: 2
+    damage: 250
