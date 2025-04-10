@@ -10,7 +10,6 @@ using UnityEngine.Serialization;
 using CartoonFX;
 using OctoberStudio.UI;
 
-
 namespace OctoberStudio
 {
     public class EnemyBehavior : MonoBehaviour
@@ -21,19 +20,13 @@ namespace OctoberStudio
         private static readonly int HIT_HASH = "Hit".GetHashCode();
 
         [Header("Settings")]
-        [Tooltip("The speed of the enemy")]
         [SerializeField] protected float speed;
         public float Speed { get; protected set; }
 
-        [Tooltip("The LevelData's 'Enemy Damage' is multiplied by this value to determine the damage of the enemy on each level")]
         [SerializeField] float damage = 1f;
-
-        [Tooltip("The LevelData's 'Enemy HP' is multiplied by this value to determine the HP of the enemy on each level")]
         [SerializeField] float hp;
-
         [FormerlySerializedAs("canBekickedBack")]
         [SerializeField] bool canBeKickedBack = true;
-
         [SerializeField] bool shouldFadeIn;
 
         [Header("References")]
@@ -49,30 +42,24 @@ namespace OctoberStudio
         [SerializeField] float hitScaleAmount = 0.2f;
         [SerializeField] Color hitColor = Color.white;
         [SerializeField] GameObject hitParticlePrefab;
-        
-        [Header("Death")]
-        //[SerializeField] private string deathFXPoolName = "GhostDeathFX";
 
-
-
+        [Header("UI")]
+        [SerializeField] private EnemyHealthbarBehavior eliteHealthbar; // ✅ NEW
 
         public EnemyData Data { get; private set; }
         public WaveOverride WaveOverride { get; protected set; }
 
         public bool IsVisible => spriteRenderer.isVisible;
         public bool IsAlive => HP > 0;
-        // The enemy does not receive damage when this property is true
         public bool IsInvulnerable { get; protected set; }
-        
+
         public float HP { get; private set; }
         public float MaxHP { get; private set; }
-
         public bool ShouldSpawnChestOnDeath { get; set; }
 
         IEasingCoroutine fallBackCoroutine;
 
-        private Dictionary<EffectType, List<Effect>> appliedEffects = new Dictionary<EffectType, List<Effect>>();
-
+        private Dictionary<EffectType, List<Effect>> appliedEffects = new();
         protected bool IsMoving { get; set; }
         public bool IsMovingToCustomPoint { get; protected set; }
         public Vector2 CustomPoint { get; protected set; }
@@ -81,21 +68,18 @@ namespace OctoberStudio
 
         private Material sharedMaterial;
         private Material effectsMaterial;
-
         private float shadowAlpha;
 
         public event UnityAction<EnemyBehavior> onEnemyDied;
         public event UnityAction<float, float> onHealthChanged;
 
         private float lastTimeSwitchedDirection = 0;
-
         IEasingCoroutine damageCoroutine;
         protected IEasingCoroutine scaleCoroutine;
         IEasingCoroutine fadeInCoroutine;
 
         private float damageTextValue;
         private float lastTimeDamageText;
-
         private static int lastFrameHitSound;
         private float lastTimeHitSound;
 
@@ -105,75 +89,73 @@ namespace OctoberStudio
             effectsMaterial = Instantiate(sharedMaterial);
 
             shadowAlpha = shadowSprite.color.a;
+
+            // ✅ NEW - Auto-find elite healthbar if not assigned
+            if (eliteHealthbar == null)
+                eliteHealthbar = GetComponentInChildren<EnemyHealthbarBehavior>(true);
+
+            if (eliteHealthbar != null)
+                eliteHealthbar.gameObject.SetActive(false);
         }
 
-        public void SetData(EnemyData data)
-        {
-            Data = data;
-        }
-
-        public void SetWaveOverride(WaveOverride waveOverride)
-        {
-            WaveOverride = waveOverride;
-        }
+        public void SetData(EnemyData data) => Data = data;
+        public void SetWaveOverride(WaveOverride waveOverride) => WaveOverride = waveOverride;
 
         public virtual void Play()
         {
             MaxHP = StageController.Stage.EnemyHP * hp;
             Speed = speed;
+
             if (WaveOverride != null)
             {
                 MaxHP = WaveOverride.ApplyHPOverride(MaxHP);
                 Speed = WaveOverride.ApplySpeedOverride(Speed);
             }
-            
+
             HP = MaxHP;
             IsMoving = true;
 
             shadowSprite.SetAlpha(shadowAlpha);
-
             enemyCollider.enabled = true;
+
             if (shouldFadeIn)
             {
                 spriteRenderer.SetAlpha(0);
                 fadeInCoroutine = spriteRenderer.DoAlpha(1, 0.2f);
-            } 
+            }
+
+            // ✅ NEW - Init and show elite healthbar if assigned
+            if (eliteHealthbar != null)
+            {
+                eliteHealthbar.Init(MaxHP);
+                eliteHealthbar.Show();
+            }
         }
 
         protected virtual void Update()
         {
-            if(!IsAlive || !IsMoving || PlayerBehavior.Player == null) return;
+            if (!IsAlive || !IsMoving || PlayerBehavior.Player == null) return;
 
             Vector3 target = IsMovingToCustomPoint ? CustomPoint : PlayerBehavior.Player.transform.position;
-
             Vector3 direction = (target - transform.position).normalized;
 
-            float speed = Speed;
-            
+            float moveSpeed = Speed;
+
             if (appliedEffects.TryGetValue(EffectType.Speed, out var speedEffects))
-            {
-                for(int i = 0; i < speedEffects.Count; i++)
-                {
-                    Effect effect = speedEffects[i];
-                    speed *= effect.Modifier;
-                }
-            }
+                foreach (var effect in speedEffects)
+                    moveSpeed *= effect.Modifier;
 
-            transform.position += direction * Time.deltaTime * speed;
+            transform.position += direction * Time.deltaTime * moveSpeed;
 
-            // Enemy looks in the direction it's moving
             if (!scaleCoroutine.ExistsAndActive())
             {
                 var scale = transform.localScale;
-
-                if (direction.x > 0 && scale.x < 0 || direction.x < 0 && scale.x > 0)
+                if ((direction.x > 0 && scale.x < 0) || (direction.x < 0 && scale.x > 0))
                 {
-                    // Preventing flickering when the enemy flips it's scale every frame
-                    if(Time.unscaledTime - lastTimeSwitchedDirection > 0.1f)
+                    if (Time.unscaledTime - lastTimeSwitchedDirection > 0.1f)
                     {
                         scale.x *= -1;
                         transform.localScale = scale;
-
                         lastTimeSwitchedDirection = Time.unscaledTime;
                     }
                 }
@@ -183,128 +165,87 @@ namespace OctoberStudio
         private void OnTriggerEnter2D(Collider2D other)
         {
             ProjectileBehavior projectile = other.GetComponent<ProjectileBehavior>();
+            if (projectile == null) return;
 
-            if(projectile != null)
+            TakeDamage(PlayerBehavior.Player.Damage * projectile.DamageMultiplier);
+
+            if (HP > 0)
             {
-                TakeDamage(PlayerBehavior.Player.Damage * projectile.DamageMultiplier);
+                if (projectile.KickBack && canBeKickedBack)
+                    KickBack(PlayerBehavior.CenterPosition);
 
-                if(HP > 0)
-                {
-                    if (projectile.KickBack && canBeKickedBack)
-                    {
-                        KickBack(PlayerBehavior.CenterPosition);
-                    }
-
-                    if(projectile.Effects != null && projectile.Effects.Count > 0)
-                    {
-                        AddEffects(projectile.Effects);
-                    }
-                }
+                if (projectile.Effects?.Count > 0)
+                    AddEffects(projectile.Effects);
             }
         }
 
         public float GetDamage()
         {
-            var damage = this.damage;
-            if(WaveOverride != null) damage = WaveOverride.ApplyDamageOverride(damage);
+            float baseDmg = StageController.Stage.EnemyDamage * damage;
+            if (WaveOverride != null) baseDmg = WaveOverride.ApplyDamageOverride(damage) * StageController.Stage.EnemyDamage;
 
-            var baseDamage = StageController.Stage.EnemyDamage * damage;
-            
-            if (appliedEffects.ContainsKey(EffectType.Damage))
-            {
-                var damageEffects = appliedEffects[EffectType.Damage];
+            if (appliedEffects.TryGetValue(EffectType.Damage, out var effects))
+                foreach (var e in effects)
+                    baseDmg *= e.Modifier;
 
-                for (int i = 0; i < damageEffects.Count; i++)
-                {
-                    var effect = damageEffects[i];
-
-                    baseDamage *= effect.Modifier;
-                }
-            }
-
-            return baseDamage;
+            return baseDmg;
         }
 
-        public List<EnemyDropData> GetDropData()
-        {
-            if (WaveOverride != null) return WaveOverride.ApplyDropOverride(Data.EnemyDrop);
-            return Data.EnemyDrop;
-        }
+        public List<EnemyDropData> GetDropData() =>
+            WaveOverride != null ? WaveOverride.ApplyDropOverride(Data.EnemyDrop) : Data.EnemyDrop;
 
         public void TakeDamage(float damage)
         {
-            if (PlayerStatsManager.Instance != null)
-                PlayerStatsManager.Instance.AddDamage(damage);
+            if (!IsAlive || IsInvulnerable) return;
 
-            
-            if (!IsAlive) return;
-            if (IsInvulnerable) return;
-            
+            PlayerStatsManager.Instance?.AddDamage(damage);
+
             if (hitParticlePrefab != null && poolsManager != null)
             {
-                GameObject pooled = poolsManager.GetEntity("ParticlePrefab"); // <-- make sure this name matches
+                var pooled = poolsManager.GetEntity("ParticlePrefab");
                 if (pooled != null)
                 {
                     pooled.transform.position = Center;
                     pooled.transform.rotation = Quaternion.identity;
                     pooled.SetActive(true);
-
-                    if (pooled.TryGetComponent<ParticleSystem>(out var ps))
-                    {
-                        ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-                        ps.Play();
-                    }
+                    pooled.GetComponent<ParticleSystem>()?.Play();
                 }
             }
 
             HP -= damage;
-
             onHealthChanged?.Invoke(HP, MaxHP);
 
-            // Showing Damage Text
-            damageTextValue += damage;
+            // ✅ NEW - Update elite bar if available
+            eliteHealthbar?.Subtract(damage);
+
             if (Time.unscaledTime - lastTimeDamageText > 0.2f && damageTextValue >= 1)
             {
-                var damageText = Mathf.RoundToInt(damageTextValue).ToString();
-                StageController.WorldSpaceTextManager.SpawnText(transform.position + new Vector3(Random.Range(-0.1f, 0.1f), Random.value * 0.1f), damageText);
-
+                var txt = Mathf.RoundToInt(damageTextValue).ToString();
+                StageController.WorldSpaceTextManager.SpawnText(transform.position + new Vector3(Random.Range(-0.1f, 0.1f), Random.value * 0.1f), txt);
                 damageTextValue = 0;
                 lastTimeDamageText = Time.unscaledTime;
-            } else
-            {
-                damageTextValue += damage;
             }
+            else damageTextValue += damage;
 
-            // Playing Damage Sound
-            if(Time.frameCount != lastFrameHitSound && Time.unscaledTime - lastTimeHitSound > 0.2f)
+            if (Time.frameCount != lastFrameHitSound && Time.unscaledTime - lastTimeHitSound > 0.2f)
             {
                 GameController.AudioManager.PlaySound(HIT_HASH);
-
                 lastFrameHitSound = Time.frameCount;
                 lastTimeHitSound = Time.unscaledTime;
-            }   
-
-            if (HP <= 0)
-            {
-                Die(true);
             }
+
+            if (HP <= 0) Die(true);
             else
             {
-                // Flashing Color on hit
-                if (!damageCoroutine.ExistsAndActive())
-                {
-                    FlashHit(true);
-                }
-
-                // Scaling on Hit
+                if (!damageCoroutine.ExistsAndActive()) FlashHit(true);
                 if (!scaleCoroutine.ExistsAndActive())
                 {
                     var x = transform.localScale.x;
-
-                    scaleCoroutine = transform.DoLocalScale(new Vector3(x * (1 - hitScaleAmount), (1 + hitScaleAmount), 1), 0.07f).SetEasing(EasingType.SineOut).SetOnFinish(() =>
-                    {
-                        scaleCoroutine = transform.DoLocalScale(new Vector3(x, 1, 1), 0.07f).SetEasing(EasingType.SineInOut);
-                    });
+                    scaleCoroutine = transform.DoLocalScale(new Vector3(x * (1 - hitScaleAmount), (1 + hitScaleAmount), 1), 0.07f)
+                        .SetEasing(EasingType.SineOut)
+                        .SetOnFinish(() =>
+                            scaleCoroutine = transform.DoLocalScale(new Vector3(x, 1, 1), 0.07f).SetEasing(EasingType.SineInOut)
+                        );
                 }
             }
         }
@@ -312,45 +253,37 @@ namespace OctoberStudio
         private void FlashHit(bool resetMaterial, UnityAction onFinish = null)
         {
             spriteRenderer.material = effectsMaterial;
-
             var transparentColor = hitColor;
             transparentColor.a = 0;
-
-            // Changin properties of a material creates a new instance of a material. 
-            // We cache the material at the start of a game and assign it back when we're done with it
-            // This way the batching optimization is restored
             effectsMaterial.SetColor(_Overlay, transparentColor);
 
             damageCoroutine = effectsMaterial.DoColor(_Overlay, hitColor, 0.05f).SetOnFinish(() =>
-            {
                 damageCoroutine = effectsMaterial.DoColor(_Overlay, transparentColor, 0.05f).SetOnFinish(() =>
                 {
-                    if(resetMaterial) spriteRenderer.material = sharedMaterial;
+                    if (resetMaterial) spriteRenderer.material = sharedMaterial;
                     onFinish?.Invoke();
-                });
-            });
+                }));
         }
 
         public void Kill()
         {
             HP = 0;
-
             Die(false);
         }
 
         protected virtual void Die(bool flash)
         {
             enemyCollider.enabled = false;
-
             damageCoroutine.StopIfExists();
-
             onEnemyDied?.Invoke(this);
             fallBackCoroutine.StopIfExists();
             rb.simulated = true;
-
             fadeInCoroutine.StopIfExists();
 
-            // Death FX
+            // ✅ NEW
+            if (eliteHealthbar != null)
+                eliteHealthbar.Hide();
+
             if (Data != null && !string.IsNullOrEmpty(Data.DeathParticlePoolName) && poolsManager != null)
             {
                 var fx = poolsManager.GetEntity(Data.DeathParticlePoolName);
@@ -359,116 +292,67 @@ namespace OctoberStudio
                     fx.transform.position = transform.position;
                     fx.transform.rotation = Quaternion.identity;
                     fx.SetActive(true);
-
-                    if (fx.TryGetComponent(out ParticleSystem ps))
-                        ps.Play();
-
-                    if (fx.TryGetComponent(out CFXR_Effect effect))
-                        effect.Initialize();
-                }
-                else
-                {
-                    Debug.LogWarning($"[Enemy] No pooled object found for {Data.DeathParticlePoolName}");
+                    fx.GetComponent<ParticleSystem>()?.Play();
+                    fx.GetComponent<CFXR_Effect>()?.Initialize();
                 }
             }
 
             spriteRenderer.material = effectsMaterial;
 
             if (flash)
-            {
-                FlashHit(false, () => {
-                    effectsMaterial.SetColor(_Overlay, Color.clear);
-                    effectsMaterial.DoColor(_Overlay, dissolveSettings.DissolveColor, dissolveSettings.Duration - 0.1f);
-                });
-            }
+                FlashHit(false, () => effectsMaterial.DoColor(_Overlay, dissolveSettings.DissolveColor, dissolveSettings.Duration - 0.1f));
             else
-            {
-                effectsMaterial.SetColor(_Overlay, Color.clear);
                 effectsMaterial.DoColor(_Overlay, dissolveSettings.DissolveColor, dissolveSettings.Duration);
-            }
 
             effectsMaterial.SetFloat(_Disolve, 0);
-            effectsMaterial.DoFloat(_Disolve, 1, dissolveSettings.Duration + 0.02f).SetEasingCurve(dissolveSettings.DissolveCurve).SetOnFinish(() =>
-            {
-                effectsMaterial.SetColor(_Overlay, Color.clear);
-                effectsMaterial.SetFloat(_Disolve, 0);
-
-                gameObject.SetActive(false);
-                spriteRenderer.material = sharedMaterial;
-            });
+            effectsMaterial.DoFloat(_Disolve, 1, dissolveSettings.Duration + 0.02f)
+                .SetEasingCurve(dissolveSettings.DissolveCurve)
+                .SetOnFinish(() =>
+                {
+                    effectsMaterial.SetColor(_Overlay, Color.clear);
+                    effectsMaterial.SetFloat(_Disolve, 0);
+                    gameObject.SetActive(false);
+                    spriteRenderer.material = sharedMaterial;
+                });
 
             shadowSprite.DoAlpha(0, dissolveSettings.Duration);
-
             appliedEffects.Clear();
-
             WaveOverride = null;
         }
 
-
-
-
-
         public void KickBack(Vector3 position)
         {
-            var direction = (transform.position - position).normalized;
+            var dir = (transform.position - position).normalized;
             rb.simulated = false;
             fallBackCoroutine.StopIfExists();
-            fallBackCoroutine = transform.DoPosition(transform.position + direction * 0.6f, 0.15f).SetEasing(EasingType.ExpoOut).SetOnFinish(() => rb.simulated = true);
+            fallBackCoroutine = transform.DoPosition(transform.position + dir * 0.6f, 0.15f)
+                .SetEasing(EasingType.ExpoOut)
+                .SetOnFinish(() => rb.simulated = true);
         }
 
         public void AddEffects(List<Effect> effects)
         {
-            for(int i = 0; i < effects.Count; i++)
-            {
-                AddEffect(effects[i]);
-            }
+            foreach (var e in effects) AddEffect(e);
         }
 
         public void AddEffect(Effect effect)
         {
             if (!appliedEffects.ContainsKey(effect.EffectType))
-            {
-                appliedEffects.Add(effect.EffectType, new List<Effect>());
-            }
+                appliedEffects[effect.EffectType] = new List<Effect>();
 
-            List<Effect> effects = appliedEffects[effect.EffectType];
-
-            if (!effects.Contains(effect))
-            {
-                effects.Add(effect);
-            }
+            if (!appliedEffects[effect.EffectType].Contains(effect))
+                appliedEffects[effect.EffectType].Add(effect);
         }
 
         public void RemoveEffect(Effect effect)
         {
             if (!appliedEffects.ContainsKey(effect.EffectType)) return;
-
-            List<Effect> effects = appliedEffects[effect.EffectType];
-
-            if (effects.Contains(effect))
-            {
-                effects.Remove(effect);
-            }
-        }
-        
-        
-        
-        
-        // POOLING
-        
-        public void SetHitParticle(GameObject prefab)
-        {
-            hitParticlePrefab = prefab;
+            appliedEffects[effect.EffectType].Remove(effect);
         }
 
-        public void SetPoolsManager(PoolsManager manager)
-        {
-            poolsManager = manager;
-        }
-        
+        // Pooling
+        public void SetHitParticle(GameObject prefab) => hitParticlePrefab = prefab;
+        public void SetPoolsManager(PoolsManager manager) => poolsManager = manager;
         private PoolsManager poolsManager;
-        
-
-
     }
 }

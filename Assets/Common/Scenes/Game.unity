@@ -1153,7 +1153,7 @@ MonoBehaviour:
   gameScreen: {fileID: 1597437559}
   stageFailedScreen: {fileID: 7926813176137370766}
   stageCompletedScreen: {fileID: 73902015}
-  playerStats: {fileID: 0}
+  playerStats: {fileID: 808867513}
   testingPreset: {fileID: 0}
 --- !u!1 &1478012300
 GameObject:
@@ -2304,6 +2304,18 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8987986334777415343, guid: 5a8c0d9c97f99294eabcfdadb4077e64,
+        type: 3}
+      propertyPath: activeAbilities
+      value: 
+      objectReference: {fileID: 6315961909074667142, guid: 90fd927c3fd112d449e096e661ec3bd4,
+        type: 3}
+    - target: {fileID: 8987986334777415343, guid: 5a8c0d9c97f99294eabcfdadb4077e64,
+        type: 3}
+      propertyPath: passiveAbilities
+      value: 
+      objectReference: {fileID: 6315961909074667142, guid: 90fd927c3fd112d449e096e661ec3bd4,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
