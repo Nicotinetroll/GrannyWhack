@@ -23,10 +23,10 @@ MonoBehaviour:
   isEvolution: 1
   evolutionRequirements:
   - abilityType: 0
-    requiredAbilityLevel: 5
+    requiredAbilityLevel: 6
     shouldRemoveAfterEvolution: 1
   - abilityType: 110
-    requiredAbilityLevel: 1
+    requiredAbilityLevel: 0
     shouldRemoveAfterEvolution: 0
   levels:
   - damage: 30
