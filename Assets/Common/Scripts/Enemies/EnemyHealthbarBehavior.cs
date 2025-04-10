@@ -20,7 +20,7 @@ namespace OctoberStudio.UI
         public bool IsMax => Mathf.Approximately(HP, MaxHP);
 
         private bool autoShowOnChange = true;
-        private bool autoHideWhenMax = false; // ✅ Always show bar by default
+        private bool autoHideWhenMax = false;
 
         private IEasingCoroutine showHideCoroutine;
         private bool isShown = false;
@@ -30,7 +30,7 @@ namespace OctoberStudio.UI
             MaxHP = Mathf.Max(maxHP, 1f);
             HP = MaxHP;
             Redraw();
-            Show(); // ✅ Show immediately on Init
+            Show();
         }
 
         public void SetAutoShowOnChange(bool value) => autoShowOnChange = value;
@@ -140,13 +140,13 @@ namespace OctoberStudio.UI
         public void Show()
         {
             if (!gameObject.activeSelf)
-                gameObject.SetActive(true); // ✅ Ensure it's not disabled in hierarchy
+                gameObject.SetActive(true);
 
             isShown = true;
             Redraw();
 
             showHideCoroutine?.Stop();
-            SetAlpha(1f); // ✅ Instantly visible
+            SetAlpha(1f);
         }
 
         public void Hide()
@@ -170,24 +170,16 @@ namespace OctoberStudio.UI
             if (backgroundImage != null) backgroundImage.SetAlpha(alpha);
         }
 
-        // ✅ Prevent flipping with enemy sprite
+        // ✅ Keep the entire healthbar upright regardless of enemy flip
         private void LateUpdate()
         {
-            if (fillImage != null)
-            {
-                Vector3 scale = fillImage.transform.localScale;
-                scale.x = Mathf.Abs(scale.x);
-                fillImage.transform.localScale = scale;
-            }
+            if (transform.parent == null) return;
 
-            if (backgroundImage != null)
-            {
-                Vector3 scale = backgroundImage.transform.localScale;
-                scale.x = Mathf.Abs(scale.x);
-                backgroundImage.transform.localScale = scale;
-            }
+            Vector3 parentScale = transform.parent.lossyScale;
+            Vector3 localScale = transform.localScale;
+
+            localScale.x = Mathf.Abs(localScale.x) * Mathf.Sign(parentScale.x);
+            transform.localScale = localScale;
         }
-
-
     }
 }

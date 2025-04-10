@@ -157,10 +157,19 @@ namespace OctoberStudio
                         scale.x *= -1;
                         transform.localScale = scale;
                         lastTimeSwitchedDirection = Time.unscaledTime;
+
+                        // ✅ Flip healthbar to match enemy
+                        if (eliteHealthbar != null)
+                        {
+                            Vector3 barScale = eliteHealthbar.transform.localScale;
+                            barScale.x = Mathf.Abs(barScale.x) * Mathf.Sign(scale.x); // Flip with enemy
+                            eliteHealthbar.transform.localScale = barScale;
+                        }
                     }
                 }
             }
         }
+
 
         private void OnTriggerEnter2D(Collider2D other)
         {
@@ -195,80 +204,65 @@ namespace OctoberStudio
             WaveOverride != null ? WaveOverride.ApplyDropOverride(Data.EnemyDrop) : Data.EnemyDrop;
 
         public void TakeDamage(float damage)
-{
-    if (!IsAlive || IsInvulnerable) return;
-
-    PlayerStatsManager.Instance?.AddDamage(damage);
-
-    // Spawn hit particle
-    if (hitParticlePrefab != null && poolsManager != null)
-    {
-        var pooled = poolsManager.GetEntity("ParticlePrefab");
-        if (pooled != null)
         {
-            pooled.transform.position = Center;
-            pooled.transform.rotation = Quaternion.identity;
-            pooled.SetActive(true);
-            pooled.GetComponent<ParticleSystem>()?.Play();
-        }
-    }
+            if (!IsAlive || IsInvulnerable || damage <= 0f) return;
 
-    HP -= damage;
-    HP = Mathf.Max(0, HP); // Prevent negatives
+            PlayerStatsManager.Instance?.AddDamage(damage);
 
-    onHealthChanged?.Invoke(HP, MaxHP);
+            if (hitParticlePrefab != null && poolsManager != null)
+            {
+                var pooled = poolsManager.GetEntity("ParticlePrefab");
+                if (pooled != null)
+                {
+                    pooled.transform.position = Center;
+                    pooled.transform.rotation = Quaternion.identity;
+                    pooled.SetActive(true);
+                    pooled.GetComponent<ParticleSystem>()?.Play();
+                }
+            }
 
-    // Update healthbar
-    eliteHealthbar?.Subtract(damage);
+            HP -= damage;
+            HP = Mathf.Max(0, HP);
 
-    // Damage Text (rounded and clamped)
-    damageTextValue += damage;
-    if (Time.unscaledTime - lastTimeDamageText > 0.2f && damageTextValue >= 0.5f)
-    {
-        int rounded = Mathf.RoundToInt(damageTextValue);
-        if (rounded > 0) // ✅ Don't show 0 damage
-        {
-            Vector3 pos = transform.position + new Vector3(Random.Range(-0.2f, 0.2f), Random.Range(0.05f, 0.35f));
-            StageController.WorldSpaceTextManager.SpawnText(pos, rounded.ToString());
-        }
+            onHealthChanged?.Invoke(HP, MaxHP);
 
-        damageTextValue = 0;
-        lastTimeDamageText = Time.unscaledTime;
-    }
+            eliteHealthbar?.Subtract(damage);
 
-    // Hit sound
-    if (Time.frameCount != lastFrameHitSound && Time.unscaledTime - lastTimeHitSound > 0.2f)
-    {
-        GameController.AudioManager.PlaySound(HIT_HASH);
-        lastFrameHitSound = Time.frameCount;
-        lastTimeHitSound = Time.unscaledTime;
-    }
+            // ✅ Show raw damage immediately and block 0s
+            int rounded = Mathf.RoundToInt(damage);
+            if (rounded > 0)
+            {
+                Vector3 pos = transform.position + new Vector3(Random.Range(-0.15f, 0.15f), Random.Range(0.05f, 0.2f));
+                StageController.WorldSpaceTextManager.SpawnText(pos, rounded.ToString());
+            }
 
-    // Death or feedback
-    if (HP <= 0)
-    {
-        Die(true);
-    }
-    else
-    {
-        // Flash hit
-        if (!damageCoroutine.ExistsAndActive())
-        {
-            FlashHit(true);
+            if (Time.frameCount != lastFrameHitSound && Time.unscaledTime - lastTimeHitSound > 0.2f)
+            {
+                GameController.AudioManager.PlaySound(HIT_HASH);
+                lastFrameHitSound = Time.frameCount;
+                lastTimeHitSound = Time.unscaledTime;
+            }
+
+            if (HP <= 0)
+            {
+                Die(true);
+            }
+            else
+            {
+                if (!damageCoroutine.ExistsAndActive()) FlashHit(true);
+
+                if (!scaleCoroutine.ExistsAndActive())
+                {
+                    var x = transform.localScale.x;
+                    scaleCoroutine = transform.DoLocalScale(new Vector3(x * (1 - hitScaleAmount), (1 + hitScaleAmount), 1), 0.07f)
+                        .SetEasing(EasingType.SineOut)
+                        .SetOnFinish(() =>
+                            scaleCoroutine = transform.DoLocalScale(new Vector3(x, 1, 1), 0.07f).SetEasing(EasingType.SineInOut)
+                        );
+                }
+            }
         }
 
-        // Scale on hit
-        if (!scaleCoroutine.ExistsAndActive())
-        {
-            var x = transform.localScale.x;
-            scaleCoroutine = transform.DoLocalScale(new Vector3(x * (1 - hitScaleAmount), (1 + hitScaleAmount), 1), 0.07f)
-                .SetEasing(EasingType.SineOut)
-                .SetOnFinish(() =>
-                    scaleCoroutine = transform.DoLocalScale(new Vector3(x, 1, 1), 0.07f).SetEasing(EasingType.SineInOut)
-                );
-        }
-    }
-}
 
 
 
