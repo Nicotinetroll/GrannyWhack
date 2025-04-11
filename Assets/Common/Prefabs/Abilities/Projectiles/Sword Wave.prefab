@@ -74,6 +74,7 @@ BoxCollider2D:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5745740684722996412}
   m_Enabled: 1
+  serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -97,7 +98,8 @@ BoxCollider2D:
     m_Bits: 4294967295
   m_IsTrigger: 1
   m_UsedByEffector: 0
-  m_UsedByComposite: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
   m_Offset: {x: 0.29591665, y: -0.030785322}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
@@ -108,7 +110,6 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  serializedVersion: 2
   m_Size: {x: 0.5537331, y: 1.4481571}
   m_EdgeRadius: 0
 --- !u!114 &6474073737933428109
@@ -130,7 +131,7 @@ MonoBehaviour:
   rotatingPart: {fileID: 8139206612827511195}
   selfDestructOnHit: 0
   particles:
-  - {fileID: 1075918764167063965}
+  - {fileID: 1644182232253359386}
 --- !u!1001 &5078350963627402312
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -210,9 +211,9 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 5078350963627402312}
   m_PrefabAsset: {fileID: 0}
---- !u!198 &1075918764167063965 stripped
+--- !u!198 &1644182232253359386 stripped
 ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 5230793673974533589, guid: ea9683083b900d745896adb2d97044fc,
+  m_CorrespondingSourceObject: {fileID: 5812073770260513106, guid: ea9683083b900d745896adb2d97044fc,
     type: 3}
   m_PrefabInstance: {fileID: 5078350963627402312}
   m_PrefabAsset: {fileID: 0}

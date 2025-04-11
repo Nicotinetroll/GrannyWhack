@@ -14,9 +14,7 @@ namespace OctoberStudio
     public class EnemiesSpawner : MonoBehaviour
     {
         private List<EnemyBehavior> enemies = new List<EnemyBehavior>();
-        [SerializeField] private GameObject defaultHitParticlePrefab;
 
-        
         [Header("SatanWagen")]
         [SerializeField] private PoolsManager poolsManager;
         [Space]
@@ -41,7 +39,6 @@ namespace OctoberStudio
 
         StageSave stageSave;
 
-        // Were creating pools only for the enemies that are present in the Stage Timeline
         public void Init(PlayableDirector director)
         {
             stageSave = GameController.SaveManager.GetSave<StageSave>("Stage");
@@ -50,7 +47,7 @@ namespace OctoberStudio
 
             var waves = director.GetAssets<WaveTrack, WaveAsset>();
 
-            for(int i = 0; i < waves.Count; i++)
+            for (int i = 0; i < waves.Count; i++)
             {
                 var wave = waves[i];
                 var enemyType = wave.EnemyType;
@@ -72,7 +69,7 @@ namespace OctoberStudio
             var trackEnemies = new List<EnemyType>();
             foreach (var output in director.playableAsset.outputs)
             {
-                if(output.sourceObject is WaveTrack waveTrack)
+                if (output.sourceObject is WaveTrack waveTrack)
                 {
                     if (!trackEnemies.Contains(waveTrack.EnemyType))
                     {
@@ -83,7 +80,7 @@ namespace OctoberStudio
 
             enemyPools = new Dictionary<EnemyType, PoolComponent<EnemyBehavior>>();
 
-            foreach(var enemyType in enemiesOnLevel.Keys)
+            foreach (var enemyType in enemiesOnLevel.Keys)
             {
                 var data = database.GetEnemyData(enemyType);
 
@@ -96,7 +93,7 @@ namespace OctoberStudio
                 enemyPools.Add(data.Type, pool);
             }
 
-            foreach(var enemyType in trackEnemies)
+            foreach (var enemyType in trackEnemies)
             {
                 if (!enemyPools.ContainsKey(enemyType))
                 {
@@ -112,10 +109,9 @@ namespace OctoberStudio
             {
                 enemiesDiedCounter = stageSave.EnemiesKilled;
             }
-            
+
             enemiesDiedLabel.SetAmount(enemiesDiedCounter);
         }
-            
 
         private void Update()
         {
@@ -133,7 +129,6 @@ namespace OctoberStudio
             {
                 var enemy = enemies[i];
 
-                // ✅ Safe null check inside loop
                 if (PlayerBehavior.Player == null || enemy == null || enemy.WaveOverride == null || enemy.WaveOverride.DisableOffscreenTeleport)
                     continue;
 
@@ -149,8 +144,6 @@ namespace OctoberStudio
                 }
             }
         }
-
-
 
         public EnemyBehavior GetClosestEnemy(Vector2 point, GameObject exclude = null)
         {
@@ -181,17 +174,14 @@ namespace OctoberStudio
             return closestEnemy;
         }
 
-
         public EnemyBehavior Spawn(EnemyType enemyType, Vector2 position, UnityAction<EnemyBehavior> onEnemyDiedCallback = null)
         {
             if (enemies.Count >= enemiesCap) return null;
 
-            if(!enemyPools.ContainsKey(enemyType))
+            if (!enemyPools.ContainsKey(enemyType))
             {
                 var data = database.GetEnemyData(enemyType);
-
                 var pool = new PoolComponent<EnemyBehavior>($"Enemy {enemyType}", data.Prefab, 10);
-
                 enemyPools.Add(data.Type, pool);
             }
 
@@ -200,14 +190,11 @@ namespace OctoberStudio
             enemy.SetData(database.GetEnemyData(enemyType));
             enemy.transform.position = position;
             enemy.SetPoolsManager(poolsManager);
-            enemy.SetHitParticle(defaultHitParticlePrefab);
-
 
             enemy.onEnemyDied += OnEnemyDied;
             if (onEnemyDiedCallback != null) enemy.onEnemyDied += onEnemyDiedCallback;
 
             enemy.Play();
-
             enemies.Add(enemy);
 
             return enemy;
@@ -215,7 +202,7 @@ namespace OctoberStudio
 
         public void Spawn(EnemyType type, WaveOverride waveOverride, bool circularSpawn = false, int amount = 1, UnityAction<EnemyBehavior> onEnemyDiedCallback = null)
         {
-            for(int i = 0; i < amount; i++)
+            for (int i = 0; i < amount; i++)
             {
                 if (enemies.Count >= enemiesCap) return;
 
@@ -224,8 +211,6 @@ namespace OctoberStudio
                 enemy.SetData(database.GetEnemyData(type));
                 enemy.SetWaveOverride(waveOverride);
                 enemy.SetPoolsManager(poolsManager);
-                enemy.SetHitParticle(defaultHitParticlePrefab);
-
 
                 var triesCount = 0;
                 var maxTriesCount = 10;
@@ -233,7 +218,7 @@ namespace OctoberStudio
                 Vector3 position = Vector3.zero;
                 bool foundPosition = false;
 
-                while(triesCount < maxTriesCount)
+                while (triesCount < maxTriesCount)
                 {
                     triesCount++;
 
@@ -243,12 +228,13 @@ namespace OctoberStudio
                         float width = height * Camera.main.aspect;
                         float diagonal = Mathf.Sqrt(width * width + height * height);
                         position = PlayerBehavior.Player.transform.position + Random.onUnitSphere.SetZ(0).normalized * diagonal * 1.05f;
-                    } else
+                    }
+                    else
                     {
                         position = CameraManager.GetRandomPointOutsideCamera(0.5f);
                     }
-                    
-                    if(StageController.FieldManager.ValidatePosition(position, Vector2.zero))
+
+                    if (StageController.FieldManager.ValidatePosition(position, Vector2.zero))
                     {
                         foundPosition = true;
                         break;
@@ -281,7 +267,6 @@ namespace OctoberStudio
                 if (onEnemyDiedCallback != null) enemy.onEnemyDied += onEnemyDiedCallback;
 
                 enemy.Play();
-
                 enemies.Add(enemy);
             }
         }
@@ -290,20 +275,16 @@ namespace OctoberStudio
         {
             if (enemies.Count == 0) return null;
 
-            // Trying to find random visible enemy 10 times
-            for(int i = 0; i < 10; i++)
+            for (int i = 0; i < 10; i++)
             {
                 var randomIndex = Random.Range(0, enemies.Count);
-
                 var enemy = enemies[randomIndex];
-
                 if (enemy.IsVisible) return enemy;
             }
 
-            for(int i = 0; i < enemies.Count; i++)
+            for (int i = 0; i < enemies.Count; i++)
             {
                 var enemy = enemies[i];
-
                 if (enemy.IsVisible) return enemy;
             }
 
@@ -313,10 +294,9 @@ namespace OctoberStudio
         public List<EnemyBehavior> GetEnemiesInRadius(Vector2 position, float radius)
         {
             var result = new List<EnemyBehavior>();
-
             float radiusSqr = radius * radius;
 
-            for(int i = 0; i < enemies.Count; i++)
+            for (int i = 0; i < enemies.Count; i++)
             {
                 if ((enemies[i].transform.position.XY() - position).sqrMagnitude <= radiusSqr)
                 {
@@ -329,7 +309,7 @@ namespace OctoberStudio
 
         public void KillEveryEnemy()
         {
-            foreach(var enemy in enemies)
+            foreach (var enemy in enemies)
             {
                 enemy.onEnemyDied -= OnEnemyDied;
                 enemy.Kill();
@@ -339,7 +319,6 @@ namespace OctoberStudio
             stageSave.EnemiesKilled = enemiesDiedCounter;
 
             enemiesDiedLabel.SetAmount(enemiesDiedCounter);
-
             enemies.Clear();
         }
 
@@ -347,12 +326,11 @@ namespace OctoberStudio
         {
             var aliveEnemies = new List<EnemyBehavior>();
 
-            foreach(var enemy in enemies)
+            foreach (var enemy in enemies)
             {
-                if(enemy.HP <= damage)
+                if (enemy.HP <= damage)
                 {
-                    // if enemy is not a boss
-                    if(enemy.Data != null)
+                    if (enemy.Data != null)
                     {
                         enemy.onEnemyDied -= OnEnemyDied;
                         enemy.Kill();
@@ -366,14 +344,14 @@ namespace OctoberStudio
                                 StageController.DropManager.Drop(dropData.DropType, enemy.transform.position.XY() + Random.insideUnitCircle * 0.2f);
                             }
                         }
-                    } else
+                    }
+                    else
                     {
                         aliveEnemies.Add(enemy);
                     }
                 }
                 else
                 {
-                    // if enemy is not a boss
                     if (enemy.Data != null)
                     {
                         enemy.TakeDamage(damage);
@@ -383,7 +361,6 @@ namespace OctoberStudio
             }
 
             enemiesDiedCounter += enemies.Count - aliveEnemies.Count;
-
             stageSave.EnemiesKilled = enemiesDiedCounter;
             enemiesDiedLabel.SetAmount(enemiesDiedCounter);
 
@@ -396,10 +373,10 @@ namespace OctoberStudio
             enemies.Remove(enemy);
             enemy.onEnemyDied -= OnEnemyDied;
 
-            foreach(var dropData in enemy.GetDropData())
+            foreach (var dropData in enemy.GetDropData())
             {
-                if(dropData.Chance == 0) continue;
-                if(Random.value * 100 <= dropData.Chance && StageController.DropManager.CheckDropCooldown(dropData.DropType))
+                if (dropData.Chance == 0) continue;
+                if (Random.value * 100 <= dropData.Chance && StageController.DropManager.CheckDropCooldown(dropData.DropType))
                 {
                     StageController.DropManager.Drop(dropData.DropType, enemy.transform.position.XY() + Random.insideUnitCircle * 0.2f);
                 }
@@ -415,7 +392,9 @@ namespace OctoberStudio
             enemies.Remove(boss);
             boss.onEnemyDied -= OnBossDied;
 
-            if (boss.ShouldSpawnChestOnDeath && StageController.AbilityManager.HasAvailableAbilities()) StageController.DropManager.Drop(DropType.Chest, boss.transform.position.XY() + Random.insideUnitCircle);
+            if (boss.ShouldSpawnChestOnDeath && StageController.AbilityManager.HasAvailableAbilities())
+                StageController.DropManager.Drop(DropType.Chest, boss.transform.position.XY() + Random.insideUnitCircle);
+
             StageController.DropManager.Drop(DropType.Magnet, boss.transform.position.XY() + Random.insideUnitCircle);
             StageController.DropManager.Drop(DropType.Food, boss.transform.position.XY() + Random.insideUnitCircle);
 
@@ -427,7 +406,6 @@ namespace OctoberStudio
         public EnemyBehavior SpawnBoss(BossType bossType, Vector2 spawnPosition, UnityAction<EnemyBehavior> onBossDied = null)
         {
             var bossData = bossfightDatabase.GetBossfight(bossType);
-
             var boss = Instantiate(bossData.BossPrefab).GetComponent<EnemyBehavior>();
             boss.transform.position = spawnPosition;
 
@@ -445,10 +423,10 @@ namespace OctoberStudio
         {
             return bossfightDatabase.GetBossfight(bossType);
         }
+
         public List<EnemyBehavior> GetAllEnemies()
         {
             return enemies;
         }
-
     }
 }

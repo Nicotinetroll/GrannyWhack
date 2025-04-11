@@ -41,10 +41,9 @@ namespace OctoberStudio
         [Header("Hit")]
         [SerializeField] float hitScaleAmount = 0.2f;
         [SerializeField] Color hitColor = Color.white;
-        [SerializeField] GameObject hitParticlePrefab;
 
         [Header("UI")]
-        [SerializeField] private EnemyHealthbarBehavior eliteHealthbar; // ✅ NEW
+        [SerializeField] private EnemyHealthbarBehavior eliteHealthbar;
 
         public EnemyData Data { get; private set; }
         public WaveOverride WaveOverride { get; protected set; }
@@ -90,7 +89,6 @@ namespace OctoberStudio
 
             shadowAlpha = shadowSprite.color.a;
 
-            // ✅ NEW - Auto-find elite healthbar if not assigned
             if (eliteHealthbar == null)
                 eliteHealthbar = GetComponentInChildren<EnemyHealthbarBehavior>(true);
 
@@ -124,7 +122,6 @@ namespace OctoberStudio
                 fadeInCoroutine = spriteRenderer.DoAlpha(1, 0.2f);
             }
 
-            // ✅ NEW - Init and show elite healthbar if assigned
             if (eliteHealthbar != null)
             {
                 eliteHealthbar.Init(MaxHP);
@@ -158,11 +155,10 @@ namespace OctoberStudio
                         transform.localScale = scale;
                         lastTimeSwitchedDirection = Time.unscaledTime;
 
-                        // ✅ Flip healthbar to match enemy
                         if (eliteHealthbar != null)
                         {
                             Vector3 barScale = eliteHealthbar.transform.localScale;
-                            barScale.x = Mathf.Abs(barScale.x) * Mathf.Sign(scale.x); // Flip with enemy
+                            barScale.x = Mathf.Abs(barScale.x) * Mathf.Sign(scale.x);
                             eliteHealthbar.transform.localScale = barScale;
                         }
                     }
@@ -170,15 +166,13 @@ namespace OctoberStudio
             }
         }
 
-
         private void OnTriggerEnter2D(Collider2D other)
         {
             ProjectileBehavior projectile = other.GetComponent<ProjectileBehavior>();
             if (projectile == null) return;
 
             TakeDamage(PlayerBehavior.Player.Damage * projectile.DamageMultiplier);
-            
-            // ✅ Let the projectile trigger its own hit VFX
+
             projectile.SendMessage("OnEnemyHit", this, SendMessageOptions.DontRequireReceiver);
 
             if (HP > 0)
@@ -194,7 +188,8 @@ namespace OctoberStudio
         public float GetDamage()
         {
             float baseDmg = StageController.Stage.EnemyDamage * damage;
-            if (WaveOverride != null) baseDmg = WaveOverride.ApplyDamageOverride(damage) * StageController.Stage.EnemyDamage;
+            if (WaveOverride != null)
+                baseDmg = WaveOverride.ApplyDamageOverride(damage) * StageController.Stage.EnemyDamage;
 
             if (appliedEffects.TryGetValue(EffectType.Damage, out var effects))
                 foreach (var e in effects)
@@ -212,18 +207,6 @@ namespace OctoberStudio
 
             PlayerStatsManager.Instance?.AddDamage(damage);
 
-            if (hitParticlePrefab != null && poolsManager != null)
-            {
-                var pooled = poolsManager.GetEntity("ParticlePrefab");
-                if (pooled != null)
-                {
-                    pooled.transform.position = Center;
-                    pooled.transform.rotation = Quaternion.identity;
-                    pooled.SetActive(true);
-                    pooled.GetComponent<ParticleSystem>()?.Play();
-                }
-            }
-
             HP -= damage;
             HP = Mathf.Max(0, HP);
 
@@ -231,7 +214,6 @@ namespace OctoberStudio
 
             eliteHealthbar?.Subtract(damage);
 
-            // ✅ Show raw damage immediately and block 0s
             int rounded = Mathf.RoundToInt(damage);
             if (rounded > 0)
             {
@@ -266,9 +248,6 @@ namespace OctoberStudio
             }
         }
 
-
-
-
         private void FlashHit(bool resetMaterial, UnityAction onFinish = null)
         {
             spriteRenderer.material = effectsMaterial;
@@ -299,7 +278,6 @@ namespace OctoberStudio
             rb.simulated = true;
             fadeInCoroutine.StopIfExists();
 
-            // ✅ NEW
             if (eliteHealthbar != null)
                 eliteHealthbar.Hide();
 
@@ -370,7 +348,6 @@ namespace OctoberStudio
         }
 
         // Pooling
-        public void SetHitParticle(GameObject prefab) => hitParticlePrefab = prefab;
         public void SetPoolsManager(PoolsManager manager) => poolsManager = manager;
         private PoolsManager poolsManager;
     }
