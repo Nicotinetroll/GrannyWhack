@@ -307,6 +307,12 @@ MonoBehaviour:
       audioClip: {fileID: 8300000, guid: c8131415ab940224d9e9a86fa9293a24, type: 3}
       volume: {x: 0.6, y: 0.6}
       pitch: {x: 1, y: 1}
+  - name: Machine Gun Projectile Launch
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: fa791e1582ed839428b37fca99cb5e98, type: 3}
+      volume: {x: 0.1, y: 0.1}
+      pitch: {x: 1, y: 1.6}
   music:
     name: Music
     cooldown: 0

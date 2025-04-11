@@ -12,14 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef6ba5f06fb1f254485408470b14b310, type: 3}
   m_Name: Testing Preset
   m_EditorClassIdentifier: 
-  startTime: 150
+  startTime: 400
   xpLevel: 1
   abilities:
-  - abilityType: 1001
-    level: 4
+  - abilityType: 1102
+    level: 0
   - abilityType: 101
-    level: 1
+    level: 2
   - abilityType: 103
-    level: 1
-  - abilityType: 105
-    level: 1
+    level: 2

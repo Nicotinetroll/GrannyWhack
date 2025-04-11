@@ -54,7 +54,7 @@ Material:
   - TransparentDepthPostpass
   - TransparentBackface
   - MOTIONVECTORS
-  m_LockedProperties: 
+  m_LockedProperties: _FresnelColor
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -200,8 +200,8 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
-    - _FresnelColor: {r: 1, g: 0.80092657, b: 0, a: 1}
-    - _FrontFacesColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FresnelColor: {r: 1, g: 0, b: 0.36530352, a: 1}
+    - _FrontFacesColor: {r: 0, g: 0.0059225154, b: 0.4433962, a: 1}
     - _SpeedMainTexUVNoiseZW: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

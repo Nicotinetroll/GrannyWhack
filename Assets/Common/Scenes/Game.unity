@@ -1029,8 +1029,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcaffe2b41627d04f8cfb643c7f7006f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultHitParticlePrefab: {fileID: 2881232349397440291, guid: 97c48ef636fabba40aba2a7d6ebf8203,
-    type: 3}
   poolsManager: {fileID: 1731099386}
   database: {fileID: 11400000, guid: d2602d31e8c0b1b4797a4095529207e6, type: 2}
   bossfightDatabase: {fileID: 11400000, guid: af0db12f0f2b0e34992aebce178468a7, type: 2}
@@ -1454,10 +1452,6 @@ MonoBehaviour:
     prefab: {fileID: 3670248441241466339, guid: b91326e8653317c4290120912f15a8b9,
       type: 3}
     size: 10
-  - name: ParticlePrefab
-    prefab: {fileID: 2881232349397440291, guid: 97c48ef636fabba40aba2a7d6ebf8203,
-      type: 3}
-    size: 100
   - name: GhostDeathFX
     prefab: {fileID: 5921496098825735273, guid: 227fad7151fff3b47a12d078ea43eac4,
       type: 3}

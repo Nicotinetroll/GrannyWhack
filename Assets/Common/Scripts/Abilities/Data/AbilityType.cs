@@ -44,6 +44,7 @@ namespace OctoberStudio
 
         AncientScepter = 1100,
         SacredBlade = 1101,
+        MachineGun = 1102,
 
         HealEndgame = 2001,
         GoldEndgame = 2002,
