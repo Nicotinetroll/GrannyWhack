@@ -1507,6 +1507,8 @@ MonoBehaviour:
       chance: 0
     - dropType: 3
       chance: 0
+    - dropType: 1000
+      chance: 50
     disableOffscreenTeleport: 0
   circularSpawn: 0
   enemiesCount: 10
