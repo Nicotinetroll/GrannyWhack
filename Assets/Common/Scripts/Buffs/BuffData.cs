@@ -8,6 +8,9 @@ namespace OctoberStudio.Buffs
         [SerializeField] private BuffType buffType;
         [SerializeField] private float duration = 10f;
         [SerializeField] private RuntimeBuff runtimePrefab;
+        [SerializeField] private string title;
+        public string Title => title;
+
 
         public BuffType BuffType => buffType;
         public float Duration => duration;

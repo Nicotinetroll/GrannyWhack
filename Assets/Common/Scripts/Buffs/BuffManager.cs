@@ -1,3 +1,4 @@
+using OctoberStudio.UI;
 using UnityEngine;
 
 namespace OctoberStudio.Buffs
@@ -7,6 +8,7 @@ namespace OctoberStudio.Buffs
         public static BuffManager Instance { get; private set; }
 
         [SerializeField] private BuffsDatabase buffsDatabase;
+        [SerializeField] private BuffUI buffUI; // ✅ Make sure this is here
 
         private void Awake()
         {
@@ -30,11 +32,9 @@ namespace OctoberStudio.Buffs
             return buffsDatabase.GetBuff(type);
         }
 
-
         public void ApplyBuff(BuffType type)
         {
             BuffData buff = GetBuff(type);
-
             if (buff == null || buff.RuntimePrefab == null)
             {
                 Debug.LogWarning($"Buff or prefab not found for {type}");
@@ -43,6 +43,12 @@ namespace OctoberStudio.Buffs
 
             var instance = Instantiate(buff.RuntimePrefab, transform);
             instance.Init(buff);
+
+            // ✅ Show in UI
+            if (buffUI != null)
+            {
+                buffUI.ShowBuff(buff.Title, buff.Duration);
+            }
         }
     }
 }

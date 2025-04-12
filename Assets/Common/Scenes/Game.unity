@@ -164,6 +164,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buffsDatabase: {fileID: 11400000, guid: bdc02e91e8f1975459d3adf4d8f4dc2b, type: 2}
+  buffUI: {fileID: 1863122324}
 --- !u!224 &73902010 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5040941394360533178, guid: 526ee5a8b79f89e4495ff8533294c005,
@@ -1629,6 +1630,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f1c069e46436354c8e31e26e7cb2057, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1863122324 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1076237341944636693, guid: 24deeb7ea64b4df49994e80e9e1a9403,
+    type: 3}
+  m_PrefabInstance: {fileID: 6795864787202576071}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca1a7cd3ee3114b42b403c54d4d71875, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1889658388
 GameObject:
   m_ObjectHideFlags: 0
@@ -2208,6 +2221,11 @@ PrefabInstance:
         type: 3}
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
       value: 1801810542
+      objectReference: {fileID: 0}
+    - target: {fileID: 8989765706745364202, guid: 24deeb7ea64b4df49994e80e9e1a9403,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
