@@ -40,13 +40,23 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords:
+  - _
+  - _ALPHABLEND_ON
+  - _CFXR_ADDITIVE
+  - _CFXR_DITHERED_SHADOWS_OFF
+  - _CFXR_GLOW_POW_P0
+  - _CFXR_OVERLAYTEX_OFF
+  - _COLORCOLOR_ON
   - _DOUBLESIDED_ON
+  - _SINGLECHANNEL_ON
+  - _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+  - _SURFACE_TYPE_TRANSPARENT
   - _USEBACKFRESNEL_ON
   - _USEFRESNEL_ON
-  m_LightmapFlags: 4
+  m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 1
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap:
     MotionVector: User
   disabledShaderPasses:
@@ -54,7 +64,8 @@ Material:
   - TransparentDepthPostpass
   - TransparentBackface
   - MOTIONVECTORS
-  m_LockedProperties: _FresnelColor
+  - GRABPASS
+  m_LockedProperties: _BackFresnelEmission
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -143,7 +154,7 @@ Material:
     - _DoubleSidedEnable: 1
     - _DoubleSidedGIMode: 0
     - _DoubleSidedNormalMode: 2
-    - _DstBlend: 0
+    - _DstBlend: 10
     - _Emission: 1
     - _EnableBlendModePreserveSpecularLighting: 0
     - _EnableFogOnTransparent: 1
@@ -153,6 +164,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _HdrMultiply: 2
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
@@ -161,12 +173,14 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _RenderQueueType: 1
+    - _RingTopOffset: 0.05
     - _SeparateEmission: 2
     - _SeparateFresnel: 0
     - _Sideopacity: 0
     - _SmoothnessTextureChannel: 0
+    - _SoftParticlesFadeDistanceFar: 1
     - _SpecularHighlights: 1
-    - _SrcBlend: 1
+    - _SrcBlend: 5
     - _StencilRef: 0
     - _StencilRefDepth: 1
     - _StencilRefDistortionVec: 4
@@ -187,21 +201,23 @@ Material:
     - _UseBackFresnel: 1
     - _UseCustomData: 0
     - _UseFresnel: 1
+    - _UseSP: 0
     - _UseShadowThreshold: 0
     - _Use_ScreenSpace: 0
     - _Usesmoothcorners: 0
     - _ZTestDepthEqualForOpaque: 3
     - _ZTestTransparent: 4
-    - _ZWrite: 1
+    - _ZWrite: 0
     - __dirty: 1
     m_Colors:
     - _BackFacesColor: {r: 1, g: 1, b: 1, a: 1}
     - _BackFresnelColor: {r: 1, g: 1, b: 1, a: 1}
+    - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
-    - _FresnelColor: {r: 1, g: 0, b: 0.36530352, a: 1}
-    - _FrontFacesColor: {r: 0, g: 0.0059225154, b: 0.4433962, a: 1}
+    - _FresnelColor: {r: 0.8813925, g: 0, b: 1, a: 1}
+    - _FrontFacesColor: {r: 0.045231618, g: 0, b: 0.31132078, a: 1}
     - _SpeedMainTexUVNoiseZW: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

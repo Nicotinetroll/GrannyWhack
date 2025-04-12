@@ -23,15 +23,14 @@ MonoBehaviour:
   isEvolution: 1
   evolutionRequirements:
   - abilityType: 1001
-    requiredAbilityLevel: 10
+    requiredAbilityLevel: 4
     shouldRemoveAfterEvolution: 1
-  - abilityType: 111
+  - abilityType: 105
     requiredAbilityLevel: 0
     shouldRemoveAfterEvolution: 0
   levels:
   - abilityCooldown: 2
     slashesCount: 5
-    damage: 30
-    waveDamage: 5
-    slashSize: 1.4
+    damage: 115
+    slashSize: 2
     timeBetweenSlashes: 0.2

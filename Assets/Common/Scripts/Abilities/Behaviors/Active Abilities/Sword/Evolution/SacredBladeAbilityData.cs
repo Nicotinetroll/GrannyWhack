@@ -33,10 +33,6 @@ namespace OctoberStudio.Abilities
         [SerializeField] float damage;
         public float Damage => damage;
 
-        [Tooltip("Damage of waves calculates like this: Player.Damage * WaveDamage")]
-        [SerializeField] float waveDamage;
-        public float WaveDamage => waveDamage;
-
         [Tooltip("Size of slash")]
         [SerializeField] float slashSize;
         public float SlashSize => slashSize;

@@ -107,9 +107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0081b9aa4e7e82a408834c7e9556c50a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slashPrefab: {fileID: 4820644130497675587, guid: 9622bd132014406458723d0ecb2322e1,
-    type: 3}
-  wavePrefab: {fileID: 5745740684722996412, guid: 9e850ae63ca93d54fbee3ec9d2246636,
+  slashPrefab: {fileID: 4820644130497675587, guid: c7222e445dd2b19499e38721399519f9,
     type: 3}
   shashDirections:
   - {fileID: 5442387312611786086}

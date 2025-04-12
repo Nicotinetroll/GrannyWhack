@@ -198,13 +198,13 @@ Material:
     - _ZWrite: 1
     - __dirty: 1
     m_Colors:
-    - _BackFacesColor: {r: 1, g: 1, b: 1, a: 1}
-    - _BackFresnelColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BackFacesColor: {r: 0, g: 0, b: 0, a: 1}
+    - _BackFresnelColor: {r: 0.3090191, g: 0, b: 0.31132078, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
-    - _FresnelColor: {r: 1, g: 1, b: 1, a: 1}
-    - _FrontFacesColor: {r: 1, g: 0.80092657, b: 0, a: 1}
+    - _FresnelColor: {r: 0, g: 0, b: 0, a: 1}
+    - _FrontFacesColor: {r: 1, g: 0, b: 0.8624263, a: 1}
     - _SpeedMainTexUVNoiseZW: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
