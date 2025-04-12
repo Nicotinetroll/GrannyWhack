@@ -21,8 +21,15 @@ namespace OctoberStudio.Buffs
 
         public BuffData GetBuff(BuffType type)
         {
+            if (buffsDatabase == null)
+            {
+                Debug.LogError("BuffsDatabase is not assigned in BuffManager!");
+                return null;
+            }
+
             return buffsDatabase.GetBuff(type);
         }
+
 
         public void ApplyBuff(BuffType type)
         {

@@ -16,5 +16,8 @@ namespace OctoberStudio
         Coin = 40,
 
         Chest = 100,
+        
+        
+        DoubleDamageBuff = 1000,
     }
 }

@@ -38,14 +38,23 @@ namespace OctoberStudio.Drop
 
         public virtual void OnPickedUp()
         {
-            if(particlePools.TryGetValue(dropData.DropType, out var particlePool))
+            if (particlePools.TryGetValue(dropData.DropType, out var particlePool))
             {
                 var particle = particlePool.GetEntity();
+                if (particle == null) return;
+
                 particle.transform.position = transform.position;
                 particle.Play();
 
-                EasingManager.DoAfter(particleDisableDelay, () => { particle.gameObject.SetActive(false); });
+                EasingManager.DoAfter(particleDisableDelay, () =>
+                {
+                    if (particle != null && particle.gameObject != null)
+                    {
+                        particle.gameObject.SetActive(false);
+                    }
+                });
             }
+
 
             GameController.AudioManager.PlaySound(pickUpSoundHash);
         }

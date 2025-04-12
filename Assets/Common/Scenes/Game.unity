@@ -163,7 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91b33f54aee53f84ab3430200815ee23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buffsDatabase: {fileID: 0}
+  buffsDatabase: {fileID: 11400000, guid: bdc02e91e8f1975459d3adf4d8f4dc2b, type: 2}
 --- !u!224 &73902010 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5040941394360533178, guid: 526ee5a8b79f89e4495ff8533294c005,
@@ -1673,7 +1673,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45b91c72e28d046048e0f71e72ca9231, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dropType: 20
+  dropType: 1000
   spawnDistance: 1.5
 --- !u!4 &1993539685 stripped
 Transform:
