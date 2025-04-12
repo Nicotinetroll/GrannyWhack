@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e5befd6c1025c74e80cf6d6ba472e41, type: 3}
   m_Name: BuffsDatabase
   m_EditorClassIdentifier: 
-  buffs: []
+  buffs:
+  - {fileID: 11400000, guid: 3e19793672b720740addb37b8250e5e5, type: 2}

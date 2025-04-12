@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buffType: 0
   duration: 10
-  runtimePrefab: {fileID: 0}
+  runtimePrefab: {fileID: 6475947669080737166, guid: 843278fc27165fd47aba61f8a102d0a9,
+    type: 3}
