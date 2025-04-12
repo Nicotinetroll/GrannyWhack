@@ -81,7 +81,9 @@ namespace OctoberStudio
         public float Damage { get; private set; }
         public float MagnetRadiusSqr { get; private set; }
         public float Speed { get; private set; }
-
+        
+        public HealthbarBehavior Healthbar => healthbar;
+        
         public float XPMultiplier { get; private set; }
         public float CooldownMultiplier { get; private set; }
         public float DamageReductionMultiplier { get; private set; }

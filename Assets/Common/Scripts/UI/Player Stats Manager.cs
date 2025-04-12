@@ -8,18 +8,20 @@ namespace OctoberStudio.UI
     {
         public static PlayerStatsManager Instance { get; private set; }
 
-        [Header("UI")]
+        [Header("UI References")]
         [SerializeField] private TMP_Text damageText;
         [SerializeField] private TMP_Text dpsText;
+        [SerializeField] private TMP_Text hpText;
+        [SerializeField] private TMP_Text speedText;
+        [SerializeField] private TMP_Text cooldownText;
+        [SerializeField] private TMP_Text projectileSpeedText;
 
         private StageSave stageSave;
-        
-        public float ElapsedTime => elapsedTime;
-
-
         private float elapsedTime = 0f;
+
         public float TotalDamage { get; private set; }
         public float DPS => elapsedTime > 0f ? TotalDamage / elapsedTime : 0f;
+        public float ElapsedTime => elapsedTime;
 
         private void Awake()
         {
@@ -30,6 +32,7 @@ namespace OctoberStudio.UI
             }
 
             Instance = this;
+
             stageSave = GameController.SaveManager.GetSave<StageSave>("Stage");
 
             RestoreFromSave();
@@ -52,29 +55,44 @@ namespace OctoberStudio.UI
 
         public void ResetStats()
         {
-            TotalDamage = 0;
-            elapsedTime = 0;
+            TotalDamage = 0f;
+            elapsedTime = 0f;
 
-            stageSave.TotalDamage = 0;
-            stageSave.TimeAlive = 0;
+            stageSave.TotalDamage = 0f;
+            stageSave.TimeAlive = 0f;
             GameController.SaveManager.Save(true);
 
             UpdateUI();
         }
 
+        public void RestoreFromSave()
+        {
+            TotalDamage = stageSave.TotalDamage;
+            elapsedTime = stageSave.TimeAlive;
+        }
+
         private void UpdateUI()
         {
+            var player = PlayerBehavior.Player;
+            if (player == null) return;
+
             if (damageText != null)
                 damageText.text = $"DMG: {TotalDamage:F0}";
 
             if (dpsText != null)
                 dpsText.text = $"DPS: {DPS:F1}";
-        }
-        
-        public void RestoreFromSave()
-        {
-            TotalDamage = stageSave.TotalDamage;
-            elapsedTime = stageSave.TimeAlive;
+
+            if (hpText != null && player.TryGetComponent(out HealthbarBehavior health))
+                hpText.text = $"HP: {health.HP:F0} / {health.MaxHP:F0}";
+
+            if (speedText != null)
+                speedText.text = $"Move Speed: {player.Speed:F1}";
+
+            if (cooldownText != null)
+                cooldownText.text = $"Cooldown Mult: {player.CooldownMultiplier:F2}";
+
+            if (projectileSpeedText != null)
+                projectileSpeedText.text = $"Projectile Speed: {player.ProjectileSpeedMultiplier:F2}";
         }
     }
 }

@@ -11,7 +11,7 @@ public class TimelineDebugDisplay : MonoBehaviour
     [SerializeField] private PlayableDirector director;
     [SerializeField] private TMP_Text debugText;
     [SerializeField] private GameObject hitParticlePrefab;
-    [SerializeField] private PlayerStatsManager playerStats; // 👈 new reference
+    [SerializeField] private PlayerStatsManager playerStats;
 
     [Header("Settings")]
     [SerializeField] private float updateRate = 0.5f;
@@ -20,23 +20,15 @@ public class TimelineDebugDisplay : MonoBehaviour
     private float timeElapsed;
     private int frameCount;
 
-    private string versionText;
-
     private void Start()
     {
-        versionText = $"v{Application.version}";
-
         stageSave = GameController.SaveManager.GetSave<StageSave>("Stage Save");
 
         if (playerStats == null)
-        {
             playerStats = FindFirstObjectByType<PlayerStatsManager>();
-        }
 
         if (playerStats != null)
-        {
-            playerStats.RestoreFromSave(); // 👈 Optional method to expose in your script
-        }
+            playerStats.RestoreFromSave();
 
         UpdateInitialDisplay();
     }
@@ -56,33 +48,14 @@ public class TimelineDebugDisplay : MonoBehaviour
 
     private void Update()
     {
-        if (director == null || debugText == null || hitParticlePrefab == null || playerStats == null) return;
+        if (director == null || debugText == null || hitParticlePrefab == null || playerStats == null)
+            return;
 
-        var allParticles = Object.FindObjectsByType<ParticleSystem>(FindObjectsSortMode.None);
-        int totalParticles = allParticles.Sum(ps => ps.particleCount);
+        var player = PlayerBehavior.Player;
+        if (player == null) return;
 
-        int activeHit = 0;
-        int disabledHit = 0;
-        int unknownHit = 0;
-
-        string hitName = hitParticlePrefab.name;
-
-        foreach (var ps in allParticles)
-        {
-            var go = ps.gameObject;
-            if (go.name.StartsWith(hitName))
-            {
-                if (go.activeInHierarchy)
-                    activeHit++;
-                else
-                    disabledHit++;
-            }
-        }
-
-        int totalFound = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None)
-            .Count(go => go.name.StartsWith(hitName));
-
-        unknownHit = Mathf.Max(0, totalFound - (activeHit + disabledHit));
+        int activeHit = Object.FindObjectsByType<ParticleSystem>(FindObjectsSortMode.None)
+            .Count(p => p.gameObject.name.StartsWith(hitParticlePrefab.name) && p.gameObject.activeInHierarchy);
 
         frameCount++;
         timeElapsed += Time.unscaledDeltaTime;
@@ -90,32 +63,35 @@ public class TimelineDebugDisplay : MonoBehaviour
         if (timeElapsed >= updateRate)
         {
             float fps = frameCount / timeElapsed;
+            float magnetRange = Mathf.Sqrt(player.MagnetRadiusSqr);
+            float currentHP = player.Healthbar.HP;
+            float maxHP = player.Healthbar.MaxHP;
+
 
             debugText.text =
                 $"[v{Application.version}]\n" +
                 $"FPS: {fps:F1}\n" +
                 $"Hit Particles (Active): {activeHit}\n" +
                 $"Total Damage: {playerStats.TotalDamage:F0}\n" +
-                $"DPS: {playerStats.DPS:F1}";
+                $"DPS: {playerStats.DPS:F1}\n" +
+                $"--- Player Stats ---\n" +
+                $"Final Damage: {player.Damage:F1}\n" +
+                $"HP: {currentHP:F0} / {maxHP:F0}\n" +
+                $"Move Speed: {player.Speed:F2}\n" +
+                $"Magnet Range: {magnetRange:F2}\n" +
+                $"XP Multiplier: {player.XPMultiplier:F2}\n" +
+                $"Cooldown Multiplier: {player.CooldownMultiplier:F2}\n" +
+                $"Projectile Speed: {player.ProjectileSpeedMultiplier:F2}\n" +
+                $"Projectile Size: {player.SizeMultiplier:F2}\n" +
+                $"Duration Multiplier: {player.DurationMultiplier:F2}\n" +
+                $"Gold Multiplier: {player.GoldMultiplier:F2}";
 
-            // Save to StageSave
             stageSave.TotalDamage = playerStats.TotalDamage;
             stageSave.TimeAlive = playerStats.ElapsedTime;
-            GameController.SaveManager.Save(true); // Optional flush
+            GameController.SaveManager.Save(true);
 
             frameCount = 0;
             timeElapsed = 0;
-        }
-        else if (!string.IsNullOrEmpty(debugText.text))
-        {
-            string[] lines = debugText.text.Split('\n');
-            if (lines.Length >= 5)
-            {
-                lines[2] = $"Hit Particles (Active): {activeHit}";
-                lines[3] = $"Total Damage: {playerStats.TotalDamage:F0}";
-                lines[4] = $"DPS: {playerStats.DPS:F1}";
-                debugText.text = string.Join("\n", lines);
-            }
         }
     }
 }
