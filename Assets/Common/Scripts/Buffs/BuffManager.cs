@@ -1,0 +1,41 @@
+using UnityEngine;
+
+namespace OctoberStudio.Buffs
+{
+    public class BuffManager : MonoBehaviour
+    {
+        public static BuffManager Instance { get; private set; }
+
+        [SerializeField] private BuffsDatabase buffsDatabase;
+
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
+        }
+
+        public BuffData GetBuff(BuffType type)
+        {
+            return buffsDatabase.GetBuff(type);
+        }
+
+        public void ApplyBuff(BuffType type)
+        {
+            BuffData buff = GetBuff(type);
+
+            if (buff == null || buff.RuntimePrefab == null)
+            {
+                Debug.LogWarning($"Buff or prefab not found for {type}");
+                return;
+            }
+
+            var instance = Instantiate(buff.RuntimePrefab, transform);
+            instance.Init(buff);
+        }
+    }
+}
