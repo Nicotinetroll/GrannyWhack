@@ -1,6 +1,3 @@
-// ----------------------------
-// WandWeaponAbilityBehavior.cs
-// ----------------------------
 using OctoberStudio.Easing;
 using OctoberStudio.Extensions;
 using OctoberStudio.Pool;
@@ -14,15 +11,23 @@ namespace OctoberStudio.Abilities
     {
         public static readonly int WAND_PROJECTILE_LAUNCH_HASH = "Wand Projectile Launch".GetHashCode();
 
-        [SerializeField] GameObject projectilePrefab;
-        public GameObject ProjectilePrefab => projectilePrefab;
+        [Header("Prefabs")]
+        [SerializeField] private GameObject projectilePrefab;
+        [SerializeField] private GameObject gunVisualPrefab;
+
+        [Header("Gun Settings")]
+        [SerializeField] private Vector3 gunOffset = new Vector3(0, -0.25f, 0);
+
+        private GameObject activeGunVisual;
+        private Transform firePoint;
 
         private PoolComponent<WandProjectileBehavior> projectilePool;
-        public List<WandProjectileBehavior> projectiles = new List<WandProjectileBehavior>();
+        private List<WandProjectileBehavior> projectiles = new();
 
-        IEasingCoroutine projectileCoroutine;
-        Coroutine abilityCoroutine;
+        private Coroutine abilityCoroutine;
+        private IEasingCoroutine projectileCoroutine;
 
+        public GameObject ProjectilePrefab => projectilePrefab;
         private float AbilityCooldown => AbilityLevel.AbilityCooldown * PlayerBehavior.Player.CooldownMultiplier;
 
         private void Awake()
@@ -34,56 +39,82 @@ namespace OctoberStudio.Abilities
         {
             base.SetAbilityLevel(stageId);
 
-            if (abilityCoroutine != null) Disable();
+            if (abilityCoroutine != null)
+                Disable();
+
+            if (gunVisualPrefab != null && activeGunVisual == null)
+            {
+                activeGunVisual = Instantiate(gunVisualPrefab, PlayerBehavior.CenterTransform);
+                activeGunVisual.transform.localPosition = gunOffset;
+
+                firePoint = activeGunVisual.transform.Find("Weapon renderer/FirePoint");
+                if (firePoint == null)
+                    Debug.LogWarning("FirePoint not found on gun visual prefab.");
+            }
 
             abilityCoroutine = StartCoroutine(AbilityCoroutine());
         }
 
         private IEnumerator AbilityCoroutine()
         {
-            var lastTimeSpawned = Time.time - AbilityCooldown;
+            float lastTimeSpawned = Time.time - AbilityCooldown;
 
             while (true)
             {
-                while (lastTimeSpawned + AbilityCooldown < Time.time)
-                {
-                    var spawnTime = lastTimeSpawned + AbilityCooldown;
-                    var projectile = projectilePool.GetEntity();
-                    var closestEnemy = StageController.EnemiesSpawner.GetClosestEnemy(PlayerBehavior.CenterPosition);
+                var closestEnemy = StageController.EnemiesSpawner.GetClosestEnemy(PlayerBehavior.CenterPosition);
 
-                    var direction = Vector2.up;
-                    if (closestEnemy != null)
+                if (closestEnemy != null && firePoint != null)
+                {
+                    Vector2 fireOrigin = firePoint.position;
+                    Vector2 direction = (closestEnemy.Center - fireOrigin).normalized;
+
+                    // 🔄 Pre-aim every frame toward target
+                    if (activeGunVisual != null)
                     {
-                        direction = closestEnemy.Center - PlayerBehavior.CenterPosition;
-                        direction.Normalize();
+                        float desiredAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                        Quaternion targetRotation = Quaternion.Euler(0, 0, desiredAngle);
+                        activeGunVisual.transform.rotation = Quaternion.RotateTowards(
+                            activeGunVisual.transform.rotation,
+                            targetRotation,
+                            720f * Time.deltaTime // 🔁 Up to 720°/sec rotation speed
+                        );
                     }
 
-                    var aliveDuration = Time.time - spawnTime;
-                    var position = PlayerBehavior.CenterPosition + direction * aliveDuration * AbilityLevel.ProjectileSpeed * PlayerBehavior.Player.ProjectileSpeedMultiplier;
+                    // 🔫 Fire if ready
+                    if (Time.time >= lastTimeSpawned + AbilityCooldown)
+                    {
+                        var projectile = projectilePool.GetEntity();
 
-                    projectile.InitBounce(
-                        position,
-                        direction,
-                        AbilityLevel.ProjectileSpeed * PlayerBehavior.Player.ProjectileSpeedMultiplier,
-                        AbilityLevel.ProjectileLifetime,
-                        AbilityLevel.Damage,
-                        AbilityLevel.BounceCount, // ✅ First time: pass bounceCount
-                        AbilityLevel.BounceRadius
-                    );
+                        projectile.InitBounce(
+                            fireOrigin,
+                            direction,
+                            AbilityLevel.ProjectileSpeed * PlayerBehavior.Player.ProjectileSpeedMultiplier,
+                            AbilityLevel.ProjectileLifetime,
+                            AbilityLevel.Damage,
+                            AbilityLevel.BounceCount,
+                            AbilityLevel.BounceRadius
+                        );
 
-                    projectile.onFinished += OnProjectileFinished;
-                    projectiles.Add(projectile);
+                        projectile.onFinished += OnProjectileFinished;
+                        projectiles.Add(projectile);
 
-                    lastTimeSpawned += AbilityCooldown;
-                    GameController.AudioManager.PlaySound(WAND_PROJECTILE_LAUNCH_HASH);
+                        lastTimeSpawned = Time.time;
+
+                        GameController.AudioManager.PlaySound(WAND_PROJECTILE_LAUNCH_HASH);
+                    }
                 }
+
                 yield return null;
             }
         }
 
+
+
+
         private void OnProjectileFinished(SimplePlayerProjectileBehavior projectile)
         {
             projectile.onFinished -= OnProjectileFinished;
+
             if (projectile is WandProjectileBehavior wandProjectile)
             {
                 projectiles.Remove(wandProjectile);
@@ -93,10 +124,20 @@ namespace OctoberStudio.Abilities
         private void Disable()
         {
             projectileCoroutine.StopIfExists();
+
             foreach (var proj in projectiles)
                 proj.gameObject.SetActive(false);
+
             projectiles.Clear();
-            StopCoroutine(abilityCoroutine);
+
+            if (activeGunVisual != null)
+            {
+                Destroy(activeGunVisual);
+                activeGunVisual = null;
+            }
+
+            if (abilityCoroutine != null)
+                StopCoroutine(abilityCoroutine);
         }
 
         public override void Clear()

@@ -29,10 +29,10 @@ MonoBehaviour:
     requiredAbilityLevel: 0
     shouldRemoveAfterEvolution: 0
   levels:
-  - abilityCooldown: 0.1
+  - abilityCooldown: 0.3
     projectileSpeed: 30
-    damage: 70
+    damage: 100
     projectileSize: 1
     projectileLifetime: 1
-    bounceCount: 3
-    bounceRadius: 1
+    bounceCount: 10
+    bounceRadius: 1.4

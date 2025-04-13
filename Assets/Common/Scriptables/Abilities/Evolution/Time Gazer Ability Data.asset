@@ -33,7 +33,3 @@ MonoBehaviour:
     slowDownMultiplier: 0.5
     damage: 15
     damageCooldown: 40
-  - fieldRadius: 2.5
-    slowDownMultiplier: 0.5
-    damage: 60
-    damageCooldown: 1
