@@ -8,12 +8,15 @@ public class MachineGunProjectileBehavior : SimplePlayerProjectileBehavior
     private float bounceRadius;
     private int bouncesDone = 0;
     private float baseMultiplier;
-    private readonly List<GameObject> alreadyHit = new();
+    private List<GameObject> alreadyHit = new List<GameObject>();
 
     private const float damageFalloffPerBounce = 0.8f;
 
-    [Header("Projectile Effect")]
+    [Header("VFX")]
+    [SerializeField] private GameObject flashEffect;
+    [SerializeField] private GameObject hitEffect;
     [SerializeField] private ParticleSystem projectileEffect;
+    [SerializeField] private float hitOffset = 0.1f;
 
     public void InitBounce(
         Vector2 position,
@@ -22,7 +25,8 @@ public class MachineGunProjectileBehavior : SimplePlayerProjectileBehavior
         float lifeTime,
         float damageMultiplier,
         int? bounceCount,
-        float radius)
+        float radius
+    )
     {
         transform.position = position;
         transform.localScale = Vector3.one * PlayerBehavior.Player.SizeMultiplier;
@@ -51,12 +55,25 @@ public class MachineGunProjectileBehavior : SimplePlayerProjectileBehavior
 
         foreach (var p in particles)
         {
-            if (p == null) continue;
             p.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             p.Clear();
             p.Play();
         }
 
+        // 🔥 Flash effect (play once and detach)
+        if (flashEffect != null)
+        {
+            flashEffect.transform.SetParent(null);
+            flashEffect.SetActive(true);
+
+            if (flashEffect.TryGetComponent(out ParticleSystem flashPS))
+            {
+                flashPS.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                flashPS.Play();
+            }
+        }
+
+        // 🔁 Reset projectile effect
         if (projectileEffect != null)
         {
             projectileEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
@@ -90,6 +107,20 @@ public class MachineGunProjectileBehavior : SimplePlayerProjectileBehavior
             float finalDamage = PlayerBehavior.Player.Damage * finalMultiplier;
 
             enemy.TakeDamage(finalDamage);
+
+            // 💥 Hit effect (play and stay detached)
+            if (hitEffect != null)
+            {
+                hitEffect.transform.position = transform.position + (Vector3)(direction * hitOffset);
+                hitEffect.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
+                hitEffect.SetActive(true);
+
+                if (hitEffect.TryGetComponent(out ParticleSystem hitPS))
+                {
+                    hitPS.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                    hitPS.Play();
+                }
+            }
         }
 
         if (remainingBounces > 0)
@@ -102,15 +133,7 @@ public class MachineGunProjectileBehavior : SimplePlayerProjectileBehavior
 
                 direction = (nextEnemy.Center - (Vector2)transform.position).normalized;
 
-                InitBounce(
-                    transform.position,
-                    direction,
-                    Speed,
-                    LifeTime,
-                    baseMultiplier,
-                    null,
-                    bounceRadius
-                );
+                InitBounce(transform.position, direction, Speed, LifeTime, baseMultiplier, null, bounceRadius);
                 return;
             }
         }
@@ -120,29 +143,29 @@ public class MachineGunProjectileBehavior : SimplePlayerProjectileBehavior
 
     private EnemyBehavior FindNextTarget()
     {
-        float closestSqrDist = float.MaxValue;
-        EnemyBehavior closestEnemy = null;
+        float closestDistance = float.MaxValue;
+        EnemyBehavior nextEnemy = null;
 
-        var enemies = StageController.EnemiesSpawner.GetEnemiesInRadius(transform.position, bounceRadius);
+        var allEnemies = StageController.EnemiesSpawner.GetEnemiesInRadius(transform.position, bounceRadius);
 
-        foreach (var enemy in enemies)
+        foreach (var enemy in allEnemies)
         {
             if (enemy == null || alreadyHit.Contains(enemy.gameObject)) continue;
 
-            float sqrDist = (enemy.Center - (Vector2)transform.position).sqrMagnitude;
-
-            if (sqrDist < closestSqrDist)
+            float dist = (enemy.Center - (Vector2)transform.position).sqrMagnitude;
+            if (dist < closestDistance)
             {
-                closestSqrDist = sqrDist;
-                closestEnemy = enemy;
+                closestDistance = dist;
+                nextEnemy = enemy;
             }
         }
 
-        return closestEnemy;
+        return nextEnemy;
     }
 
     private void FinishProjectile()
     {
+        // 💨 Stop projectile effect
         if (projectileEffect != null)
         {
             projectileEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);

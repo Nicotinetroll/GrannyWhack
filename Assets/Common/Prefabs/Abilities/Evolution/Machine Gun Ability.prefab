@@ -46,4 +46,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 330944705125390381, guid: 2ca0ed5f9efbdff43a6d3c1a282f57b0,
     type: 3}
-  projectiles: []
+  gunVisualPrefab: {fileID: 2040399662937732280, guid: 18d82edae03891648934b793bedf12d5,
+    type: 3}
+  gunOffset: {x: 0, y: 1, z: 0}
+  rotationSpeed: 720
+  kickbackDistance: 0.1
+  kickbackDuration: 0.08

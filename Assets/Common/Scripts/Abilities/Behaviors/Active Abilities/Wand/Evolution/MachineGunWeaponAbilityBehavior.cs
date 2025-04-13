@@ -11,14 +11,28 @@ namespace OctoberStudio.Abilities
     {
         public static readonly int MACHINE_GUN_PROJECTILE_LAUNCH_HASH = "Machine Gun Projectile Launch".GetHashCode();
 
-        [SerializeField] GameObject projectilePrefab;
+        [Header("Prefabs")]
+        [SerializeField] private GameObject projectilePrefab;
+        [SerializeField] private GameObject gunVisualPrefab;
+
+        [Header("Gun Settings")]
+        [SerializeField] private Vector3 gunOffset = new Vector3(0, -0.25f, 0);
+        [SerializeField] private float rotationSpeed = 720f;
+        [SerializeField] private float kickbackDistance = 0.1f;
+        [SerializeField] private float kickbackDuration = 0.08f;
+
         public GameObject ProjectilePrefab => projectilePrefab;
 
         private PoolComponent<MachineGunProjectileBehavior> projectilePool;
-        public List<MachineGunProjectileBehavior> projectiles = new();
+        private List<MachineGunProjectileBehavior> projectiles = new();
 
-        IEasingCoroutine projectileCoroutine;
-        Coroutine abilityCoroutine;
+        private GameObject activeGunVisual;
+        private Transform firePoint;
+        private Transform weaponRenderer;
+        private SpriteRenderer weaponSprite;
+
+        private Coroutine abilityCoroutine;
+        private IEasingCoroutine projectileCoroutine;
 
         private float AbilityCooldown => AbilityLevel.AbilityCooldown * PlayerBehavior.Player.CooldownMultiplier;
 
@@ -34,44 +48,96 @@ namespace OctoberStudio.Abilities
             if (abilityCoroutine != null)
                 Disable();
 
+            if (gunVisualPrefab != null && activeGunVisual == null)
+            {
+                activeGunVisual = Instantiate(gunVisualPrefab, PlayerBehavior.CenterTransform);
+                activeGunVisual.transform.localPosition = gunOffset;
+
+                firePoint = activeGunVisual.transform.Find("Weapon renderer/FirePoint");
+                weaponRenderer = activeGunVisual.transform.Find("Weapon renderer");
+
+                if (weaponRenderer != null)
+                    weaponSprite = weaponRenderer.GetComponent<SpriteRenderer>();
+
+                if (firePoint == null)
+                    Debug.LogWarning("FirePoint not found on gun visual prefab.");
+            }
+
             abilityCoroutine = StartCoroutine(AbilityCoroutine());
         }
 
         private IEnumerator AbilityCoroutine()
         {
-            var lastTimeSpawned = Time.time - AbilityCooldown;
+            float lastTimeSpawned = Time.time - AbilityCooldown;
 
             while (true)
             {
-                while (lastTimeSpawned + AbilityCooldown < Time.time)
+                var closestEnemy = StageController.EnemiesSpawner.GetClosestEnemy(PlayerBehavior.CenterPosition);
+
+                if (closestEnemy != null && firePoint != null)
                 {
-                    var spawnTime = lastTimeSpawned + AbilityCooldown;
-                    var projectile = projectilePool.GetEntity();
+                    Vector2 fireOrigin = firePoint.position;
+                    Vector2 direction = (closestEnemy.Center - fireOrigin).normalized;
 
-                    var closestEnemy = StageController.EnemiesSpawner.GetClosestEnemy(PlayerBehavior.CenterPosition);
-                    var direction = closestEnemy != null
-                        ? (closestEnemy.Center - PlayerBehavior.CenterPosition).normalized
-                        : Vector2.up;
+                    // 🔁 Smooth rotate gun to direction
+                    if (activeGunVisual != null)
+                    {
+                        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                        Quaternion targetRotation = Quaternion.Euler(0, 0, angle);
 
-                    var aliveDuration = Time.time - spawnTime;
-                    var position = PlayerBehavior.CenterPosition +
-                                   direction * aliveDuration * AbilityLevel.ProjectileSpeed * PlayerBehavior.Player.ProjectileSpeedMultiplier;
+                        activeGunVisual.transform.rotation = Quaternion.RotateTowards(
+                            activeGunVisual.transform.rotation,
+                            targetRotation,
+                            rotationSpeed * Time.deltaTime
+                        );
 
-                    projectile.InitBounce(
-                        position,
-                        direction,
-                        AbilityLevel.ProjectileSpeed * PlayerBehavior.Player.ProjectileSpeedMultiplier,
-                        AbilityLevel.ProjectileLifetime,
-                        AbilityLevel.Damage,
-                        AbilityLevel.BounceCount,
-                        AbilityLevel.BounceRadius
-                    );
+                        // 🔄 Flip weapon Y based on direction
+                        if (weaponSprite != null)
+                        {
+                            weaponSprite.flipY = direction.x < 0;
+                        }
+                    }
 
-                    projectile.onFinished += OnProjectileFinished;
-                    projectiles.Add(projectile);
+                    // 🔫 Fire when ready
+                    if (Time.time >= lastTimeSpawned + AbilityCooldown)
+                    {
+                        var projectile = projectilePool.GetEntity();
 
-                    lastTimeSpawned += AbilityCooldown;
-                    GameController.AudioManager.PlaySound(MACHINE_GUN_PROJECTILE_LAUNCH_HASH);
+                        projectile.InitBounce(
+                            fireOrigin,
+                            direction,
+                            AbilityLevel.ProjectileSpeed * PlayerBehavior.Player.ProjectileSpeedMultiplier,
+                            AbilityLevel.ProjectileLifetime,
+                            AbilityLevel.Damage,
+                            AbilityLevel.BounceCount,
+                            AbilityLevel.BounceRadius
+                        );
+
+                        projectile.onFinished += OnProjectileFinished;
+                        projectiles.Add(projectile);
+                        lastTimeSpawned = Time.time;
+
+                        GameController.AudioManager.PlaySound(MACHINE_GUN_PROJECTILE_LAUNCH_HASH);
+
+                        // 🔥 Kickback effect
+                        if (weaponRenderer != null)
+                        {
+                            Vector3 originalPos = weaponRenderer.localPosition;
+                            Vector3 kickbackPos = originalPos - (Vector3)(direction.normalized * kickbackDistance);
+
+                            EasingManager.DoLerp(kickbackDuration, t =>
+                            {
+                                weaponRenderer.localPosition = Vector3.LerpUnclamped(originalPos, kickbackPos, t);
+                            }, () =>
+                            {
+                                // Ease back to original
+                                EasingManager.DoLerp(kickbackDuration, t =>
+                                {
+                                    weaponRenderer.localPosition = Vector3.LerpUnclamped(kickbackPos, originalPos, t);
+                                });
+                            });
+                        }
+                    }
                 }
 
                 yield return null;
@@ -96,6 +162,12 @@ namespace OctoberStudio.Abilities
                 proj.gameObject.SetActive(false);
 
             projectiles.Clear();
+
+            if (activeGunVisual != null)
+            {
+                Destroy(activeGunVisual);
+                activeGunVisual = null;
+            }
 
             if (abilityCoroutine != null)
                 StopCoroutine(abilityCoroutine);
