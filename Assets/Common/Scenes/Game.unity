@@ -2092,20 +2092,65 @@ PrefabInstance:
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
       value: 1801810542
       objectReference: {fileID: 0}
+    - target: {fileID: 289229482011147359, guid: 24deeb7ea64b4df49994e80e9e1a9403,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 22.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 699001968917087574, guid: 24deeb7ea64b4df49994e80e9e1a9403,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3872156152832831777, guid: 24deeb7ea64b4df49994e80e9e1a9403,
         type: 3}
       propertyPath: coinsParticle
       value: 
       objectReference: {fileID: 680111815}
+    - target: {fileID: 4029135181764573749, guid: 24deeb7ea64b4df49994e80e9e1a9403,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 4029135181764573749, guid: 24deeb7ea64b4df49994e80e9e1a9403,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -366.4
+      objectReference: {fileID: 0}
     - target: {fileID: 4302748770895273900, guid: 24deeb7ea64b4df49994e80e9e1a9403,
         type: 3}
       propertyPath: m_Name
       value: Game Screen
       objectReference: {fileID: 0}
+    - target: {fileID: 5192827185572832539, guid: 24deeb7ea64b4df49994e80e9e1a9403,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 5192827185572832539, guid: 24deeb7ea64b4df49994e80e9e1a9403,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 5.000267
+      objectReference: {fileID: 0}
     - target: {fileID: 5907250190907836740, guid: 24deeb7ea64b4df49994e80e9e1a9403,
         type: 3}
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
       value: 1801810542
+      objectReference: {fileID: 0}
+    - target: {fileID: 6981076681318290171, guid: 24deeb7ea64b4df49994e80e9e1a9403,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.27843142
+      objectReference: {fileID: 0}
+    - target: {fileID: 6981076681318290171, guid: 24deeb7ea64b4df49994e80e9e1a9403,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.76892763
+      objectReference: {fileID: 0}
+    - target: {fileID: 6981076681318290171, guid: 24deeb7ea64b4df49994e80e9e1a9403,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7364593541397608731, guid: 24deeb7ea64b4df49994e80e9e1a9403,
         type: 3}
@@ -2221,6 +2266,16 @@ PrefabInstance:
         type: 3}
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
       value: 1801810542
+      objectReference: {fileID: 0}
+    - target: {fileID: 8332289874817891512, guid: 24deeb7ea64b4df49994e80e9e1a9403,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 8332289874817891512, guid: 24deeb7ea64b4df49994e80e9e1a9403,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8989765706745364202, guid: 24deeb7ea64b4df49994e80e9e1a9403,
         type: 3}

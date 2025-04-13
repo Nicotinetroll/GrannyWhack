@@ -4904,7 +4904,7 @@ GameObject:
   - component: {fileID: 5882113247840969931}
   - component: {fileID: 2262942773078262733}
   m_Layer: 0
-  m_Name: vfx_doubledamage_pickup
+  m_Name: vfx_doubledamage_pickup 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

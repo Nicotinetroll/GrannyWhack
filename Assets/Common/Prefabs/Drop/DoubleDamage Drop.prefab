@@ -133,9 +133,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a246eedd2b3511a46aff0b1aa1732491, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickUpParticle: {fileID: 2840114444586249407, guid: a686bf82a9a266e40adb19f97383ea79,
+  pickUpParticle: {fileID: 1652143759095011289, guid: e2c1ac940434a5242b54d72b66654687,
     type: 3}
-  particleDisableDelay: 2
+  particleDisableDelay: 10
   pickUpSoundName: Coin Pick Up
 --- !u!1001 &6151203894148674701
 PrefabInstance:
