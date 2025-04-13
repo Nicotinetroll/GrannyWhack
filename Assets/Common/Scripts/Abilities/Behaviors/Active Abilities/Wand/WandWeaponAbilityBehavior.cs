@@ -109,8 +109,6 @@ namespace OctoberStudio.Abilities
         }
 
 
-
-
         private void OnProjectileFinished(SimplePlayerProjectileBehavior projectile)
         {
             projectile.onFinished -= OnProjectileFinished;
