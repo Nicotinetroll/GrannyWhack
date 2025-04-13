@@ -33,7 +33,3 @@ MonoBehaviour:
     damage: 90
     projectileSize: 0.75
     projectilesCount: 5
-  - projectileSpeed: 16
-    damage: 150
-    projectileSize: 0.75
-    projectilesCount: 5

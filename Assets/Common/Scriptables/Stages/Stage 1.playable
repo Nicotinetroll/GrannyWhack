@@ -3206,7 +3206,7 @@ MonoBehaviour:
     - dropType: 40
       chance: 3
     - dropType: 1000
-      chance: 0.5
+      chance: 10
     disableOffscreenTeleport: 0
   circularSpawn: 0
   enemiesCount: 10
@@ -4055,7 +4055,7 @@ MonoBehaviour:
     - dropType: 40
       chance: 3
     - dropType: 1000
-      chance: 0.5
+      chance: 10
     disableOffscreenTeleport: 0
   circularSpawn: 0
   enemiesCount: 15
@@ -5171,7 +5171,7 @@ MonoBehaviour:
     - dropType: 40
       chance: 3
     - dropType: 1000
-      chance: 0.5
+      chance: 10
     disableOffscreenTeleport: 0
   circularSpawn: 0
   enemiesCount: 10
