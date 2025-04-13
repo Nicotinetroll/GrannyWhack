@@ -17,6 +17,7 @@ namespace OctoberStudio
         private static readonly int DEATH_HASH = "Death".GetHashCode();
         private static readonly int REVIVE_HASH = "Revive".GetHashCode();
         private static readonly int RECEIVING_DAMAGE_HASH = "Receiving Damage".GetHashCode();
+        
 
         private static PlayerBehavior instance;
         public static PlayerBehavior Player => instance;
@@ -247,6 +248,7 @@ namespace OctoberStudio
         {
             GoldMultiplier = initialGoldMultiplier * goldMultiplier;
         }
+        
 
         public void RestoreHP(float hpPercent)
         {

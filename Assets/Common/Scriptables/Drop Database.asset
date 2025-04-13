@@ -62,3 +62,8 @@ MonoBehaviour:
       type: 3}
     affectedByMagnet: 0
     dropCooldown: 60
+  - dropType: 1001
+    prefab: {fileID: 7999236800876406289, guid: c0d12ee191c719544bcd4bcac8c0911c,
+      type: 3}
+    affectedByMagnet: 0
+    dropCooldown: 60

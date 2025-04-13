@@ -19,5 +19,6 @@ namespace OctoberStudio
         
         
         DoubleDamageBuff = 1000,
+        HasteBuff = 1001,
     }
 }
