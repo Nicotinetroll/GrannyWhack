@@ -43,6 +43,13 @@ namespace OctoberStudio.Easing
         {
             return new NextFixedFrameCoroutine();
         }
+        
+        public static IEasingCoroutine DoLerp(float duration, UnityAction<float> onUpdate, UnityAction onComplete = null)
+        {
+            return new FloatEasingCoroutine(0f, 1f, duration, 0f, onUpdate).SetOnFinish(onComplete);
+        }
+
+
 
         public static Coroutine StartCustomCoroutine(IEnumerator coroutine)
         {
@@ -294,6 +301,7 @@ namespace OctoberStudio.Easing
             IsActive = false;
         }
     }
+    
 
     public class FloatEasingCoroutine : EasingCoroutine<float>
     {
