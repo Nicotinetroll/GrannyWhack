@@ -20,6 +20,7 @@ namespace OctoberStudio.Abilities
 
         private GameObject activeGunVisual;
         private Transform firePoint;
+        private SpriteRenderer weaponSprite;
 
         private PoolComponent<WandProjectileBehavior> projectilePool;
         private List<WandProjectileBehavior> projectiles = new();
@@ -48,8 +49,14 @@ namespace OctoberStudio.Abilities
                 activeGunVisual.transform.localPosition = gunOffset;
 
                 firePoint = activeGunVisual.transform.Find("Weapon renderer/FirePoint");
+
                 if (firePoint == null)
                     Debug.LogWarning("FirePoint not found on gun visual prefab.");
+
+                // ✅ Get SpriteRenderer for flipping
+                Transform spriteTransform = activeGunVisual.transform.Find("Weapon renderer");
+                if (spriteTransform != null)
+                    weaponSprite = spriteTransform.GetComponent<SpriteRenderer>();
             }
 
             abilityCoroutine = StartCoroutine(AbilityCoroutine());
@@ -68,19 +75,26 @@ namespace OctoberStudio.Abilities
                     Vector2 fireOrigin = firePoint.position;
                     Vector2 direction = (closestEnemy.Center - fireOrigin).normalized;
 
-                    // 🔄 Pre-aim every frame toward target
+                    // 🔁 Smooth Rotate gun to target
                     if (activeGunVisual != null)
                     {
-                        float desiredAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-                        Quaternion targetRotation = Quaternion.Euler(0, 0, desiredAngle);
+                        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                        Quaternion targetRotation = Quaternion.Euler(0, 0, angle);
+
                         activeGunVisual.transform.rotation = Quaternion.RotateTowards(
                             activeGunVisual.transform.rotation,
                             targetRotation,
-                            720f * Time.deltaTime // 🔁 Up to 720°/sec rotation speed
+                            720f * Time.deltaTime // fast but smooth
                         );
                     }
 
-                    // 🔫 Fire if ready
+                    // 🔁 Flip only Y if aiming left
+                    if (weaponSprite != null)
+                    {
+                        weaponSprite.flipY = direction.x < 0;
+                    }
+
+                    // 🔫 Fire
                     if (Time.time >= lastTimeSpawned + AbilityCooldown)
                     {
                         var projectile = projectilePool.GetEntity();
@@ -99,7 +113,6 @@ namespace OctoberStudio.Abilities
                         projectiles.Add(projectile);
 
                         lastTimeSpawned = Time.time;
-
                         GameController.AudioManager.PlaySound(WAND_PROJECTILE_LAUNCH_HASH);
                     }
                 }
@@ -108,15 +121,11 @@ namespace OctoberStudio.Abilities
             }
         }
 
-
         private void OnProjectileFinished(SimplePlayerProjectileBehavior projectile)
         {
             projectile.onFinished -= OnProjectileFinished;
-
             if (projectile is WandProjectileBehavior wandProjectile)
-            {
                 projectiles.Remove(wandProjectile);
-            }
         }
 
         private void Disable()
@@ -125,7 +134,6 @@ namespace OctoberStudio.Abilities
 
             foreach (var proj in projectiles)
                 proj.gameObject.SetActive(false);
-
             projectiles.Clear();
 
             if (activeGunVisual != null)
