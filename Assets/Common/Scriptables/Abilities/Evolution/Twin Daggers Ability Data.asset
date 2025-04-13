@@ -30,5 +30,5 @@ MonoBehaviour:
     shouldRemoveAfterEvolution: 0
   levels:
   - projectileCount: 10
-    abilityCooldown: 2
+    abilityCooldown: 5
     damage: 250
