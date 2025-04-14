@@ -445,3 +445,10 @@ MonoBehaviour:
       chance: 5
     deathParticlePrefab: {fileID: 0}
     deathParticlePoolName: 
+  - type: 100
+    prefab: {fileID: 1090571174421192766, guid: 9fe26deb45d6d42ea90a776dfe647f66,
+      type: 3}
+    icon: {fileID: 21300000, guid: 74ee0a16ef192487e9d5190330f7708d, type: 3}
+    enemyDrop: []
+    deathParticlePrefab: {fileID: 0}
+    deathParticlePoolName: 

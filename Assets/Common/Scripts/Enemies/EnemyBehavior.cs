@@ -33,8 +33,9 @@ namespace OctoberStudio
         [SerializeField] Rigidbody2D rb;
         [SerializeField] SpriteRenderer spriteRenderer;
         [SerializeField] DissolveSettings dissolveSettings;
-        [SerializeField] SpriteRenderer shadowSprite;
-        [SerializeField] Collider2D enemyCollider;
+        // Make these protected so derived classes (like StaticEnemyBehavior) can access them:
+        [SerializeField] protected SpriteRenderer shadowSprite;
+        [SerializeField] protected Collider2D enemyCollider;
 
         public Vector2 Center => enemyCollider.bounds.center;
 
@@ -185,7 +186,7 @@ namespace OctoberStudio
             }
         }
 
-        public float GetDamage()
+        public virtual float GetDamage()
         {
             float baseDmg = StageController.Stage.EnemyDamage * damage;
             if (WaveOverride != null)
@@ -317,7 +318,7 @@ namespace OctoberStudio
             WaveOverride = null;
         }
 
-        public void KickBack(Vector3 position)
+        public virtual void KickBack(Vector3 position)
         {
             var dir = (transform.position - position).normalized;
             rb.simulated = false;
@@ -329,7 +330,8 @@ namespace OctoberStudio
 
         public void AddEffects(List<Effect> effects)
         {
-            foreach (var e in effects) AddEffect(e);
+            foreach (var e in effects)
+                AddEffect(e);
         }
 
         public void AddEffect(Effect effect)

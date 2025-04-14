@@ -81,5 +81,8 @@ namespace OctoberStudio
         ZombieRandom = 20,
         GhostJar = 21,
         Skull = 22,
+        
+        
+        Grave = 100,
     }
 }

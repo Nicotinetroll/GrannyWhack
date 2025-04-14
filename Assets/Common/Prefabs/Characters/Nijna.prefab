@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1385333651283103268}
   - component: {fileID: 1063248840227528509}
   - component: {fileID: 146410852193012399}
+  - component: {fileID: 7208894721150982495}
   m_Layer: 10
   m_Name: Nijna
   m_TagString: Untagged
@@ -126,3 +127,19 @@ MonoBehaviour:
   playerSpriteRenderer: {fileID: 1385333651283103268}
   animator: {fileID: 1063248840227528509}
   hitColor: {r: 1, g: 0.3882353, b: 0.3882353, a: 0.64705884}
+--- !u!114 &7208894721150982495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2921880940271959218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee158225ee1e59f4791627785501d950, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentShaderType: 4
+  normalStrength: 5
+  normalSmoothing: 1
+  computingNormal: 0
