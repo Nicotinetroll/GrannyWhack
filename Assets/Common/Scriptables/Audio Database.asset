@@ -313,8 +313,20 @@ MonoBehaviour:
       audioClip: {fileID: 8300000, guid: e016ec0812c9ac3498fa9edd3a6b9981, type: 3}
       volume: {x: 0.1, y: 0.1}
       pitch: {x: 1, y: 1}
+  - name: Main Menu Music
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: c55f3d3324d3e41efb4a8d0d5cb7d495, type: 3}
+      volume: {x: 0.15, y: 0.15}
+      pitch: {x: 1, y: 1}
+  - name: Stage 1
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: 0de6b10639dc04d89862810f0f1445c8, type: 3}
+      volume: {x: 0.15, y: 0.15}
+      pitch: {x: 1, y: 1}
   music:
-    name: Music
+    name: 
     cooldown: 0
     audioClip:
       audioClip: {fileID: 8300000, guid: 0de6b10639dc04d89862810f0f1445c8, type: 3}

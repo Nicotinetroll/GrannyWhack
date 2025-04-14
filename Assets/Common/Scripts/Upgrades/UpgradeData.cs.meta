@@ -1,2 +1,9 @@
 fileFormatVersion: 2
 guid: 36d3b836181b43648ba3d70244b2d519
+AssetOrigin:
+  serializedVersion: 1
+  productId: 304936
+  packageName: Monster Survivors - Full Game
+  packageVersion: 
+  assetPath: Assets/Common/Scripts/Upgrades/UpgradeData.cs
+  uploadId: 0

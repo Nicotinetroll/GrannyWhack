@@ -13,7 +13,7 @@ AssetOrigin:
   serializedVersion: 1
   productId: 304936
   packageName: Monster Survivors - Full Game
-  packageVersion: 1.1.0
+  packageVersion: 1.1.2
   assetPath: Assets/Common/Scripts/Abilities/Behaviors/Passive Abilities/Projectile
     Speed/ProjectileSpeedAbilityData.cs
-  uploadId: 732643
+  uploadId: 748816

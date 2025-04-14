@@ -14,6 +14,8 @@ namespace OctoberStudio
 
     public class GameController : MonoBehaviour
     {
+        protected static readonly string MAIN_MENU_MUSIC_NAME = "Main Menu Music";
+
         private static GameController instance;
 
         [SerializeField] CurrenciesManager currenciesManager;
@@ -73,7 +75,43 @@ namespace OctoberStudio
                 //Gold.Deposit(1000);
             }
 
-            EasingManager.DoAfter(0.1f, () => Music = AudioManager.AudioDatabase.Music.Play(true));
+            EasingManager.DoAfter(0.1f, () => Music = AudioManager.PlayMusic(MAIN_MENU_MUSIC_NAME.GetHashCode()));
+        }
+
+        public static void ChangeMusic(string musicName)
+        {
+            if(Music != null)
+            {
+                var oldMusic = Music;
+                oldMusic.DoVolume(0, 0.3f).SetOnFinish(() => oldMusic.Stop());
+            }
+
+            Music = AudioManager.PlayMusic(musicName.GetHashCode());
+
+            if(Music != null)
+            {
+                var volume = Music.volume;
+                Music.volume = 0;
+                Music.DoVolume(volume, 0.3f);
+            }
+        }
+
+        public static void ChangeMusic(SoundContainer music)
+        {
+            if (Music != null)
+            {
+                var oldMusic = Music;
+                oldMusic.DoVolume(0, 0.3f).SetOnFinish(() => oldMusic.Stop());
+            }
+
+            Music = music.Play(true);
+
+            if (Music != null)
+            {
+                var volume = Music.volume;
+                Music.volume = 0;
+                Music.DoVolume(volume, 0.3f);
+            }
         }
 
         public static void RegisterInputManager(IInputManager inputManager)
@@ -127,6 +165,11 @@ namespace OctoberStudio
             yield return LoadAsyncScene("Loading Screen", LoadSceneMode.Additive);
             yield return UnloadAsyncScene("Game");
             yield return LoadAsyncScene("Main Menu", LoadSceneMode.Single);
+
+            if (StageController.Stage.UseCustomMusic)
+            {
+                ChangeMusic(MAIN_MENU_MUSIC_NAME);
+            }
         }
 
         private static IEnumerator UnloadAsyncScene(string sceneName)

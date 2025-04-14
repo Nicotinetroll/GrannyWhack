@@ -79,8 +79,6 @@ namespace OctoberStudio.Audio
         private void Start()
         {
             save = GameController.SaveManager.GetSave<AudioSave>("Audio");
-
-            database.Init();
         }
 
         public AudioSource PlaySound(AudioClip clip, float volume = 1, float pitch = 1)
@@ -146,6 +144,17 @@ namespace OctoberStudio.Audio
             source.Play();
 
             return source;
+        }
+
+        public AudioSource PlayMusic(int hash)
+        {
+            if (sounds.ContainsKey(hash))
+            {
+                return sounds[hash].Play(true);
+            }
+
+            Debug.LogWarning($"There are no sound with hash {hash} in the AudioDatabase");
+            return null;
         }
 
         private void OnSoundVolumeChanged()

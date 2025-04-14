@@ -11,13 +11,16 @@ namespace OctoberStudio.Audio
         [SerializeField] List<SoundContainer> sounds;
         public List<SoundContainer> Sounds => sounds;
 
-        [Header("Music")]
+        [Header("Music (Obsolete. Use Sounds instead)")]
+        [Tooltip("This value is obsolete and will be deprecated. Use sounds instead")] 
         [SerializeField] SoundContainer music;
+
+        [System.Obsolete("This Property is obsolete and will be deprecated. Use sounds instead")]
         public SoundContainer Music => music;
 
         public void Init()
         {
-            music.Init();
+            if(music != null) music.Init();
         }
     }
 

@@ -14,5 +14,6 @@ namespace OctoberStudio.Audio
         AudioSource PlaySound(AudioClipData clipData, float volume = 1, float pitch = 1);
 
         AudioSource PlayMusic(AudioClipData clipData);
+        AudioSource PlayMusic(int hash);
     }
 }

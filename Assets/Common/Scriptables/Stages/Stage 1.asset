@@ -15,7 +15,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: bff1caf6224894e58b24f5acae1fc4c2, type: 3}
   displayName: Blast Throne
   timeline: {fileID: 11400000, guid: fa599a9bdd46a7b4886ff5ecbdfbe895, type: 2}
-  stageType: 0
+  stageType: 1
   stageFieldData: {fileID: 11400000, guid: 52c7b0006b996a04681b47c761528a3d, type: 2}
   spawnProp: 1
   removePropFromBossfight: 1
@@ -23,3 +23,5 @@ MonoBehaviour:
   spotlightShadowColor: {r: 0.011764706, g: 0.09411765, b: 0.2901961, a: 0.95686275}
   enemyDamage: 1
   enemyHP: 1
+  useCustomMusic: 1
+  musicName: Stage 1

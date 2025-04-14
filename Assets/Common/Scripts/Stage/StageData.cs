@@ -43,6 +43,13 @@ namespace OctoberStudio
 
         [SerializeField] float enemyHP;
         public float EnemyHP => enemyHP;
+
+        [Space]
+        [SerializeField] bool useCustomMusic;
+        public bool UseCustomMusic => useCustomMusic;
+
+        [SerializeField] string musicName;
+        public string MusicName => musicName;
     }
 
     public enum StageType
