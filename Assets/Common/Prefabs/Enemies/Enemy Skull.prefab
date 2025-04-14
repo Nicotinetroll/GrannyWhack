@@ -76,7 +76,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 0.35
   damage: 50
-  hp: 1500
+  hp: 3000
   canBeKickedBack: 1
   shouldFadeIn: 0
   rb: {fileID: 5611959192970924213}
@@ -86,8 +86,7 @@ MonoBehaviour:
   enemyCollider: {fileID: 1982295306974641257}
   hitScaleAmount: 0
   hitColor: {r: 1, g: 1, b: 1, a: 1}
-  hitParticlePrefab: {fileID: 0}
-  deathFXPoolName: GhostDeathFX
+  eliteHealthbar: {fileID: 0}
 --- !u!58 &1982295306974641257
 CircleCollider2D:
   m_ObjectHideFlags: 0
