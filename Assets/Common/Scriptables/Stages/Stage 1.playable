@@ -111,7 +111,7 @@ MonoBehaviour:
     useDropOverride: 1
     dropOverride:
     - dropType: 1000
-      chance: 50
+      chance: 80
     - dropType: 0
       chance: 50
     disableOffscreenTeleport: 0
@@ -1709,7 +1709,7 @@ MonoBehaviour:
     useDropOverride: 1
     dropOverride:
     - dropType: 1000
-      chance: 50
+      chance: 80
     - dropType: 0
       chance: 50
     disableOffscreenTeleport: 0
@@ -2056,7 +2056,7 @@ MonoBehaviour:
     useDropOverride: 1
     dropOverride:
     - dropType: 1000
-      chance: 50
+      chance: 80
     - dropType: 0
       chance: 50
     disableOffscreenTeleport: 0
@@ -2434,7 +2434,7 @@ MonoBehaviour:
     useDropOverride: 1
     dropOverride:
     - dropType: 1000
-      chance: 50
+      chance: 80
     - dropType: 0
       chance: 50
     disableOffscreenTeleport: 0
@@ -2564,7 +2564,7 @@ MonoBehaviour:
     useDropOverride: 1
     dropOverride:
     - dropType: 1000
-      chance: 50
+      chance: 80
     - dropType: 0
       chance: 50
     disableOffscreenTeleport: 0
@@ -3069,7 +3069,7 @@ MonoBehaviour:
     useDropOverride: 1
     dropOverride:
     - dropType: 1000
-      chance: 50
+      chance: 80
     - dropType: 0
       chance: 50
     disableOffscreenTeleport: 0
@@ -3130,7 +3130,7 @@ MonoBehaviour:
     useDropOverride: 1
     dropOverride:
     - dropType: 1000
-      chance: 50
+      chance: 80
     - dropType: 0
       chance: 50
     disableOffscreenTeleport: 0
