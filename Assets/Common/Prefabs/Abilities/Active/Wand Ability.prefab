@@ -49,3 +49,5 @@ MonoBehaviour:
   gunVisualPrefab: {fileID: 2040399662937732280, guid: 036965a2bcf91db4db0e8896551554c5,
     type: 3}
   gunOffset: {x: 0, y: 1, z: 0}
+  kickbackDistance: 0.4
+  kickbackReturnTime: 0.1
