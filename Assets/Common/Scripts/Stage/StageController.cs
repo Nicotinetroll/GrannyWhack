@@ -23,6 +23,15 @@ namespace OctoberStudio
         [SerializeField] WorldSpaceTextManager worldSpaceTextManager;
         [SerializeField] CameraManager cameraManager;
 
+        [Header("UI")]
+        [SerializeField] GameScreenBehavior gameScreen;
+        [SerializeField] StageFailedScreen stageFailedScreen;
+        [SerializeField] StageCompleteScreen stageCompletedScreen;
+        [SerializeField] PlayerStatsManager playerStats;
+
+        [Header("Testing")]
+        [SerializeField] PresetData testingPreset;
+
         public static EnemiesSpawner EnemiesSpawner => instance.spawner;
         public static ExperienceManager ExperienceManager => instance.experienceManager;
         public static AbilityManager AbilityManager => instance.abilityManager;
@@ -32,17 +41,7 @@ namespace OctoberStudio
         public static WorldSpaceTextManager WorldSpaceTextManager => instance.worldSpaceTextManager;
         public static CameraManager CameraController => instance.cameraManager;
         public static DropManager DropManager => instance.dropManager;
-
-        [Header("UI")]
-        [SerializeField] GameScreenBehavior gameScreen;
-        [SerializeField] StageFailedScreen stageFailedScreen;
-        [SerializeField] StageCompleteScreen stageCompletedScreen;
-
-        [Header("Testing")]
-        [SerializeField] PresetData testingPreset;
-
         public static GameScreenBehavior GameScreen => instance.gameScreen;
-
         public static StageData Stage { get; private set; }
 
         private StageSave stageSave;
@@ -50,16 +49,29 @@ namespace OctoberStudio
         private void Awake()
         {
             instance = this;
-
             stageSave = GameController.SaveManager.GetSave<StageSave>("Stage");
+
+            // Ensure PlayerStatsManager is found
+            if (playerStats == null)
+                playerStats = Object.FindFirstObjectByType<PlayerStatsManager>();
         }
 
         private void Start()
         {
             Stage = database.GetStage(stageSave.SelectedStageId);
 
+            // Reset player stats if this is a new run
+            if (stageSave.ResetStageData && playerStats != null)
+            {
+                playerStats.ResetStats();
+                stageSave.ResetStageData = false;
+                GameController.SaveManager.Save(true);
+            }
+
+            // Load stage timeline
             director.playableAsset = Stage.Timeline;
 
+            // Init systems
             spawner.Init(director);
             experienceManager.Init(testingPreset);
             dropManager.Init();
@@ -68,23 +80,31 @@ namespace OctoberStudio
             cameraManager.Init(Stage);
 
             PlayerBehavior.Player.onPlayerDied += OnGameFailed;
+            experienceManager.onXpLevelChanged += OnPlayerLevelUp;
+
+            // 🛡️ Invincibility after closing ability panel
+            GameScreen.AbilitiesWindow.onPanelClosed += () =>
+            {
+                PlayerBehavior.Player.StartInvincibility(1f);
+            };
 
             director.stopped += TimelineStopped;
-            if (testingPreset != null) {
-                director.time = testingPreset.StartTime; 
-            } else
+
+            // Rewind time if needed (based on saved state or preset)
+            if (testingPreset != null)
+            {
+                director.time = testingPreset.StartTime;
+            }
+            else
             {
                 var time = stageSave.Time;
-
                 var bossClips = director.GetClips<BossTrack, Boss>();
 
-                for(int i = 0; i < bossClips.Count; i++)
+                foreach (var bossClip in bossClips)
                 {
-                    var bossClip = bossClips[i];
-
-                    if(time >= bossClip.start && time <= bossClip.end)
+                    if (time >= bossClip.start && time <= bossClip.end)
                     {
-                        time = (float) bossClip.start;
+                        time = (float)bossClip.start;
                         break;
                     }
                 }
@@ -94,34 +114,39 @@ namespace OctoberStudio
 
             director.Play();
 
+            // 🎵 Set custom music
             if (Stage.UseCustomMusic)
             {
                 GameController.ChangeMusic(Stage.MusicName);
             }
         }
 
+        private void OnPlayerLevelUp(int level)
+        {
+            Debug.Log($"Player leveled up to {level}.");
+        }
+
         private void TimelineStopped(PlayableDirector director)
         {
-            if (gameObject.activeSelf)
+            if (!gameObject.activeSelf) return;
+
+            if (stageSave.MaxReachedStageId < stageSave.SelectedStageId + 1 &&
+                stageSave.SelectedStageId + 1 < database.StagesCount)
             {
-                if (stageSave.MaxReachedStageId < stageSave.SelectedStageId + 1 && stageSave.SelectedStageId + 1 < database.StagesCount)
-                {
-                    stageSave.SetMaxReachedStageId(stageSave.SelectedStageId + 1);
-                }
-
-                stageSave.IsPlaying = false;
-                GameController.SaveManager.Save(true);
-
-                gameScreen.Hide();
-                stageCompletedScreen.Show();
-                Time.timeScale = 0;
+                stageSave.SetMaxReachedStageId(stageSave.SelectedStageId + 1);
             }
+
+            stageSave.IsPlaying = false;
+            GameController.SaveManager.Save(true);
+
+            gameScreen.Hide();
+            stageCompletedScreen.Show();
+            Time.timeScale = 0;
         }
 
         private void OnGameFailed()
         {
             Time.timeScale = 0;
-
             stageSave.IsPlaying = false;
             GameController.SaveManager.Save(true);
 
@@ -132,7 +157,6 @@ namespace OctoberStudio
         public static void ResurrectPlayer()
         {
             EnemiesSpawner.DealDamageToAllEnemies(PlayerBehavior.Player.Damage * 1000);
-
             GameScreen.Show();
             PlayerBehavior.Player.Revive();
             Time.timeScale = 1;
