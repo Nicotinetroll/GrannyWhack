@@ -9,12 +9,13 @@ namespace OctoberStudio.UI
         [SerializeField] private CanvasGroup canvasGroup;
         [SerializeField] private RectMask2D mask;
         [SerializeField] private TMP_Text buffLabel;
+        [SerializeField] private Image fillImage; // ✅ Link to Progress Bar Fill
 
         private float duration;
         private float timeRemaining;
         private bool isActive;
 
-        public void ShowBuff(string buffName, float buffDuration)
+        public void ShowBuff(string buffName, float buffDuration, Color fillColor)
         {
             if (string.IsNullOrEmpty(buffName) || buffDuration <= 0f)
                 return;
@@ -24,6 +25,9 @@ namespace OctoberStudio.UI
 
             if (buffLabel != null)
                 buffLabel.text = buffName;
+
+            if (fillImage != null)
+                fillImage.color = fillColor; // ✅ Apply custom color
 
             if (canvasGroup != null)
             {
@@ -46,7 +50,7 @@ namespace OctoberStudio.UI
                 canvasGroup.blocksRaycasts = false;
             }
 
-            Destroy(gameObject); // ✅ Destroy this UI element when hidden
+            Destroy(gameObject);
         }
 
         private void Update()
@@ -57,7 +61,7 @@ namespace OctoberStudio.UI
 
             if (timeRemaining <= 0f)
             {
-                Hide(); // Automatically hides + destroys when done
+                Hide();
                 return;
             }
 

@@ -370,6 +370,7 @@ MonoBehaviour:
   canvasGroup: {fileID: 5745916602672319392}
   mask: {fileID: 8976007712552170019}
   buffLabel: {fileID: 2088017081657066931}
+  fillImage: {fileID: 224048938595914098}
 --- !u!1 &7717173786285239018
 GameObject:
   m_ObjectHideFlags: 0

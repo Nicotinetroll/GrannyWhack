@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: DoubleDamageBuff
   m_EditorClassIdentifier: 
   buffType: 0
+  title: Double Damage
   duration: 10
+  value: 1
   runtimePrefab: {fileID: 6475947669080737166, guid: 843278fc27165fd47aba61f8a102d0a9,
     type: 3}
-  title: Double Damage
+  barColor: {r: 0, g: 0.6556065, b: 1, a: 1}

@@ -18,11 +18,14 @@ namespace OctoberStudio.Buffs
         [Header("Runtime Prefab")]
         [SerializeField] private RuntimeBuff runtimePrefab;
 
+        [Header("UI Settings")]
+        [SerializeField] private Color barColor = Color.white; // ✅ New
+
         public BuffType BuffType => buffType;
         public string Title => title;
         public float Duration => duration;
-        public float Value => value; // 👈 Added accessor
+        public float Value => value;
         public RuntimeBuff RuntimePrefab => runtimePrefab;
-        
+        public Color BarColor => barColor; // ✅ New
     }
 }
