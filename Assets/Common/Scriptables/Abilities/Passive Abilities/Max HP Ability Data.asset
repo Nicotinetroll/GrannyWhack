@@ -30,3 +30,6 @@ MonoBehaviour:
   - maxHPMultiplier: 2
   - maxHPMultiplier: 2.2
   - maxHPMultiplier: 2.4
+  - maxHPMultiplier: 2.6
+  - maxHPMultiplier: 2.8
+  - maxHPMultiplier: 3

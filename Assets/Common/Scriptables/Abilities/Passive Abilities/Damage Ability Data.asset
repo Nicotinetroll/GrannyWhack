@@ -30,3 +30,6 @@ MonoBehaviour:
   - damageMultiplier: 1.5
   - damageMultiplier: 1.6
   - damageMultiplier: 1.7
+  - damageMultiplier: 1.8
+  - damageMultiplier: 1.9
+  - damageMultiplier: 2

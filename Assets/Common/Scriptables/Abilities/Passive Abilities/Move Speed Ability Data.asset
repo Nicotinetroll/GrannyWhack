@@ -30,3 +30,6 @@ MonoBehaviour:
   - speedMultiplier: 1.5
   - speedMultiplier: 1.6
   - speedMultiplier: 1.7
+  - speedMultiplier: 1.8
+  - speedMultiplier: 1.9
+  - speedMultiplier: 2

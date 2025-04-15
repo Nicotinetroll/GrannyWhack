@@ -164,7 +164,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buffsDatabase: {fileID: 11400000, guid: bdc02e91e8f1975459d3adf4d8f4dc2b, type: 2}
-  buffUI: {fileID: 1243550783}
+  buffUIPrefab: {fileID: 5698706338374758307, guid: 2e54b63dd13344572b0f07c8752fe387,
+    type: 3}
+  buffUIContainer: {fileID: 651892854}
 --- !u!224 &73902010 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5040941394360533178, guid: 526ee5a8b79f89e4495ff8533294c005,
@@ -607,6 +609,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   experienceData: {fileID: 11400000, guid: fffb86bb83bfc2140a50ff57366afd1f, type: 2}
   experienceUI: {fileID: 1508479206}
+--- !u!224 &651892854 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 9059175003912705488, guid: 24deeb7ea64b4df49994e80e9e1a9403,
+    type: 3}
+  m_PrefabInstance: {fileID: 6795864787202576071}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &680111813
 GameObject:
   m_ObjectHideFlags: 0
@@ -922,18 +930,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1322520481}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1243550783 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7676951443937442295, guid: 24deeb7ea64b4df49994e80e9e1a9403,
-    type: 3}
-  m_PrefabInstance: {fileID: 6795864787202576071}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca1a7cd3ee3114b42b403c54d4d71875, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1246814600
 GameObject:
   m_ObjectHideFlags: 0

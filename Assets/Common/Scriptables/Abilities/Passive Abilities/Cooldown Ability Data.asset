@@ -26,7 +26,10 @@ MonoBehaviour:
   - cooldownMultiplier: 0.92
   - cooldownMultiplier: 0.84
   - cooldownMultiplier: 0.76
-  - cooldownMultiplier: 0.68
-  - cooldownMultiplier: 0.58
-  - cooldownMultiplier: 0.48
-  - cooldownMultiplier: 0.6
+  - cooldownMultiplier: 0.7
+  - cooldownMultiplier: 0.65
+  - cooldownMultiplier: 0.55
+  - cooldownMultiplier: 0.5
+  - cooldownMultiplier: 0.45
+  - cooldownMultiplier: 0.4
+  - cooldownMultiplier: 0.35

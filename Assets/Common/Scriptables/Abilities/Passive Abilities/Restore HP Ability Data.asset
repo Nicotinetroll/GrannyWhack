@@ -33,7 +33,13 @@ MonoBehaviour:
     cooldown: 5
   - restoredHPPercent: 5
     cooldown: 5
-  - restoredHPPercent: 5
-    cooldown: 6
-  - restoredHPPercent: 5
-    cooldown: 7
+  - restoredHPPercent: 6
+    cooldown: 5
+  - restoredHPPercent: 7
+    cooldown: 5
+  - restoredHPPercent: 8
+    cooldown: 5
+  - restoredHPPercent: 9
+    cooldown: 5
+  - restoredHPPercent: 10
+    cooldown: 5

@@ -30,3 +30,6 @@ MonoBehaviour:
   - projectileSpeedMultiplier: 1.5
   - projectileSpeedMultiplier: 1.6
   - projectileSpeedMultiplier: 1.7
+  - projectileSpeedMultiplier: 1.8
+  - projectileSpeedMultiplier: 1.9
+  - projectileSpeedMultiplier: 2

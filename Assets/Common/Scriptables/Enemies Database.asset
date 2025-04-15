@@ -442,7 +442,9 @@ MonoBehaviour:
     icon: {fileID: -1316427822, guid: e87b27f939e044d96af9844da63d1d81, type: 3}
     enemyDrop:
     - dropType: 1000
-      chance: 5
+      chance: 10
+    - dropType: 1001
+      chance: 10
     deathParticlePrefab: {fileID: 0}
     deathParticlePoolName: 
   - type: 100

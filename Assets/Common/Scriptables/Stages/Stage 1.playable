@@ -198,8 +198,8 @@ MonoBehaviour:
     damageOverride: 10
     useHPOverride: 1
     hpOverride: 20
-    useSpeedOverride: 0
-    speedOverride: 0
+    useSpeedOverride: 1
+    speedOverride: 0.5
     useDropOverride: 1
     dropOverride:
     - dropType: 0
@@ -236,8 +236,8 @@ MonoBehaviour:
     damageOverride: 10
     useHPOverride: 1
     hpOverride: 80
-    useSpeedOverride: 0
-    speedOverride: 0
+    useSpeedOverride: 1
+    speedOverride: 0.65
     useDropOverride: 1
     dropOverride:
     - dropType: 0
@@ -1301,8 +1301,8 @@ MonoBehaviour:
     damageOverride: 10
     useHPOverride: 1
     hpOverride: 60
-    useSpeedOverride: 0
-    speedOverride: 0
+    useSpeedOverride: 1
+    speedOverride: 0.6
     useDropOverride: 1
     dropOverride:
     - dropType: 0
@@ -1730,8 +1730,8 @@ MonoBehaviour:
     damageOverride: 10
     useHPOverride: 1
     hpOverride: 150
-    useSpeedOverride: 0
-    speedOverride: 0
+    useSpeedOverride: 1
+    speedOverride: 0.65
     useDropOverride: 1
     dropOverride:
     - dropType: 0
@@ -1953,7 +1953,7 @@ MonoBehaviour:
     useHPOverride: 1
     hpOverride: 10
     useSpeedOverride: 0
-    speedOverride: 0
+    speedOverride: 0.4
     useDropOverride: 1
     dropOverride:
     - dropType: 0
@@ -1986,8 +1986,8 @@ MonoBehaviour:
     damageOverride: 10
     useHPOverride: 1
     hpOverride: 20
-    useSpeedOverride: 0
-    speedOverride: 0
+    useSpeedOverride: 1
+    speedOverride: 0.5
     useDropOverride: 1
     dropOverride:
     - dropType: 0
@@ -2055,8 +2055,8 @@ MonoBehaviour:
     damageOverride: 30
     useHPOverride: 1
     hpOverride: 400
-    useSpeedOverride: 0
-    speedOverride: 0
+    useSpeedOverride: 1
+    speedOverride: 0.65
     useDropOverride: 1
     dropOverride:
     - dropType: 1
@@ -2091,8 +2091,8 @@ MonoBehaviour:
     damageOverride: 30
     useHPOverride: 1
     hpOverride: 600
-    useSpeedOverride: 0
-    speedOverride: 0
+    useSpeedOverride: 1
+    speedOverride: 0.65
     useDropOverride: 1
     dropOverride:
     - dropType: 2
@@ -2152,8 +2152,8 @@ MonoBehaviour:
     damageOverride: 30
     useHPOverride: 1
     hpOverride: 500
-    useSpeedOverride: 0
-    speedOverride: 0
+    useSpeedOverride: 1
+    speedOverride: 0.65
     useDropOverride: 1
     dropOverride:
     - dropType: 2
@@ -2184,8 +2184,8 @@ MonoBehaviour:
     damageOverride: 15
     useHPOverride: 1
     hpOverride: 150
-    useSpeedOverride: 0
-    speedOverride: 0
+    useSpeedOverride: 1
+    speedOverride: 0.65
     useDropOverride: 1
     dropOverride:
     - dropType: 0
@@ -2216,8 +2216,8 @@ MonoBehaviour:
     damageOverride: 60
     useHPOverride: 1
     hpOverride: 600
-    useSpeedOverride: 0
-    speedOverride: 0
+    useSpeedOverride: 1
+    speedOverride: 0.65
     useDropOverride: 1
     dropOverride:
     - dropType: 1
@@ -2563,8 +2563,8 @@ MonoBehaviour:
     damageOverride: 30
     useHPOverride: 1
     hpOverride: 400
-    useSpeedOverride: 0
-    speedOverride: 0
+    useSpeedOverride: 1
+    speedOverride: 0.65
     useDropOverride: 1
     dropOverride:
     - dropType: 1
@@ -2595,8 +2595,8 @@ MonoBehaviour:
     damageOverride: 15
     useHPOverride: 1
     hpOverride: 80
-    useSpeedOverride: 0
-    speedOverride: 0
+    useSpeedOverride: 1
+    speedOverride: 0.65
     useDropOverride: 1
     dropOverride:
     - dropType: 0
@@ -3100,8 +3100,8 @@ MonoBehaviour:
     damageOverride: 15
     useHPOverride: 1
     hpOverride: 100
-    useSpeedOverride: 0
-    speedOverride: 0
+    useSpeedOverride: 1
+    speedOverride: 0.65
     useDropOverride: 1
     dropOverride:
     - dropType: 0
@@ -3828,8 +3828,8 @@ MonoBehaviour:
     damageOverride: 10
     useHPOverride: 1
     hpOverride: 100
-    useSpeedOverride: 0
-    speedOverride: 0
+    useSpeedOverride: 1
+    speedOverride: 0.65
     useDropOverride: 1
     dropOverride:
     - dropType: 0
@@ -3866,8 +3866,8 @@ MonoBehaviour:
     damageOverride: 10
     useHPOverride: 1
     hpOverride: 10
-    useSpeedOverride: 0
-    speedOverride: 0
+    useSpeedOverride: 1
+    speedOverride: 0.4
     useDropOverride: 1
     dropOverride:
     - dropType: 0
@@ -3904,8 +3904,8 @@ MonoBehaviour:
     damageOverride: 15
     useHPOverride: 1
     hpOverride: 35
-    useSpeedOverride: 0
-    speedOverride: 0
+    useSpeedOverride: 1
+    speedOverride: 0.55
     useDropOverride: 1
     dropOverride:
     - dropType: 0
@@ -4660,8 +4660,8 @@ MonoBehaviour:
     damageOverride: 30
     useHPOverride: 1
     hpOverride: 500
-    useSpeedOverride: 0
-    speedOverride: 0
+    useSpeedOverride: 1
+    speedOverride: 0.65
     useDropOverride: 1
     dropOverride:
     - dropType: 1
@@ -5292,8 +5292,8 @@ MonoBehaviour:
     damageOverride: 15
     useHPOverride: 1
     hpOverride: 60
-    useSpeedOverride: 0
-    speedOverride: 0
+    useSpeedOverride: 1
+    speedOverride: 0.6
     useDropOverride: 1
     dropOverride:
     - dropType: 0
@@ -5391,8 +5391,8 @@ MonoBehaviour:
     damageOverride: 10
     useHPOverride: 1
     hpOverride: 35
-    useSpeedOverride: 0
-    speedOverride: 0
+    useSpeedOverride: 1
+    speedOverride: 0.55
     useDropOverride: 1
     dropOverride:
     - dropType: 0

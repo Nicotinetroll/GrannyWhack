@@ -24,7 +24,7 @@ MonoBehaviour:
   evolutionRequirements:
   - abilityType: 4
     requiredAbilityLevel: 4
-    shouldRemoveAfterEvolution: 1
+    shouldRemoveAfterEvolution: 0
   - abilityType: 107
     requiredAbilityLevel: 0
     shouldRemoveAfterEvolution: 0
