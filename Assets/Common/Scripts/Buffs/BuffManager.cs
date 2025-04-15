@@ -8,7 +8,10 @@ namespace OctoberStudio.Buffs
         public static BuffManager Instance { get; private set; }
 
         [SerializeField] private BuffsDatabase buffsDatabase;
-        [SerializeField] private BuffUI buffUI; // ✅ Make sure this is here
+
+        [Header("UI")]
+        [SerializeField] private BuffUI buffUIPrefab;             // ✅ Prefab of the BuffUI
+        [SerializeField] private Transform buffUIContainer;       // ✅ The "Buffs" GameObject under Canvas
 
         private void Awake()
         {
@@ -41,13 +44,15 @@ namespace OctoberStudio.Buffs
                 return;
             }
 
+            // Apply the actual buff logic to the player/enemy/etc.
             var instance = Instantiate(buff.RuntimePrefab, transform);
             instance.Init(buff);
 
-            // ✅ Show in UI
-            if (buffUI != null)
+            // ✅ Create visual representation in UI
+            if (buffUIPrefab != null && buffUIContainer != null)
             {
-                buffUI.ShowBuff(buff.Title, buff.Duration);
+                var uiInstance = Instantiate(buffUIPrefab, buffUIContainer);
+                uiInstance.ShowBuff(buff.Title, buff.Duration);
             }
         }
     }
