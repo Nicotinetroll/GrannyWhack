@@ -17,13 +17,13 @@ namespace OctoberStudio
             if (GameController.SaveManager == null)
             {
                 Debug.LogWarning("[CharacterLevelSystem] SaveManager not ready. XP event skipped.");
-                return;     // can’t do anything yet
+                return;                                     // can’t do anything yet
             }
 
             save = GameController.SaveManager
                                   .GetSave<CharacterLevelSave>("CharacterLevels");
 
-            cfg  = Resources.Load<CharacterLevelingConfig>("CharacterLevelingConfig");
+            cfg = Resources.Load<CharacterLevelingConfig>("CharacterLevelingConfig");
             if (cfg == null)
                 Debug.LogWarning("[CharacterLevelSystem] No CharacterLevelingConfig asset found.");
         }
@@ -31,6 +31,18 @@ namespace OctoberStudio
         /* ── public API ─────────────────────────────────────────────── */
         public static int   GetLevel(CharacterData c) { EnsureInit(); return Get(c)?.lvl ?? 1; }
         public static float GetXp   (CharacterData c) { EnsureInit(); return Get(c)?.xp  ?? 0f; }
+
+        /*  NEW  – flat damage bonus **************************************** */
+        public static float GetDamageBonus(CharacterData c)
+        {
+            EnsureInit();
+            int lvl = GetLevel(c);
+            return (lvl - 1) * cfg.DamagePerLevel;          // Lv 1 → +0
+        }
+
+        public static float DamagePerLevel
+            => cfg ? cfg.DamagePerLevel : 0f;
+        /* ******************************************************************* */
 
         public static void AddMatchResults(CharacterData c, int kills, float damage)
         {
@@ -40,7 +52,7 @@ namespace OctoberStudio
             var entry = Get(c);
             if (entry == null) return;
 
-            float inc = kills * cfg.XpPerKill +
+            float inc = kills  * cfg.XpPerKill +
                         damage * cfg.XpPerDamage;
 
             int prev = entry.lvl;

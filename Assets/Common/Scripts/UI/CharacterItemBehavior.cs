@@ -28,7 +28,7 @@ namespace OctoberStudio.UI
         [Header("Stats")]
         [SerializeField] TMP_Text hpText;
         [SerializeField] TMP_Text damageText;
-        [SerializeField] TMP_Text levelLabel;          // ★ NEW  (drag a TMP object here)
+        [SerializeField] TMP_Text levelLabel;     // drag a TMP object here
 
         [Space]
         [SerializeField] ScalingLabelBehavior costLabel;
@@ -77,7 +77,7 @@ namespace OctoberStudio.UI
 
             Data        = characterData;
             CharacterId = id;
-            
+
             RedrawVisuals();
         }
 
@@ -85,11 +85,13 @@ namespace OctoberStudio.UI
 
         private void RedrawVisuals()
         {
-            titleLabel.text   = Data.Name;
-            iconImage.sprite  = Data.Icon;
+            titleLabel.text  = Data.Name;
+            iconImage.sprite = Data.Icon;
 
-            hpText.text       = Data.BaseHP.ToString();
-            damageText.text   = Data.BaseDamage.ToString();
+            hpText.text = Data.BaseHP.ToString();
+            
+            float dmg = Data.BaseDamage + CharacterLevelSystem.GetDamageBonus(Data);
+            damageText.text = dmg.ToString();
 
             if (levelLabel != null)
                 levelLabel.text = $"{CharacterLevelSystem.GetLevel(Data)}";

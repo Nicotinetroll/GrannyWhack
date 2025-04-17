@@ -13,10 +13,13 @@ namespace OctoberStudio
         [SerializeField] AnimationCurve xpCurve      = AnimationCurve.Linear(1, 0, 50, 1_000);
         [SerializeField] float xpPerKill             = 1f;
         [SerializeField] float xpPerDamage           = 0.01f;
+        [SerializeField, Min(0)] float damagePerLevel = 1f;   //  ★ NEW
+
 
         public int   MaxLevel           => maxLevel;
         public float XpPerKill          => xpPerKill;
         public float XpPerDamage        => xpPerDamage;
+        public float DamagePerLevel => damagePerLevel;
 
         /// <returns>XP needed **to reach** <paramref name="level"/> (not cumulative).</returns>
         public float GetXpForLevel(int level) => xpCurve.Evaluate(level);

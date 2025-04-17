@@ -196,11 +196,16 @@ namespace OctoberStudio
 
         public void RecalculateDamage(float damageMultiplier)
         {
-            Damage = Data.BaseDamage * damageMultiplier;
+            // 1) base damage + per‑level flat bonus
+            float raw = Data.BaseDamage +
+                        CharacterLevelSystem.GetDamageBonus(Data);
+
+            // 2) apply global multiplier (potions, buffs, etc.)
+            Damage = raw * damageMultiplier;
+
+            // 3) apply permanent upgrades (shop)
             if (GameController.UpgradesManager.IsUpgradeAquired(UpgradeType.Damage))
-            {
                 Damage *= GameController.UpgradesManager.GetUpgadeValue(UpgradeType.Damage);
-            }
         }
 
         public void RecalculateMaxHP(float maxHPMultiplier)
