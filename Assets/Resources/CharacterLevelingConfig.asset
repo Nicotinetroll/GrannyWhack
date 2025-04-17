@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5947a74a7d239c478fe143c04bff32b, type: 3}
   m_Name: CharacterLevelingConfig
   m_EditorClassIdentifier: 
-  maxLevel: 50
+  maxLevel: 25
   xpCurve:
     serializedVersion: 2
     m_Curve:
@@ -37,5 +37,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  xpPerKill: 1
-  xpPerDamage: 0.01
+  xpPerKill: 0.1
+  xpPerDamage: 0.001
+  damagePerLevel: 0.041666
