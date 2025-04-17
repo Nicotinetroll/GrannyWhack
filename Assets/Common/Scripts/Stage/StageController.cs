@@ -50,11 +50,26 @@ namespace OctoberStudio
         {
             instance = this;
             stageSave = GameController.SaveManager.GetSave<StageSave>("Stage");
+            CharacterLevelSystem.Init(GameController.SaveManager);
 
             // Ensure PlayerStatsManager is found
             if (playerStats == null)
                 playerStats = Object.FindFirstObjectByType<PlayerStatsManager>();
         }
+        
+        private void GrantCharacterExperience()
+        {
+            // grab the damage the UI has been aggregating the whole run
+            float totalDamage = PlayerStatsManager.Instance
+                ? PlayerStatsManager.Instance.TotalDamage
+                : 0f;   // failsafe – won’t crash in weird test scenes
+
+            CharacterLevelSystem.AddMatchResults(
+                PlayerBehavior.Player.Data,
+                stageSave.EnemiesKilled,
+                totalDamage);
+        }
+
 
         private void Start()
         {
@@ -129,6 +144,8 @@ namespace OctoberStudio
         private void TimelineStopped(PlayableDirector director)
         {
             if (!gameObject.activeSelf) return;
+            
+            GrantCharacterExperience();
 
             if (stageSave.MaxReachedStageId < stageSave.SelectedStageId + 1 &&
                 stageSave.SelectedStageId + 1 < database.StagesCount)
@@ -148,6 +165,8 @@ namespace OctoberStudio
         {
             Time.timeScale = 0;
             stageSave.IsPlaying = false;
+            
+            GrantCharacterExperience();   
             GameController.SaveManager.Save(true);
 
             gameScreen.Hide();
