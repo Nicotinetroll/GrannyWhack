@@ -15,7 +15,7 @@ MonoBehaviour:
   characters:
   - name: NIJNA
     cost: 0
-    icon: {fileID: 21300000, guid: 18883dfeb848c433c9761fc87ddcf86d, type: 3}
+    icon: {fileID: 838262661, guid: 791abc5027c954755a68bc7d7d2f805d, type: 3}
     prefab: {fileID: 2921880940271959218, guid: 85d2cb894c49f40f7b88674a5fe2bb34,
       type: 3}
     hasStartingAbility: 1
