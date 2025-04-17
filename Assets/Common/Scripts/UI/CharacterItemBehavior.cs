@@ -91,7 +91,7 @@ namespace OctoberStudio.UI
             hpText.text = Data.BaseHP.ToString();
             
             float dmg = Data.BaseDamage + CharacterLevelSystem.GetDamageBonus(Data);
-            damageText.text = dmg.ToString("F2");
+            damageText.text = dmg.ToString();
 
             if (levelLabel != null)
                 levelLabel.text = $"{CharacterLevelSystem.GetLevel(Data)}";
