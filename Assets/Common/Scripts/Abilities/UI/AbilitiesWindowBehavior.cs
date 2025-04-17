@@ -84,7 +84,8 @@ namespace OctoberStudio.Abilities.UI
             {
                 rerollCharges--;
                 stageSave.RerollCharges = rerollCharges;
-                stageSave.Flush();
+                stageSave.Flush();                   
+                GameController.SaveManager.Save();  
 
                 var newAbilities = StageController.AbilityManager.GetRandomAbilities(3);
                 SetData(newAbilities);
@@ -115,9 +116,11 @@ namespace OctoberStudio.Abilities.UI
 
         public void ResetRerollCharges()
         {
-            rerollCharges            = player.MaxRerollCharges;
-            stageSave.RerollCharges  = rerollCharges;
+            rerollCharges           = player.MaxRerollCharges;
+            stageSave.RerollCharges = rerollCharges;
             stageSave.Flush();
+            GameController.SaveManager.Save();       
+
             UpdateRerollButtonUI();
         }
 

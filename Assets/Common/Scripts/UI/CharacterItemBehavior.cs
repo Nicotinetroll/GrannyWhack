@@ -14,36 +14,39 @@ namespace OctoberStudio.UI
         public RectTransform Rect => rect;
 
         [Header("Info")]
-        [SerializeField] Image iconImage;
+        [SerializeField] Image   iconImage;
         [SerializeField] TMP_Text titleLabel;
         [SerializeField] GameObject startingAbilityObject;
-        [SerializeField] Image startingAbilityImage;
+        [SerializeField] Image   startingAbilityImage;
 
         [Header("Button")]
-        [SerializeField] Button upgradeButton;
-        [SerializeField] Sprite enabledButtonSprite;
-        [SerializeField] Sprite disabledButtonSprite;
-        [SerializeField] Sprite selectedButtonSprite;
+        [SerializeField] Button  upgradeButton;
+        [SerializeField] Sprite  enabledButtonSprite;
+        [SerializeField] Sprite  disabledButtonSprite;
+        [SerializeField] Sprite  selectedButtonSprite;
 
         [Header("Stats")]
         [SerializeField] TMP_Text hpText;
         [SerializeField] TMP_Text damageText;
+        [SerializeField] TMP_Text levelLabel;          // ★ NEW  (drag a TMP object here)
 
         [Space]
         [SerializeField] ScalingLabelBehavior costLabel;
         [SerializeField] TMP_Text buttonText;
 
-        public CurrencySave GoldCurrency { get; private set; }
+        public CurrencySave   GoldCurrency   { get; private set; }
         private CharactersSave charactersSave;
 
         public Selectable Selectable => upgradeButton;
 
-        public CharacterData Data { get; private set; }
-        public int CharacterId { get; private set; }
+        public CharacterData Data        { get; private set; }
+        public int           CharacterId { get; private set; }
 
         public bool IsSelected { get; private set; }
 
         public UnityAction<CharacterItemBehavior> onNavigationSelected;
+
+        /* ───────────────────────────────────────────────────────────── */
 
         private void Start()
         {
@@ -52,7 +55,7 @@ namespace OctoberStudio.UI
 
         public void Init(int id, CharacterData characterData, AbilitiesDatabase database)
         {
-            if(charactersSave == null)
+            if (charactersSave == null)
             {
                 charactersSave = GameController.SaveManager.GetSave<CharactersSave>("Characters");
                 charactersSave.onSelectedCharacterChanged += RedrawVisuals;
@@ -66,25 +69,30 @@ namespace OctoberStudio.UI
 
             startingAbilityObject.SetActive(characterData.HasStartingAbility);
 
-            if(characterData.HasStartingAbility)
+            if (characterData.HasStartingAbility)
             {
                 var abilityData = database.GetAbility(characterData.StartingAbility);
                 startingAbilityImage.sprite = abilityData.Icon;
             }
 
-            Data = characterData;
+            Data        = characterData;
             CharacterId = id;
-
+            
             RedrawVisuals();
         }
 
+        /* ───── visual refresh ─────────────────────────────────────────── */
+
         private void RedrawVisuals()
         {
-            titleLabel.text = Data.Name;
-            iconImage.sprite = Data.Icon;
+            titleLabel.text   = Data.Name;
+            iconImage.sprite  = Data.Icon;
 
-            hpText.text = Data.BaseHP.ToString();
-            damageText.text = Data.BaseDamage.ToString();
+            hpText.text       = Data.BaseHP.ToString();
+            damageText.text   = Data.BaseDamage.ToString();
+
+            if (levelLabel != null)
+                levelLabel.text = $"{CharacterLevelSystem.GetLevel(Data)}";
 
             RedrawButton();
         }
@@ -96,18 +104,16 @@ namespace OctoberStudio.UI
                 costLabel.gameObject.SetActive(false);
                 buttonText.gameObject.SetActive(true);
 
-                if(charactersSave.SelectedCharacterId == CharacterId)
+                if (charactersSave.SelectedCharacterId == CharacterId)
                 {
                     upgradeButton.interactable = false;
                     upgradeButton.image.sprite = selectedButtonSprite;
-
                     buttonText.text = "SELECTED";
-
-                } else
+                }
+                else
                 {
                     upgradeButton.interactable = true;
                     upgradeButton.image.sprite = enabledButtonSprite;
-
                     buttonText.text = "SELECT";
                 }
             }
@@ -131,6 +137,8 @@ namespace OctoberStudio.UI
             }
         }
 
+        /* ───── button click / gold updates ───────────────────────────── */
+
         private void SelectButtonClick()
         {
             if (!charactersSave.HasCharacterBeenBought(CharacterId))
@@ -142,14 +150,15 @@ namespace OctoberStudio.UI
             charactersSave.SetSelectedCharacterId(CharacterId);
 
             GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
-
             EventSystem.current.SetSelectedGameObject(upgradeButton.gameObject);
         }
 
-        private void OnGoldAmountChanged(int amount)
+        private void OnGoldAmountChanged(int _)
         {
             RedrawButton();
         }
+
+        /* ───── navigation hooks ─────────────────────────────────────── */
 
         public void Select()
         {
@@ -163,29 +172,26 @@ namespace OctoberStudio.UI
 
         private void Update()
         {
-            if(!IsSelected && EventSystem.current.currentSelectedGameObject == upgradeButton.gameObject)
+            if (!IsSelected && EventSystem.current.currentSelectedGameObject == upgradeButton.gameObject)
             {
                 IsSelected = true;
-
                 onNavigationSelected?.Invoke(this);
-            } 
-            else if(IsSelected && EventSystem.current.currentSelectedGameObject != upgradeButton.gameObject)
+            }
+            else if (IsSelected && EventSystem.current.currentSelectedGameObject != upgradeButton.gameObject)
             {
                 IsSelected = false;
-            } 
+            }
         }
+
+        /* ───── cleanup ──────────────────────────────────────────────── */
 
         public void Clear()
         {
             if (GoldCurrency != null)
-            {
                 GoldCurrency.onGoldAmountChanged -= OnGoldAmountChanged;
-            }
 
             if (charactersSave != null)
-            {
                 charactersSave.onSelectedCharacterChanged -= RedrawVisuals;
-            }
         }
     }
 }
