@@ -11,6 +11,8 @@ namespace OctoberStudio
     public class StageController : MonoBehaviour
     {
         private static StageController instance;
+        private CharacterData cachedCharacter;
+
 
         [SerializeField] StagesDatabase database;
         [SerializeField] PlayableDirector director;
@@ -46,29 +48,48 @@ namespace OctoberStudio
 
         private StageSave stageSave;
 
+        // StageController.cs – Awake()
         private void Awake()
         {
-            instance = this;
+            instance  = this;
             stageSave = GameController.SaveManager.GetSave<StageSave>("Stage");
-            CharacterLevelSystem.Init(GameController.SaveManager);
 
-            // Ensure PlayerStatsManager is found
-            if (playerStats == null)
-                playerStats = Object.FindFirstObjectByType<PlayerStatsManager>();
+            /* ──────────────────────────────────────────────────────────────
+               FIX – make sure the per‑run counters start from 0 every time
+               (the previous value was being re‑used because ResetStageData
+               was never turned on for the next run).
+               ──────────────────────────────────────────────────────────────*/
+            stageSave.ResetStageData = true;   //  let every system know this is a fresh round
+            stageSave.EnemiesKilled  = 0;      //  wipe the carry‑over kill counter
+            GameController.SaveManager.Save(false);   // quick silent save
+            
+            if (PlayerBehavior.Player != null)
+                cachedCharacter = PlayerBehavior.Player.Data;
+
         }
+
         
+        // ── StageController.cs ─────────────────────────────────────────────
         private void GrantCharacterExperience()
         {
-            // grab the damage the UI has been aggregating the whole run
-            float totalDamage = PlayerStatsManager.Instance
-                ? PlayerStatsManager.Instance.TotalDamage
-                : 0f;   // failsafe – won’t crash in weird test scenes
+            // refresh the cache in case we didn't have it yet
+            if (cachedCharacter == null && PlayerBehavior.Player != null)
+                cachedCharacter = PlayerBehavior.Player.Data;
+
+            if (cachedCharacter == null)
+            {
+                Debug.LogWarning("[StageController] Missing CharacterData – XP not granted.");
+                return;  // bail gracefully, no crashes
+            }
+
+            float totalDamage = playerStats ? playerStats.TotalDamage : 0f;
 
             CharacterLevelSystem.AddMatchResults(
-                PlayerBehavior.Player.Data,
+                cachedCharacter,
                 stageSave.EnemiesKilled,
                 totalDamage);
         }
+
 
 
         private void Start()
