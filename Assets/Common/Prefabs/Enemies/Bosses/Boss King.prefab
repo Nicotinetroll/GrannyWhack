@@ -312,7 +312,6 @@ MonoBehaviour:
   enemyCollider: {fileID: 5827178357725712972}
   hitScaleAmount: 0
   hitColor: {r: 1, g: 1, b: 1, a: 0.78431374}
-  hitParticlePrefab: {fileID: 0}
   eliteHealthbar: {fileID: 0}
   animator: {fileID: 2992067885033876473}
   bombProjectilePrefab: {fileID: 7909275432813284331, guid: eac86f1c47ec0b347b129726179e68eb,
@@ -323,7 +322,7 @@ MonoBehaviour:
   bombDamageMultiplier: 80
   shootVFXPrefab: {fileID: 5124166242607940835, guid: 3b7507cbf49a98548a9440443ee9d843,
     type: 3}
-  spawnedEnemyType: 22
+  spawnedEnemyType: 16
   spawningWavesCount: 5
   spawnedEnemiesCount: 1
   durationBetweenSpawning: 1

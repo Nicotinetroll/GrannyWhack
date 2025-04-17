@@ -75,9 +75,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4a4496d11815d848b6014f08b944435, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0.4
-  damage: 15
-  hp: 1000
+  speed: 0.55
+  damage: 50
+  hp: 3500
   canBeKickedBack: 0
   shouldFadeIn: 0
   rb: {fileID: 5611959192970924213}
@@ -90,20 +90,20 @@ MonoBehaviour:
   eliteHealthbar: {fileID: 831590034753735833}
   animator: {fileID: 5814870023696751212}
   attackType: 1
-  minProjectilesPerAttack: 6
+  minProjectilesPerAttack: 3
   maxProjectilesPerAttack: 8
   timeBetweenProjectiles: 0.15
   projectileDamage: 50
   projectileSpread: 1
   overrideProjectileSpeed: 1
-  projectileSpeed: 2
+  projectileSpeed: 3
   overrideProjectileLifetime: 1
   projectileLifetime: 5
   projectilePrefab: {fileID: 2753907358125633333, guid: da7d65690ab341148ae61638217253f1,
     type: 3}
   rangedAttackCooldown: 3
   useAttackAnimation: 1
-  minDistanceToPlayerForAttacking: 5
+  minDistanceToPlayerForAttacking: 7
   changeSpeedDuringAttackAnimation: 1
   speedDuringAttackAnimation: 0
 --- !u!58 &1982295306974641257
