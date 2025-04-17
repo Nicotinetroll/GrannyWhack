@@ -30,7 +30,7 @@ MonoBehaviour:
     shouldRemoveAfterEvolution: 0
   levels:
   - abilityCooldown: 2
-    slashesCount: 5
+    slashesCount: 4
     damage: 115
-    slashSize: 2
+    slashSize: 1.5
     timeBetweenSlashes: 0.2
