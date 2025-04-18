@@ -13,6 +13,9 @@ namespace OctoberStudio
         FlyingDagger = 8,
         SolarMagnifier = 9,
         GrannysArmpit = 10,
+        
+        // NIJNA
+        DeathBlade = 11,
 
         Magnet = 100,
         MoveSpeed = 101,
