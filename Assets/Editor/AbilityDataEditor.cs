@@ -12,9 +12,9 @@ namespace OctoberStudio.Editor
     [CustomEditor(typeof(AbilityData), true)]
     public class AbilityDataEditor : UnityEditor.Editor
     {
-        /* cached SerializedProperties */
+        /* cached properties */
         SerializedProperty isCharSpecificProp;
-        SerializedProperty allowedCharNameProp;      // ← string
+        SerializedProperty allowedCharNameProp;
         SerializedProperty minLevelProp;
 
         /* popup data */
@@ -23,44 +23,50 @@ namespace OctoberStudio.Editor
 
         void OnEnable()
         {
-            isCharSpecificProp   = serializedObject.FindProperty("isCharacterSpecific");
-            allowedCharNameProp  = serializedObject.FindProperty("allowedCharacterName");
-            minLevelProp         = serializedObject.FindProperty("minCharacterLevel");
+            isCharSpecificProp  = serializedObject.FindProperty("isCharacterSpecific");
+            allowedCharNameProp = serializedObject.FindProperty("allowedCharacterName");
+            minLevelProp        = serializedObject.FindProperty("minCharacterLevel");
 
             LoadCharacters();
         }
 
+        /* pull character list from CharactersDatabase via reflection */
         void LoadCharacters()
         {
             chars.Clear();
 
-            /* find any CharactersDatabase asset */
             string guid = AssetDatabase.FindAssets("t:CharactersDatabase").FirstOrDefault();
             if (string.IsNullOrEmpty(guid)) return;
 
-            var path = AssetDatabase.GUIDToAssetPath(guid);
-            var db   = AssetDatabase.LoadAssetAtPath<Object>(path);
+            var db   = AssetDatabase.LoadAssetAtPath<Object>(AssetDatabase.GUIDToAssetPath(guid));
             if (db == null) return;
 
-            /* reflection: fetch IEnumerable<CharacterData> from DB */
             IEnumerable<CharacterData> list = null;
-            var type = db.GetType();
+            System.Type t = db.GetType();
 
-            // search props
-            foreach (var p in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            bool IsCharList(System.Type st)
             {
-                if (IsCharacterList(p.PropertyType))
+                if (!typeof(IEnumerable).IsAssignableFrom(st)) return false;
+                var elem = st.IsArray ? st.GetElementType()
+                                      : st.GetGenericArguments().FirstOrDefault();
+                return elem != null && typeof(CharacterData).IsAssignableFrom(elem);
+            }
+
+            // props
+            foreach (var p in t.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            {
+                if (IsCharList(p.PropertyType))
                 {
                     list = p.GetValue(db) as IEnumerable<CharacterData>;
                     break;
                 }
             }
-            // search fields if not found
+            // fields
             if (list == null)
             {
-                foreach (var f in type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
+                foreach (var f in t.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
                 {
-                    if (IsCharacterList(f.FieldType))
+                    if (IsCharList(f.FieldType))
                     {
                         list = f.GetValue(db) as IEnumerable<CharacterData>;
                         break;
@@ -73,41 +79,36 @@ namespace OctoberStudio.Editor
             names  = chars.Select(c => c.Name).ToArray();
         }
 
-        static bool IsCharacterList(System.Type t)
-        {
-            if (!typeof(IEnumerable).IsAssignableFrom(t)) return false;
-            var elem = t.IsArray ? t.GetElementType()
-                                 : t.GetGenericArguments().FirstOrDefault();
-            return elem != null && typeof(CharacterData).IsAssignableFrom(elem);
-        }
-
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
 
-            DrawPropertiesExcluding(serializedObject,
-                "allowedCharacterName",
-                "minCharacterLevel");
+            /* draw the toggle first */
+            EditorGUILayout.PropertyField(isCharSpecificProp);
 
+            /* draw popup + level directly beneath when active */
             if (isCharSpecificProp.boolValue)
             {
-                EditorGUILayout.Space(2);
-
                 if (chars.Count == 0)
                 {
-                    EditorGUILayout.HelpBox("CharactersDatabase not found or contains no characters.", MessageType.Warning);
+                    EditorGUILayout.HelpBox("CharactersDatabase not found or empty.", MessageType.Warning);
                 }
                 else
                 {
-                    /* current index from stored name */
-                    string current = allowedCharNameProp.stringValue;
-                    int index      = Mathf.Max(0, System.Array.IndexOf(names, current));
-                    index          = EditorGUILayout.Popup("Allowed Character", index, names);
-                    allowedCharNameProp.stringValue = names[index];
+                    int idx = Mathf.Max(0, System.Array.IndexOf(names, allowedCharNameProp.stringValue));
+                    idx     = EditorGUILayout.Popup("Allowed Character", idx, names);
+                    allowedCharNameProp.stringValue = names[idx];
                 }
 
                 EditorGUILayout.PropertyField(minLevelProp);
+                EditorGUILayout.Space(4);
             }
+
+            /* draw the rest of the fields */
+            DrawPropertiesExcluding(serializedObject,
+                "isCharacterSpecific",
+                "allowedCharacterName",
+                "minCharacterLevel");
 
             serializedObject.ApplyModifiedProperties();
         }

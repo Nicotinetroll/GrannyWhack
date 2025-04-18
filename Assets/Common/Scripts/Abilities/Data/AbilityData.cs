@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using OctoberStudio;
+using OctoberStudio;          // gives CharacterData + CharacterLevelSystem
 
 namespace OctoberStudio.Abilities
 {
     public abstract class AbilityData : ScriptableObject
     {
-        /* ─────────── Character restriction ─────────── */
+        /* ───────── Character restriction ───────── */
         [Header("Character Restriction")]
         [SerializeField] bool  isCharacterSpecific = false;
         public  bool  IsCharacterSpecific => isCharacterSpecific;
@@ -17,13 +17,13 @@ namespace OctoberStudio.Abilities
 
         [SerializeField, Min(1)] int minCharacterLevel = 1;
         public  int MinCharacterLevel => minCharacterLevel;
-        /* ───────────────────────────────────────────── */
+        /* ───────────────────────────────────────── */
 
         [Tooltip("The unique identifier of an ability")]
         [SerializeField] protected AbilityType type;
         public AbilityType AbilityType => type;
 
-        [Tooltip("Shoud be short, no more than two words")]
+        [Tooltip("Should be short, no more than two words")]
         [SerializeField] string title;
         public string Title => title;
 
@@ -31,7 +31,7 @@ namespace OctoberStudio.Abilities
         [SerializeField] string description;
         public string Description => description;
 
-        [Tooltip("Image that will appear on the ui")]
+        [Tooltip("Image that will appear on the UI")]
         [SerializeField] Sprite icon;
         public Sprite Icon => icon;
 
@@ -46,15 +46,15 @@ namespace OctoberStudio.Abilities
         [SerializeField] protected bool isWeaponAbility;
         public bool IsWeaponAbility => isWeaponAbility;
 
-        [Tooltip("This ability will only be shown if there are no other abilities available. Cannot be upgraded, always applies it's first level")]
+        [Tooltip("Shown only when there are no other abilities available. Cannot be upgraded, always applies its first level")]
         [SerializeField] protected bool isEndgameAbility;
         public bool IsEndgameAbility => isEndgameAbility;
 
-        [Tooltip("Whether this ability is the evolution of other abilities. It will be shown to the player only if the evolution requirements are met")]
+        [Tooltip("Whether this ability is the evolution of other abilities. It will be shown only if the evolution requirements are met")]
         [SerializeField] bool isEvolution;
         public bool IsEvolution => isEvolution;
 
-        [Tooltip("The requirements for this ability to be shown to the player. Ignore this field if the 'isEvolution' field is false")]
+        [Tooltip("The requirements for this ability to be shown. Ignored if 'isEvolution' is false")]
         [SerializeField] List<EvolutionRequirement> evolutionRequirements;
         public List<EvolutionRequirement> EvolutionRequirements => evolutionRequirements;
 
@@ -67,7 +67,7 @@ namespace OctoberStudio.Abilities
 
         public AbilityLevel GetLevel(int index) => Levels[index];
 
-        /* ───────── helper for gating ───────── */
+        /* ───── helper for gating ───── */
         public bool IsUnlockedFor(CharacterData character)
         {
             if (!isCharacterSpecific) return true;
@@ -78,7 +78,7 @@ namespace OctoberStudio.Abilities
         }
     }
 
-    /* ---------------- serialisable helpers ---------------- */
+    /* ---------- serialisable helpers ---------- */
 
     [System.Serializable]
     public abstract class AbilityLevel { }
