@@ -13,13 +13,14 @@ namespace OctoberStudio.Abilities
             "Death Blade Attack".GetHashCode();
 
         [SerializeField] private GameObject bladePrefab;
+
         private PoolComponent<DeathBladeSlashBehavior> _slashPool;
         private readonly List<DeathBladeSlashBehavior> _active = new();
         private Coroutine _abilityCoroutine;
 
-        private float Cooldown => 
+        private float Cooldown =>
             AbilityLevel.AbilityCooldown * PlayerBehavior.Player.CooldownMultiplier;
-        private float SlashDelay => 
+        private float SlashDelay =>
             AbilityLevel.TimeBetweenSlashes * PlayerBehavior.Player.CooldownMultiplier;
 
         void Awake()
@@ -39,35 +40,43 @@ namespace OctoberStudio.Abilities
         {
             while (true)
             {
+                // 1) Find the single closest target for this entire volley
+                EnemyBehavior closest = null;
+                float bestSqr = float.MaxValue;
+                Vector2 center = PlayerBehavior.CenterPosition;
+                var enemies = StageController.EnemiesSpawner.GetAllEnemies();
+                foreach (var e in enemies)
+                {
+                    float sqr = ((Vector2)e.transform.position - center).sqrMagnitude;
+                    if (sqr < bestSqr)
+                    {
+                        bestSqr = sqr;
+                        closest = e;
+                    }
+                }
+
+                // 2) For each slash, spawn at that same target (or player if none)
                 for (int i = 0; i < AbilityLevel.SlashesCount; i++)
                 {
-                    // spawn slash
                     var slash = _slashPool.GetEntity();
-                    slash.transform.position = PlayerBehavior.CenterPosition;
 
-                    // pick target
-                    var target =
-                        StageController.EnemiesSpawner.GetClosestEnemy(PlayerBehavior.CenterPosition);
-                    if (target != null)
-                    {
-                        // face from player to enemy
-                        Vector2 dir = (target.Center - (Vector2)slash.transform.position).normalized;
-                        slash.transform.rotation =
-                            Quaternion.FromToRotation(Vector2.up, dir);
-                        // move slash onto the enemy
-                        slash.transform.position = target.Center;
-                    }
+                    if (closest != null)
+                        slash.transform.position = closest.Center;
                     else
+                        slash.transform.position = PlayerBehavior.CenterPosition;
+
+                    // optional random Z rotation
+                    if (AbilityLevel.RandomRotation)
                     {
-                        // no enemies: random direction off‑screen
-                        slash.transform.rotation = 
-                            Quaternion.Euler(0, 0, Random.Range(0f, 360f));
+                        float randomZ = Random.Range(0f, 360f);
+                        slash.transform.rotation = Quaternion.Euler(0, 0, randomZ);
                     }
 
-                    // configure and fire
+                    // configure slash
                     slash.DamageMultiplier = AbilityLevel.Damage;
-                    slash.KickBack = false;
-                    slash.Size = AbilityLevel.SlashSize;
+                    slash.KickBack        = AbilityLevel.EnableKickBack;
+                    slash.Size            = AbilityLevel.SlashSize;
+
                     slash.Init();
                     slash.onFinished += OnSlashFinished;
                     _active.Add(slash);
@@ -76,7 +85,7 @@ namespace OctoberStudio.Abilities
                     yield return new WaitForSeconds(SlashDelay);
                 }
 
-                // wait remaining cooldown
+                // 3) Cooldown until next volley
                 float rem = Cooldown - AbilityLevel.SlashesCount * SlashDelay;
                 if (rem < 0.1f) rem = 0.1f;
                 yield return new WaitForSeconds(rem);

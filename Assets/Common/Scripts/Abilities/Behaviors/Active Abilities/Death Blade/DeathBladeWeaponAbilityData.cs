@@ -9,11 +9,13 @@ namespace OctoberStudio.Abilities
         private void Awake()
         {
             type = AbilityType.DeathBlade;
+            isWeaponAbility = true;
         }
 
         private void OnValidate()
         {
             type = AbilityType.DeathBlade;
+            isWeaponAbility = true;
         }
     }
 
@@ -39,5 +41,15 @@ namespace OctoberStudio.Abilities
         [Tooltip("Delay before each slash")]
         [SerializeField] private float timeBetweenSlashes;
         public float TimeBetweenSlashes => timeBetweenSlashes;
+
+        [Header("Random Rotation")]
+        [Tooltip("Use a totally random Z rotation each slash")]
+        [SerializeField] private bool randomRotation = true;
+        public bool RandomRotation => randomRotation;
+
+        [Header("Knock‑Back")]
+        [Tooltip("Enable or disable knock‑back on hit")]
+        [SerializeField] private bool enableKickBack = false;
+        public bool EnableKickBack => enableKickBack;
     }
 }

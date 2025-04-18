@@ -2,6 +2,7 @@
 using OctoberStudio.Easing;
 using UnityEngine;
 using UnityEngine.Events;
+using CartoonFX;
 
 namespace OctoberStudio.Abilities
 {
@@ -20,22 +21,28 @@ namespace OctoberStudio.Abilities
         {
             base.Init();
 
-            // scale to match player + configured size
+            // 1) scale + collider burst (same as before)
             transform.localScale = Vector3.one * Size * PlayerBehavior.Player.SizeMultiplier;
-
-            // enable collider for a brief instant
             slashCollider.enabled = true;
             _colliderToggleCoroutine = EasingManager
                 .DoAfter(0.1f, () => slashCollider.enabled = false);
 
-            // wait out the remainder of duration then fire finished
             _waitingCoroutine = EasingManager
                 .DoAfter(duration, () =>
                 {
                     onFinished?.Invoke(this);
                     Disable();
                 });
+
+            // 2) re‐activate & restart ANY CFXR_Effect under me
+            //    include disabled ones by passing `true`
+            foreach (var fx in GetComponentsInChildren<CartoonFX.CFXR_Effect>(true))
+            {
+                fx.gameObject.SetActive(true);  // undo ClearBehavior’s disable
+                fx.Initialize();                // restart the particle system
+            }
         }
+
 
         public void Disable()
         {
