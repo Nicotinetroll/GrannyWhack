@@ -28,7 +28,7 @@ MonoBehaviour:
   levels:
   - abilityCooldown: 2
     slashesCount: 4
-    damage: 4
+    damage: 6
     slashSize: 1
     timeBetweenSlashes: 0.2
     randomRotation: 1
@@ -36,28 +36,28 @@ MonoBehaviour:
   - abilityCooldown: 2
     slashesCount: 6
     damage: 10
-    slashSize: 2
+    slashSize: 1.2
     timeBetweenSlashes: 0.1
     randomRotation: 1
     enableKickBack: 0
   - abilityCooldown: 1
     slashesCount: 2
-    damage: 10
-    slashSize: 1
+    damage: 15
+    slashSize: 1.4
     timeBetweenSlashes: 0.3
     randomRotation: 1
     enableKickBack: 0
   - abilityCooldown: 1
     slashesCount: 2
-    damage: 10
-    slashSize: 1
-    timeBetweenSlashes: 0.3
+    damage: 20
+    slashSize: 1.6
+    timeBetweenSlashes: 0.25
     randomRotation: 1
     enableKickBack: 0
   - abilityCooldown: 1
     slashesCount: 2
-    damage: 10
-    slashSize: 1
-    timeBetweenSlashes: 0.3
+    damage: 35
+    slashSize: 1.6
+    timeBetweenSlashes: 0.25
     randomRotation: 1
-    enableKickBack: 0
+    enableKickBack: 1

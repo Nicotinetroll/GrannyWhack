@@ -316,7 +316,7 @@ MonoBehaviour:
   - name: Main Menu Music
     cooldown: 0
     audioClip:
-      audioClip: {fileID: 8300000, guid: c55f3d3324d3e41efb4a8d0d5cb7d495, type: 3}
+      audioClip: {fileID: 8300000, guid: bba729ed1de45446c9b2aae55553dfdd, type: 3}
       volume: {x: 0.15, y: 0.15}
       pitch: {x: 1, y: 1}
   - name: Stage 1
@@ -325,6 +325,12 @@ MonoBehaviour:
       audioClip: {fileID: 8300000, guid: 0de6b10639dc04d89862810f0f1445c8, type: 3}
       volume: {x: 0.15, y: 0.15}
       pitch: {x: 1, y: 1}
+  - name: Death Blade Attack
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: 2d49282fe4f5a4520b56eabd14e602e7, type: 3}
+      volume: {x: 0.2, y: 0.25}
+      pitch: {x: 1, y: 1.4}
   music:
     name: 
     cooldown: 0
