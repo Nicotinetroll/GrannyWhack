@@ -300,9 +300,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 475f6f634bca8214089d8ef4bdf342a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0.7
+  speed: 0.85
   damage: 200
-  hp: 150000
+  hp: 100000
   canBeKickedBack: 0
   shouldFadeIn: 0
   rb: {fileID: 2700873241517360941}
@@ -328,7 +328,7 @@ MonoBehaviour:
   durationBetweenSpawning: 1
   durationBetweenWarningAndSpawning: 1
   spawningParticle: {fileID: 4086977011551362549}
-  moveDuration: 10
+  moveDuration: 7
   shootCooldown: 1
 --- !u!1001 &6049744859993634310
 PrefabInstance:

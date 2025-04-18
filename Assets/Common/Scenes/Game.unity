@@ -2534,7 +2534,7 @@ PrefabInstance:
     - target: {fileID: 849641011305831769, guid: 8e6d8d2dabc65504d87acf063e0db163,
         type: 3}
       propertyPath: maxRerollCharges
-      value: 10000
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 849641011305831769, guid: 8e6d8d2dabc65504d87acf063e0db163,
         type: 3}

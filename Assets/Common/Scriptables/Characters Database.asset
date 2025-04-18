@@ -22,3 +22,21 @@ MonoBehaviour:
     startingAbility: 1001
     baseHP: 100
     baseDamage: 1
+  - name: REDNECK
+    cost: 1000
+    icon: {fileID: 572532556, guid: 11af448f5b8534a3396aff7799a45108, type: 3}
+    prefab: {fileID: 2921880940271959218, guid: 13a9b77005e2d4afa9b86f04698235e3,
+      type: 3}
+    hasStartingAbility: 1
+    startingAbility: 1001
+    baseHP: 120
+    baseDamage: 1.2
+  - name: MAGE
+    cost: 3000
+    icon: {fileID: -1190907863, guid: 7d75283bf68c349adaf26e83433b4b23, type: 3}
+    prefab: {fileID: 2921880940271959218, guid: 7de6d3d2b639a40b0bc2422c27685f24,
+      type: 3}
+    hasStartingAbility: 1
+    startingAbility: 1001
+    baseHP: 80
+    baseDamage: 1.4
