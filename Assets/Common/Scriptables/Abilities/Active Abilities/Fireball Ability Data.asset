@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1586f7d6c44294444ad7f5dcc23f4e22, type: 3}
   m_Name: Fireball Ability Data
   m_EditorClassIdentifier: 
+  isCharacterSpecific: 1
+  allowedCharacterName: MAGE
+  minCharacterLevel: 1
   type: 6
   title: Fireball
   description: Fires a projectile that strikes nearby enemies

@@ -1,11 +1,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using OctoberStudio;
 
 namespace OctoberStudio.Abilities
 {
-    public abstract class AbilityData : ScriptableObject 
+    public abstract class AbilityData : ScriptableObject
     {
+        /* ─────────── Character restriction ─────────── */
+        [Header("Character Restriction")]
+        [SerializeField] bool  isCharacterSpecific = false;
+        public  bool  IsCharacterSpecific => isCharacterSpecific;
+
+        [SerializeField] string allowedCharacterName;
+        public  string AllowedCharacterName => allowedCharacterName;
+
+        [SerializeField, Min(1)] int minCharacterLevel = 1;
+        public  int MinCharacterLevel => minCharacterLevel;
+        /* ───────────────────────────────────────────── */
+
         [Tooltip("The unique identifier of an ability")]
         [SerializeField] protected AbilityType type;
         public AbilityType AbilityType => type;
@@ -50,22 +63,25 @@ namespace OctoberStudio.Abilities
 
         public event UnityAction<int> onAbilityUpgraded;
 
-        public void Upgrade(int level)
-        {
-            onAbilityUpgraded?.Invoke(level);
-        }
+        public void Upgrade(int level) => onAbilityUpgraded?.Invoke(level);
 
-        public AbilityLevel GetLevel(int index)
+        public AbilityLevel GetLevel(int index) => Levels[index];
+
+        /* ───────── helper for gating ───────── */
+        public bool IsUnlockedFor(CharacterData character)
         {
-            return Levels[index];
+            if (!isCharacterSpecific) return true;
+            if (character == null)     return false;
+
+            return character.Name == allowedCharacterName &&
+                   CharacterLevelSystem.GetLevel(character) >= minCharacterLevel;
         }
     }
+
+    /* ---------------- serialisable helpers ---------------- */
 
     [System.Serializable]
-    public abstract class AbilityLevel
-    {
-
-    }
+    public abstract class AbilityLevel { }
 
     [System.Serializable]
     public class EvolutionRequirement

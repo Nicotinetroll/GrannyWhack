@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42aa83e6078ee1941b2f913d17e7c367, type: 3}
   m_Name: Lightning Amulet Ability Data
   m_EditorClassIdentifier: 
+  isCharacterSpecific: 1
+  allowedCharacterName: MAGE
+  minCharacterLevel: 1
   type: 2
   title: Lightning Amulet
   description: Strikes with lightning from above

@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cee9e708d20778f40be895baad2b4eee, type: 3}
   m_Name: Guardian Eye Ability Data
   m_EditorClassIdentifier: 
+  isCharacterSpecific: 1
+  allowedCharacterName: NIJNA
+  minCharacterLevel: 1
   type: 1
   title: Guardian Eye
   description: Deals damage in a small area around

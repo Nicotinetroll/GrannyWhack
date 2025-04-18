@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89c22678ba1bc0d46aea067da436741b, type: 3}
   m_Name: Magic Rune Ability Data
   m_EditorClassIdentifier: 
+  isCharacterSpecific: 1
+  allowedCharacterName: MAGE
+  minCharacterLevel: 1
   type: 5
   title: Pentagram
   description: Leaves an explosive pentagram on the floor

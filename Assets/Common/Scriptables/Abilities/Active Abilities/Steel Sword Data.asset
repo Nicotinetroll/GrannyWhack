@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bafa157c553fd74398db8cc932d5cda, type: 3}
   m_Name: Steel Sword Data
   m_EditorClassIdentifier: 
+  isCharacterSpecific: 1
+  allowedCharacterName: NIJNA
+  minCharacterLevel: 1
   type: 1001
   title: Steel Sword
   description: Slashes enemies in front of you

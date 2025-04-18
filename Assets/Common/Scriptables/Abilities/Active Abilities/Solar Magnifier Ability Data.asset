@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb78b06ae98fb384483dcb5b4aa8b89c, type: 3}
   m_Name: Solar Magnifier Ability Data
   m_EditorClassIdentifier: 
+  isCharacterSpecific: 1
+  allowedCharacterName: REDNECK
+  minCharacterLevel: 1
   type: 9
   title: Solar Magnifier
   description: Projects a powerful sun ray

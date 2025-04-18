@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22d1e1571be5cc64f8e081e56acef858, type: 3}
   m_Name: Sacred Blade Data
   m_EditorClassIdentifier: 
+  isCharacterSpecific: 1
+  allowedCharacterName: NIJNA
+  minCharacterLevel: 25
   type: 1101
   title: Sacred Blade
   description: Slashes enemies with a golden wave of terror

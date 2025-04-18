@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca844530d09d39247b276cdc829f2c85, type: 3}
   m_Name: Flying Dagger Ability Data
   m_EditorClassIdentifier: 
+  isCharacterSpecific: 1
+  allowedCharacterName: NIJNA
+  minCharacterLevel: 1
   type: 8
   title: Flying Daggers
   description: Launches a spinning spectral dagger

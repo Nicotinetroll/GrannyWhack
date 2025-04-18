@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ad898821363a1e4bb8b98ccf9592d63, type: 3}
   m_Name: Void Star Ability Data
   m_EditorClassIdentifier: 
+  isCharacterSpecific: 1
+  allowedCharacterName: MAGE
+  minCharacterLevel: 25
   type: 200
   title: Void Star
   description: Endlessly orbits around, dealing increased damage

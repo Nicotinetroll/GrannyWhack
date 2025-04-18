@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ef84cc4bbaf71b47bb750531b36ab2f, type: 3}
   m_Name: Meteor Ability Data
   m_EditorClassIdentifier: 
+  isCharacterSpecific: 1
+  allowedCharacterName: MAGE
+  minCharacterLevel: 10
   type: 206
   title: Meteor
   description: Launches a meteor shower from above

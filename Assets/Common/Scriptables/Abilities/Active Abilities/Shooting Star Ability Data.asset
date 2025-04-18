@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5c5b94e0f62c8c4aa563be6b3ce9c7b, type: 3}
   m_Name: Shooting Star Ability Data
   m_EditorClassIdentifier: 
+  isCharacterSpecific: 1
+  allowedCharacterName: MAGE
+  minCharacterLevel: 1
   type: 0
   title: "Buzz Cuttin\u2019"
   description: "This ain't your barber\u2019s buzzcut. Unless your barber is really

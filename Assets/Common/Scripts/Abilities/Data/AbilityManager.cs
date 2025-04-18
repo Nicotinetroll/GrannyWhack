@@ -565,6 +565,9 @@ namespace OctoberStudio.Abilities
         public List<AbilityData> GetRandomAbilities(int count)
         {
             var availableAbilities = GetAvailableAbilities();
+            
+            availableAbilities.RemoveAll(a =>
+                !a.IsUnlockedFor(PlayerBehavior.Player.Data));
 
             // Shuffle using Fisher-Yates
             for (int i = 0; i < availableAbilities.Count; i++)
