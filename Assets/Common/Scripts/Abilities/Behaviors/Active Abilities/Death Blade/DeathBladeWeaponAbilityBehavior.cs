@@ -1,4 +1,3 @@
-// DeathBladeWeaponAbilityBehavior.cs
 using System.Collections;
 using System.Collections.Generic;
 using OctoberStudio.Pool;
@@ -6,7 +5,7 @@ using UnityEngine;
 
 namespace OctoberStudio.Abilities
 {
-    public class DeathBladeWeaponAbilityBehavior 
+    public class DeathBladeWeaponAbilityBehavior
         : AbilityBehavior<DeathBladeWeaponAbilityData, DeathBladeWeaponAbilityLevel>
     {
         public static readonly int DEATH_BLADE_ATTACK_HASH =
@@ -40,42 +39,44 @@ namespace OctoberStudio.Abilities
         {
             while (true)
             {
-                // 1) Find the single closest target for this entire volley
-                EnemyBehavior closest = null;
-                float bestSqr = float.MaxValue;
-                Vector2 center = PlayerBehavior.CenterPosition;
+                // Gather live enemies
                 var enemies = StageController.EnemiesSpawner.GetAllEnemies();
+                Vector2 center = PlayerBehavior.CenterPosition;
+
+                // Initial target: closest to player
+                EnemyBehavior prevTarget = null;
+                float bestDist = float.MaxValue;
                 foreach (var e in enemies)
                 {
-                    float sqr = ((Vector2)e.transform.position - center).sqrMagnitude;
-                    if (sqr < bestSqr)
+                    float d = ((Vector2)e.transform.position - center).sqrMagnitude;
+                    if (d < bestDist)
                     {
-                        bestSqr = sqr;
-                        closest = e;
+                        bestDist = d;
+                        prevTarget = e;
                     }
                 }
 
-                // 2) For each slash, spawn at that same target (or player if none)
+                // Chain through each slash as a bounce
                 for (int i = 0; i < AbilityLevel.SlashesCount; i++)
                 {
                     var slash = _slashPool.GetEntity();
 
-                    if (closest != null)
-                        slash.transform.position = closest.Center;
+                    if (prevTarget != null)
+                        slash.transform.position = prevTarget.Center;
                     else
-                        slash.transform.position = PlayerBehavior.CenterPosition;
+                        slash.transform.position = center;
 
-                    // optional random Z rotation
+                    // Random Z rotation if enabled
                     if (AbilityLevel.RandomRotation)
                     {
-                        float randomZ = Random.Range(0f, 360f);
-                        slash.transform.rotation = Quaternion.Euler(0, 0, randomZ);
+                        float rz = Random.Range(0f, 360f);
+                        slash.transform.rotation = Quaternion.Euler(0, 0, rz);
                     }
 
-                    // configure slash
+                    // Configure slash
                     slash.DamageMultiplier = AbilityLevel.Damage;
-                    slash.KickBack        = AbilityLevel.EnableKickBack;
-                    slash.Size            = AbilityLevel.SlashSize;
+                    slash.KickBack = AbilityLevel.EnableKickBack;
+                    slash.Size = AbilityLevel.SlashSize;
 
                     slash.Init();
                     slash.onFinished += OnSlashFinished;
@@ -83,9 +84,25 @@ namespace OctoberStudio.Abilities
 
                     GameController.AudioManager.PlaySound(DEATH_BLADE_ATTACK_HASH);
                     yield return new WaitForSeconds(SlashDelay);
+
+                    // Determine next bounce: closest to prevTarget (excluding itself)
+                    EnemyBehavior next = null;
+                    float minDist = float.MaxValue;
+                    Vector2 fromPos = prevTarget != null ? prevTarget.Center : center;
+                    foreach (var e in enemies)
+                    {
+                        if (e == prevTarget) continue;
+                        float dist2 = ((Vector2)e.transform.position - fromPos).sqrMagnitude;
+                        if (dist2 < minDist)
+                        {
+                            minDist = dist2;
+                            next = e;
+                        }
+                    }
+                    prevTarget = next ?? prevTarget;
                 }
 
-                // 3) Cooldown until next volley
+                // Cooldown
                 float rem = Cooldown - AbilityLevel.SlashesCount * SlashDelay;
                 if (rem < 0.1f) rem = 0.1f;
                 yield return new WaitForSeconds(rem);
@@ -100,7 +117,8 @@ namespace OctoberStudio.Abilities
 
         private void Disable()
         {
-            foreach (var s in _active) s.Disable();
+            foreach (var s in _active)
+                s.Disable();
             _active.Clear();
             if (_abilityCoroutine != null)
                 StopCoroutine(_abilityCoroutine);

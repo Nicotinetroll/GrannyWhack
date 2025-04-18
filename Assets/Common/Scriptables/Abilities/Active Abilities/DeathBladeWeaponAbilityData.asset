@@ -26,18 +26,18 @@ MonoBehaviour:
   isEvolution: 0
   evolutionRequirements: []
   levels:
-  - abilityCooldown: 1
-    slashesCount: 2
+  - abilityCooldown: 2
+    slashesCount: 4
     damage: 4
     slashSize: 1
     timeBetweenSlashes: 0.2
     randomRotation: 1
-    enableKickBack: 1
-  - abilityCooldown: 1
-    slashesCount: 2
+    enableKickBack: 0
+  - abilityCooldown: 2
+    slashesCount: 6
     damage: 10
-    slashSize: 1
-    timeBetweenSlashes: 0.3
+    slashSize: 2
+    timeBetweenSlashes: 0.1
     randomRotation: 1
     enableKickBack: 0
   - abilityCooldown: 1
