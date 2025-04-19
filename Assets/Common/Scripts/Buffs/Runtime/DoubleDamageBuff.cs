@@ -4,20 +4,17 @@ namespace OctoberStudio.Buffs
 {
     public class DoubleDamageBuff : RuntimeBuff
     {
-        private float originalDamage;
-
         protected override void Apply()
         {
-            originalDamage = PlayerBehavior.Player.Damage;
-            PlayerBehavior.Player.RecalculateDamage(2f); // x2
+            PlayerBehavior.Player.PushDamageBuff(2f);   // x2 dmg
             Debug.Log("Double Damage Applied!");
         }
 
         protected override void Remove()
         {
-            PlayerBehavior.Player.RecalculateDamage(1f); // back to normal
+            PlayerBehavior.Player.PopDamageBuff(2f);
             Debug.Log("Double Damage Removed!");
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
     }
 }

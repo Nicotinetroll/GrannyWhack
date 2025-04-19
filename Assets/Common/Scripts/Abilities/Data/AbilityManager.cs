@@ -11,6 +11,7 @@ namespace OctoberStudio.Abilities
     public class AbilityManager : MonoBehaviour
     {
         [SerializeField] AbilitiesDatabase abilitiesDatabase;
+        private CharacterData _character; 
 
         [Space]
         [SerializeField, Range(0, 1)] float chestChanceTier5;
@@ -35,6 +36,7 @@ namespace OctoberStudio.Abilities
 
         public void Init(PresetData testingPreset, CharacterData characterData)
         {
+            _character = characterData; 
             StageController.ExperienceManager.onXpLevelChanged += OnXpLevelChanged;
 
             if(testingPreset != null)
@@ -141,6 +143,9 @@ namespace OctoberStudio.Abilities
                 var abilityData = abilitiesDatabase.GetAbility(i);
 
                 if (abilityData.IsWeaponAbility && !abilityData.IsEvolution)
+                    if (abilityData.IsWeaponAbility &&
+                        !abilityData.IsEvolution &&
+                        abilityData.IsUnlockedFor(_character))
                 {
                     weaponAbilities.Add(abilityData);
                 }
@@ -268,6 +273,8 @@ namespace OctoberStudio.Abilities
             for (int i = 0; i < abilitiesDatabase.AbilitiesCount; i++)
             {
                 var abilityData = abilitiesDatabase.GetAbility(i);
+                
+                if (!abilityData.IsUnlockedFor(_character)) continue;
 
                 if (abilityData.IsEndgameAbility) continue;
 
