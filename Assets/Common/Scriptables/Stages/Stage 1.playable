@@ -3202,7 +3202,7 @@ MonoBehaviour:
     - dropType: 0
       chance: 0
     disableOffscreenTeleport: 0
-  circularSpawn: 0
+  circularSpawn: 1
   enemiesCount: 4
 --- !u!114 &-461406323870349249
 MonoBehaviour:
@@ -5860,7 +5860,7 @@ MonoBehaviour:
     useDropOverride: 0
     dropOverride: []
     disableOffscreenTeleport: 0
-  circularSpawn: 0
+  circularSpawn: 1
   enemiesCount: 4
 --- !u!114 &8563627931388518738
 MonoBehaviour:

@@ -35,7 +35,6 @@ MonoBehaviour:
     ticksPerSecond: 1
     slowAmount: 0.6
     slowDuration: 2
-    fallSpeed: 6
   - cloudsCount: 3
     timeBetweenClouds: 0.5
     abilityCooldown: 10
@@ -45,7 +44,6 @@ MonoBehaviour:
     ticksPerSecond: 1
     slowAmount: 0.6
     slowDuration: 2
-    fallSpeed: 6
   - cloudsCount: 3
     timeBetweenClouds: 0.5
     abilityCooldown: 10
@@ -55,7 +53,6 @@ MonoBehaviour:
     ticksPerSecond: 1
     slowAmount: 0.6
     slowDuration: 2
-    fallSpeed: 6
   - cloudsCount: 3
     timeBetweenClouds: 0.5
     abilityCooldown: 10
@@ -65,7 +62,6 @@ MonoBehaviour:
     ticksPerSecond: 1
     slowAmount: 0.6
     slowDuration: 2
-    fallSpeed: 6
   - cloudsCount: 4
     timeBetweenClouds: 0.5
     abilityCooldown: 10
@@ -75,4 +71,12 @@ MonoBehaviour:
     ticksPerSecond: 1
     slowAmount: 0.6
     slowDuration: 2
-    fallSpeed: 6
+  - cloudsCount: 4
+    timeBetweenClouds: 0.5
+    abilityCooldown: 10
+    cloudLifetime: 5
+    radius: 1.7
+    damage: 16
+    ticksPerSecond: 1
+    slowAmount: 0.6
+    slowDuration: 2

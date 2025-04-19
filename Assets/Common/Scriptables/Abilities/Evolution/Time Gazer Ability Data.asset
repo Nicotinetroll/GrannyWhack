@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isCharacterSpecific: 1
   allowedCharacterName: NIJNA
-  minCharacterLevel: 1
+  minCharacterLevel: 15
   type: 201
   title: Time Gazer
   description: Slows enemies around, dealing additional damage
@@ -26,7 +26,7 @@ MonoBehaviour:
   isEvolution: 1
   evolutionRequirements:
   - abilityType: 1
-    requiredAbilityLevel: 4
+    requiredAbilityLevel: 5
     shouldRemoveAfterEvolution: 1
   - abilityType: 105
     requiredAbilityLevel: 0

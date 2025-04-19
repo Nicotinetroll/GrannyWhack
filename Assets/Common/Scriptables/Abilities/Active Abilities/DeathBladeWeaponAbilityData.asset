@@ -33,7 +33,7 @@ MonoBehaviour:
     timeBetweenSlashes: 0.3
     randomRotation: 1
     enableKickBack: 0
-    bounceRadius: 1
+    bounceRadius: 2
     bounceChance: 0.5
   - abilityCooldown: 3
     slashesCount: 4
@@ -42,7 +42,7 @@ MonoBehaviour:
     timeBetweenSlashes: 0.3
     randomRotation: 1
     enableKickBack: 0
-    bounceRadius: 1
+    bounceRadius: 2
     bounceChance: 0.5
   - abilityCooldown: 2.5
     slashesCount: 5
@@ -51,7 +51,7 @@ MonoBehaviour:
     timeBetweenSlashes: 0.3
     randomRotation: 1
     enableKickBack: 0
-    bounceRadius: 1
+    bounceRadius: 2
     bounceChance: 0.5
   - abilityCooldown: 2.5
     slashesCount: 5
@@ -69,5 +69,14 @@ MonoBehaviour:
     timeBetweenSlashes: 0.2
     randomRotation: 1
     enableKickBack: 1
-    bounceRadius: 1
+    bounceRadius: 2
     bounceChance: 0.5
+  - abilityCooldown: 1
+    slashesCount: 5
+    damage: 25
+    slashSize: 1.6
+    timeBetweenSlashes: 0.2
+    randomRotation: 1
+    enableKickBack: 1
+    bounceRadius: 2
+    bounceChance: 0.8

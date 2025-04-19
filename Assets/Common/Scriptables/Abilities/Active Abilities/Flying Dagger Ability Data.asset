@@ -66,3 +66,11 @@ MonoBehaviour:
     spread: 20
     damage: 65
     projectileSize: 1.4
+  - projectileCount: 4
+    projectileLifetime: 4
+    timeBetweenProjectiles: 0.2
+    abilityCooldown: 5
+    throwingForce: 8
+    spread: 20
+    damage: 65
+    projectileSize: 1.4

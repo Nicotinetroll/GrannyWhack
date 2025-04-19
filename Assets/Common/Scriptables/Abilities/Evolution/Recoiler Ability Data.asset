@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Recoiler Ability Data
   m_EditorClassIdentifier: 
   isCharacterSpecific: 1
-  allowedCharacterName: MAGE
-  minCharacterLevel: 1
+  allowedCharacterName: NIJNA
+  minCharacterLevel: 20
   type: 207
   title: Recoiler
   description: Throws an upgraded swift boomerang
@@ -26,18 +26,12 @@ MonoBehaviour:
   isEvolution: 1
   evolutionRequirements:
   - abilityType: 7
-    requiredAbilityLevel: 4
+    requiredAbilityLevel: 5
     shouldRemoveAfterEvolution: 1
   - abilityType: 100
     requiredAbilityLevel: 0
     shouldRemoveAfterEvolution: 0
   levels:
-  - projectileLifetime: 4
-    abilityCooldown: 5
-    projectileTravelDistance: 4
-    angularSpeed: -300
-    damage: 100
-    projectileSize: 1.2
   - projectileLifetime: 4
     abilityCooldown: 5
     projectileTravelDistance: 4

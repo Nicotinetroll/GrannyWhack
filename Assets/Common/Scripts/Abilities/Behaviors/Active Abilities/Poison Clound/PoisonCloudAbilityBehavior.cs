@@ -1,8 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using OctoberStudio.Pool;
-using OctoberStudio.Easing;
-using OctoberStudio.Extensions;
 
 namespace OctoberStudio.Abilities
 {
@@ -12,84 +10,69 @@ namespace OctoberStudio.Abilities
         public static readonly int POISON_CLOUD_SPAWN_HASH =
             "Poison Cloud Spawn".GetHashCode();
 
-        [Header("Prefabs")]
-        [SerializeField] private GameObject fallingPrefab;    // your falling‑from‑sky prefab
-        [SerializeField] private GameObject cloudEffectPrefab;// your existing poison‑cloud prefab
+        [Header("Prefab")]
+        [SerializeField] private GameObject cloudEffectPrefab;
 
-        private PoolComponent<PoisonCloudFallingBehavior> _fallPool;
-        private PoolComponent<PoisonCloudBehavior>        _cloudPool;
-        private Coroutine                                _abilityCoroutine;
+        private PoolComponent<PoisonCloudBehavior> _pool;
+        private Coroutine _abilityCoroutine;
 
-        void Awake()
+        private void Awake()
         {
-            _fallPool  = new PoolComponent<PoisonCloudFallingBehavior>(
-                             "PoisonCloudFalling", fallingPrefab, 6);
-            _cloudPool = new PoolComponent<PoisonCloudBehavior>(
-                             "PoisonCloud",      cloudEffectPrefab, 10);
+            _pool = new PoolComponent<PoisonCloudBehavior>(
+                "Poison Cloud", cloudEffectPrefab, 10);
         }
 
         protected override void SetAbilityLevel(int stageId)
         {
             base.SetAbilityLevel(stageId);
-            if (_abilityCoroutine != null) StopCoroutine(_abilityCoroutine);
+            if (_abilityCoroutine != null)
+                StopCoroutine(_abilityCoroutine);
             _abilityCoroutine = StartCoroutine(AbilityLoop());
         }
 
         private IEnumerator AbilityLoop()
         {
-            var lvl     = AbilityLevel;
-            float cd    = lvl.AbilityCooldown * PlayerBehavior.Player.CooldownMultiplier;
-            float delay = lvl.TimeBetweenClouds * PlayerBehavior.Player.CooldownMultiplier;
-            float total = lvl.CloudsCount * delay;
+            var lvl          = AbilityLevel;
+            float scaledCD   = lvl.AbilityCooldown * PlayerBehavior.Player.CooldownMultiplier;
+            float spawnDelay = lvl.TimeBetweenClouds * PlayerBehavior.Player.CooldownMultiplier;
+            float totalSpawn = lvl.CloudsCount * spawnDelay;
 
             while (true)
             {
                 for (int i = 0; i < lvl.CloudsCount; i++)
                 {
-                    // random target in viewport
-                    Vector3 vp        = new Vector3(Random.value, Random.value, Camera.main.nearClipPlane);
-                    Vector3 targetPos = Camera.main.ViewportToWorldPoint(vp);
+                    // pick a random point on screen
+                    Vector3 vp   = new Vector3(Random.value, Random.value, Camera.main.nearClipPlane);
+                    Vector3 pos  = Camera.main.ViewportToWorldPoint(vp);
 
-                    // 1) spawn fall visual
-                    var fall = _fallPool.GetEntity();
-                    fall.OnFinished += OnFallComplete;
-                    fall.Init(targetPos, lvl.FallSpeed);
+                    // spawn & configure the cloud
+                    var cloud = _pool.GetEntity();
+                    cloud.transform.position = pos;
+                    cloud.Radius       = lvl.Radius;
+                    cloud.Lifetime     = lvl.CloudLifetime;
+                    cloud.Damage       = lvl.Damage;
+                    cloud.TickInterval = lvl.TickInterval;
+                    cloud.SlowAmount   = lvl.SlowAmount;
+                    cloud.SlowDuration = lvl.SlowDuration;
+                    cloud.Init();  // ← no parameters
 
-                    // 2) play sound immediately
+                    // play spawn sound
                     GameController.AudioManager.PlaySound(POISON_CLOUD_SPAWN_HASH);
 
-                    yield return new WaitForSeconds(delay);
+                    yield return new WaitForSeconds(spawnDelay);
                 }
 
-                float rem = cd - total;
-                if (rem < 0.1f) rem = 0.1f;
-                yield return new WaitForSeconds(rem);
+                float remaining = scaledCD - totalSpawn;
+                if (remaining < 0.1f) remaining = 0.1f;
+                yield return new WaitForSeconds(remaining);
             }
-        }
-
-        private void OnFallComplete(PoisonCloudFallingBehavior fall)
-        {
-            fall.OnFinished -= OnFallComplete;
-
-            // now spawn the actual poison cloud at impact point
-            Vector3 pos = fall.transform.position;
-            var cloud = _cloudPool.GetEntity();
-            cloud.transform.position = pos;
-            var lvl = AbilityLevel;
-            cloud.Radius       = lvl.Radius;
-            cloud.Lifetime     = lvl.CloudLifetime;
-            cloud.Damage       = lvl.Damage;
-            cloud.TickInterval = lvl.TickInterval;
-            cloud.SlowAmount   = lvl.SlowAmount;
-            cloud.SlowDuration = lvl.SlowDuration;
-            cloud.Init();
         }
 
         public override void Clear()
         {
-            if (_abilityCoroutine != null) StopCoroutine(_abilityCoroutine);
-            _fallPool.Destroy();
-            _cloudPool.Destroy();
+            if (_abilityCoroutine != null)
+                StopCoroutine(_abilityCoroutine);
+            _pool.Destroy();
             base.Clear();
         }
     }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isCharacterSpecific: 1
   allowedCharacterName: NIJNA
-  minCharacterLevel: 1
+  minCharacterLevel: 25
   type: 208
   title: Twin Daggers
   description: Whats better than one? Two, of course
@@ -26,7 +26,7 @@ MonoBehaviour:
   isEvolution: 1
   evolutionRequirements:
   - abilityType: 8
-    requiredAbilityLevel: 4
+    requiredAbilityLevel: 5
     shouldRemoveAfterEvolution: 1
   - abilityType: 101
     requiredAbilityLevel: 0
