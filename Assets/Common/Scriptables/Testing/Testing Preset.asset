@@ -17,3 +17,5 @@ MonoBehaviour:
   abilities:
   - abilityType: 12
     level: 0
+  - abilityType: 105
+    level: 2

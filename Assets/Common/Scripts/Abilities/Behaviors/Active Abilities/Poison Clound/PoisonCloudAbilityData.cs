@@ -1,4 +1,3 @@
-// PoisonCloudAbilityData.cs
 using UnityEngine;
 
 namespace OctoberStudio.Abilities
@@ -49,5 +48,10 @@ namespace OctoberStudio.Abilities
         [Tooltip("Duration in seconds of the slow effect per tick")]
         [SerializeField, Min(0f)] private float slowDuration = 1f;
         public float SlowDuration => slowDuration;
+
+        [Header("Falling")]                                          // ← new
+        [Tooltip("Speed at which the cloud falls (world units/sec)")]
+        [SerializeField, Min(0.1f)] private float fallSpeed = 6f;
+        public float FallSpeed => fallSpeed;
     }
 }
