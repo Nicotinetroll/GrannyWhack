@@ -331,6 +331,12 @@ MonoBehaviour:
       audioClip: {fileID: 8300000, guid: 2d49282fe4f5a4520b56eabd14e602e7, type: 3}
       volume: {x: 0.2, y: 0.25}
       pitch: {x: 1, y: 1.4}
+  - name: Poison Cloud Spawn
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: 296823b5c18f009449188eb54d40536e, type: 3}
+      volume: {x: 0.3, y: 0.35}
+      pitch: {x: 1, y: 1.4}
   music:
     name: 
     cooldown: 0

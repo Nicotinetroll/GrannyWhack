@@ -2,6 +2,7 @@ using OctoberStudio.Easing;
 using OctoberStudio.Enemy;
 using OctoberStudio.Extensions;
 using OctoberStudio.Timeline;
+using System.Collections;
 using System.Collections.Generic;
 using OctoberStudio.Pool;
 using UnityEngine;
@@ -16,7 +17,6 @@ namespace OctoberStudio
     {
         protected static readonly int _Overlay = Shader.PropertyToID("_Overlay");
         protected static readonly int _Disolve = Shader.PropertyToID("_Disolve");
-
         private static readonly int HIT_HASH = "Hit".GetHashCode();
 
         [Header("Settings")]
@@ -33,7 +33,6 @@ namespace OctoberStudio
         [SerializeField] Rigidbody2D rb;
         [SerializeField] SpriteRenderer spriteRenderer;
         [SerializeField] DissolveSettings dissolveSettings;
-        // Make these protected so derived classes (like StaticEnemyBehavior) can access them:
         [SerializeField] protected SpriteRenderer shadowSprite;
         [SerializeField] protected Collider2D enemyCollider;
 
@@ -48,7 +47,6 @@ namespace OctoberStudio
 
         public EnemyData Data { get; private set; }
         public WaveOverride WaveOverride { get; protected set; }
-
         public bool IsVisible => spriteRenderer.isVisible;
         public bool IsAlive => HP > 0;
         public bool IsInvulnerable { get; protected set; }
@@ -58,12 +56,10 @@ namespace OctoberStudio
         public bool ShouldSpawnChestOnDeath { get; set; }
 
         IEasingCoroutine fallBackCoroutine;
-
         private Dictionary<EffectType, List<Effect>> appliedEffects = new();
         protected bool IsMoving { get; set; }
         public bool IsMovingToCustomPoint { get; protected set; }
         public Vector2 CustomPoint { get; protected set; }
-
         public float LastTimeDamagedPlayer { get; set; }
 
         private Material sharedMaterial;
@@ -82,6 +78,9 @@ namespace OctoberStudio
         private float lastTimeDamageText;
         private static int lastFrameHitSound;
         private float lastTimeHitSound;
+
+        // Poison coroutine handle
+        private Coroutine _poisonCoroutine;
 
         protected virtual void Awake()
         {
@@ -138,7 +137,6 @@ namespace OctoberStudio
             Vector3 direction = (target - transform.position).normalized;
 
             float moveSpeed = Speed;
-
             if (appliedEffects.TryGetValue(EffectType.Speed, out var speedEffects))
                 foreach (var effect in speedEffects)
                     moveSpeed *= effect.Modifier;
@@ -173,7 +171,6 @@ namespace OctoberStudio
             if (projectile == null) return;
 
             TakeDamage(PlayerBehavior.Player.Damage * projectile.DamageMultiplier);
-
             projectile.SendMessage("OnEnemyHit", this, SendMessageOptions.DontRequireReceiver);
 
             if (HP > 0)
@@ -202,20 +199,19 @@ namespace OctoberStudio
         public List<EnemyDropData> GetDropData() =>
             WaveOverride != null ? WaveOverride.ApplyDropOverride(Data.EnemyDrop) : Data.EnemyDrop;
 
-        public void TakeDamage(float damage)
+        public void TakeDamage(float dmg)
         {
-            if (!IsAlive || IsInvulnerable || damage <= 0f) return;
+            if (!IsAlive || IsInvulnerable || dmg <= 0f) return;
 
-            PlayerStatsManager.Instance?.AddDamage(damage);
+            PlayerStatsManager.Instance?.AddDamage(dmg);
 
-            HP -= damage;
+            HP -= dmg;
             HP = Mathf.Max(0, HP);
 
             onHealthChanged?.Invoke(HP, MaxHP);
+            eliteHealthbar?.Subtract(dmg);
 
-            eliteHealthbar?.Subtract(damage);
-
-            int rounded = Mathf.RoundToInt(damage);
+            int rounded = Mathf.RoundToInt(dmg);
             if (rounded > 0)
             {
                 Vector3 pos = transform.position + new Vector3(Random.Range(-0.15f, 0.15f), Random.Range(0.05f, 0.2f));
@@ -240,11 +236,15 @@ namespace OctoberStudio
                 if (!scaleCoroutine.ExistsAndActive())
                 {
                     var x = transform.localScale.x;
-                    scaleCoroutine = transform.DoLocalScale(new Vector3(x * (1 - hitScaleAmount), (1 + hitScaleAmount), 1), 0.07f)
-                        .SetEasing(EasingType.SineOut)
-                        .SetOnFinish(() =>
-                            scaleCoroutine = transform.DoLocalScale(new Vector3(x, 1, 1), 0.07f).SetEasing(EasingType.SineInOut)
-                        );
+                    scaleCoroutine = transform.DoLocalScale(
+                        new Vector3(x * (1 - hitScaleAmount), (1 + hitScaleAmount), 1),
+                        0.07f
+                    )
+                    .SetEasing(EasingType.SineOut)
+                    .SetOnFinish(() =>
+                        scaleCoroutine = transform.DoLocalScale(new Vector3(x, 1, 1), 0.07f)
+                            .SetEasing(EasingType.SineInOut)
+                    );
                 }
             }
         }
@@ -256,12 +256,17 @@ namespace OctoberStudio
             transparentColor.a = 0;
             effectsMaterial.SetColor(_Overlay, transparentColor);
 
-            damageCoroutine = effectsMaterial.DoColor(_Overlay, hitColor, 0.05f).SetOnFinish(() =>
-                damageCoroutine = effectsMaterial.DoColor(_Overlay, transparentColor, 0.05f).SetOnFinish(() =>
-                {
-                    if (resetMaterial) spriteRenderer.material = sharedMaterial;
-                    onFinish?.Invoke();
-                }));
+            damageCoroutine = effectsMaterial
+                .DoColor(_Overlay, hitColor, 0.05f)
+                .SetOnFinish(() =>
+                    damageCoroutine = effectsMaterial
+                        .DoColor(_Overlay, transparentColor, 0.05f)
+                        .SetOnFinish(() =>
+                        {
+                            if (resetMaterial) spriteRenderer.material = sharedMaterial;
+                            onFinish?.Invoke();
+                        })
+                );
         }
 
         public void Kill()
@@ -298,12 +303,15 @@ namespace OctoberStudio
             spriteRenderer.material = effectsMaterial;
 
             if (flash)
-                FlashHit(false, () => effectsMaterial.DoColor(_Overlay, dissolveSettings.DissolveColor, dissolveSettings.Duration - 0.1f));
+                FlashHit(false, () =>
+                    effectsMaterial.DoColor(_Overlay, dissolveSettings.DissolveColor, dissolveSettings.Duration - 0.1f)
+                );
             else
                 effectsMaterial.DoColor(_Overlay, dissolveSettings.DissolveColor, dissolveSettings.Duration);
 
             effectsMaterial.SetFloat(_Disolve, 0);
-            effectsMaterial.DoFloat(_Disolve, 1, dissolveSettings.Duration + 0.02f)
+            effectsMaterial
+                .DoFloat(_Disolve, 1, dissolveSettings.Duration + 0.02f)
                 .SetEasingCurve(dissolveSettings.DissolveCurve)
                 .SetOnFinish(() =>
                 {
@@ -323,15 +331,15 @@ namespace OctoberStudio
             var dir = (transform.position - position).normalized;
             rb.simulated = false;
             fallBackCoroutine.StopIfExists();
-            fallBackCoroutine = transform.DoPosition(transform.position + dir * 0.6f, 0.15f)
+            fallBackCoroutine = transform
+                .DoPosition(transform.position + dir * 0.6f, 0.15f)
                 .SetEasing(EasingType.ExpoOut)
                 .SetOnFinish(() => rb.simulated = true);
         }
 
         public void AddEffects(List<Effect> effects)
         {
-            foreach (var e in effects)
-                AddEffect(e);
+            foreach (var e in effects) AddEffect(e);
         }
 
         public void AddEffect(Effect effect)
@@ -348,7 +356,8 @@ namespace OctoberStudio
             if (!appliedEffects.ContainsKey(effect.EffectType)) return;
             appliedEffects[effect.EffectType].Remove(effect);
         }
-
+        
+        
         // Pooling
         public void SetPoolsManager(PoolsManager manager) => poolsManager = manager;
         private PoolsManager poolsManager;

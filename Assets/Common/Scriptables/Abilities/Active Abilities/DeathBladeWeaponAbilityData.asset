@@ -18,7 +18,7 @@ MonoBehaviour:
   type: 11
   title: Death Blade
   description: TBD....
-  icon: {fileID: 21300000, guid: 732686cc2e8a5a442b22f0a390857309, type: 3}
+  icon: {fileID: 21300000, guid: 330c8d1b166f3ac4697e5fd311668eb4, type: 3}
   prefab: {fileID: 5349004258488764192, guid: e917c55593dad234f8f5573626b4ea7a, type: 3}
   isActiveAbility: 1
   isWeaponAbility: 0

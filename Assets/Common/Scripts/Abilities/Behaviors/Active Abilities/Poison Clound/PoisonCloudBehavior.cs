@@ -1,6 +1,7 @@
 // PoisonCloudBehavior.cs
 using System.Collections;
-using CartoonFX;
+using System.Collections.Generic;
+using CartoonFX;                // for CFXR_Effect
 using OctoberStudio.Easing;
 using OctoberStudio.Timeline;
 using UnityEngine;
@@ -11,64 +12,61 @@ namespace OctoberStudio.Abilities
     public class PoisonCloudBehavior : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField, Tooltip("Drop your CircleCollider2D here to preview the cloud radius")]
+        [SerializeField, Tooltip("Drag in your CircleCollider2D to preview the cloud radius")]
         private CircleCollider2D _cloudCollider;
 
         [Header("Visual Tuning (edit‑time)")]
-        [Tooltip("The art was authored to cover this radius at scale = 1")]
-        [SerializeField] private float effectBaseRadius = 0.5f;
-        [Tooltip("Preview collider radius in the editor")]
-        [SerializeField] private float previewRadius = 0.5f;
+        [SerializeField, Tooltip("Art’s native radius at scale=1")] 
+        private float effectBaseRadius = 0.5f;
+        [SerializeField, Tooltip("Preview collider radius in editor")]
+        private float previewRadius     = 0.5f;
 
-        [Header("Runtime Settings (set by AbilityBehavior)")]
-        public float Radius { get; set; }
-        public float Lifetime { get; set; }
-        public float Damage { get; set; }
-        public float TickInterval { get; set; }
-        public float SlowAmount { get; set; }
-        public float SlowDuration { get; set; }
+        // Runtime (set by AbilityBehavior)
+        public float Radius        { get; set; }
+        public float Lifetime      { get; set; }
+        public float Damage        { get; set; }
+        public float TickInterval  { get; set; }
+        public float SlowAmount    { get; set; }
+        public float SlowDuration  { get; set; }
 
-        [Header("Timing")]
-        [Tooltip("Delay before the first damage tick")]
-        [SerializeField] private float damageStartDelay = 1f;
-
-        private IEasingCoroutine _scaleIn, _scaleOut;
+        const float buildUpDelay = 1f;
         private Coroutine _tickRoutine;
+        private HashSet<EnemyBehavior> _handled = new();
+        private Dictionary<EnemyBehavior,float> _nextTick = new();
 
         void Reset()
         {
             if (_cloudCollider == null)
             {
                 _cloudCollider = GetComponent<CircleCollider2D>();
-                if (_cloudCollider != null) _cloudCollider.isTrigger = true;
+                if (_cloudCollider != null)
+                    _cloudCollider.isTrigger = true;
             }
         }
 
         void OnValidate()
         {
-            if (_cloudCollider != null)
-            {
-                _cloudCollider.radius = previewRadius;
-                float s = previewRadius / effectBaseRadius;
-                transform.localScale = Vector3.one * s;
-            }
+            if (_cloudCollider == null) return;
+            _cloudCollider.radius    = previewRadius;
+            float s                  = previewRadius / effectBaseRadius;
+            transform.localScale     = Vector3.one * s;
         }
 
         public void Init()
         {
+            // configure collider & visual scale
             if (_cloudCollider == null)
                 _cloudCollider = GetComponent<CircleCollider2D>();
-
             _cloudCollider.isTrigger = true;
-            _cloudCollider.radius = Radius;
+            _cloudCollider.radius    = Radius;
 
-            float scaleFactor = (Radius / effectBaseRadius) * PlayerBehavior.Player.SizeMultiplier;
-            transform.localScale = Vector3.one * scaleFactor;
-            _scaleIn = transform
-                .DoLocalScale(Vector3.one * scaleFactor, 0.5f)
+            float scale = (Radius / effectBaseRadius) * PlayerBehavior.Player.SizeMultiplier;
+            transform.localScale = Vector3.one * scale;
+            transform
+                .DoLocalScale(Vector3.one * scale, 0.5f)
                 .SetEasing(EasingType.SineOut);
 
-            // replay VFX
+            // restart any VFX
             foreach (var fx in GetComponentsInChildren<CFXR_Effect>(true))
             {
                 fx.gameObject.SetActive(true);
@@ -80,45 +78,57 @@ namespace OctoberStudio.Abilities
                 ps.Play(true);
             }
 
-            // start ticking damage after a delay
-            _tickRoutine = StartCoroutine(TickDamage());
-
+            // begin ticking after build‑up
+            _handled.Clear();
+            _nextTick.Clear();
+            _tickRoutine = StartCoroutine(CloudTick());
             StartCoroutine(AutoDestroy());
         }
 
-        private IEnumerator TickDamage()
+        private IEnumerator CloudTick()
         {
-            // wait build‑up time first
-            yield return new WaitForSeconds(damageStartDelay);
+            // initial delay
+            yield return new WaitForSeconds(buildUpDelay);
 
             while (true)
             {
                 var hits = Physics2D.OverlapCircleAll(transform.position, Radius);
+                float now = Time.time;
+
                 foreach (var c in hits)
                 {
-                    if (c.TryGetComponent<EnemyBehavior>(out var enemy))
-                    {
-                        enemy.TakeDamage(PlayerBehavior.Player.Damage * Damage);
+                    if (!c.TryGetComponent<EnemyBehavior>(out var e)) continue;
 
-                        var effect = new Effect(EffectType.Speed, 1f - SlowAmount);
-                        enemy.AddEffect(effect);
-                        StartCoroutine(RemoveSlowAfter(effect, enemy, SlowDuration));
+                    // cloud damage per interval
+                    if (!_nextTick.TryGetValue(e, out float next) || now >= next)
+                    {
+                        _nextTick[e] = now + TickInterval;
+                        e.TakeDamage(PlayerBehavior.Player.Damage * Damage);
+                    }
+
+                    // first contact: only slow
+                    if (_handled.Add(e))
+                    {
+                        var slow = new Effect(EffectType.Speed, 1f - SlowAmount);
+                        e.AddEffect(slow);
+                        StartCoroutine(RemoveEffectAfter(slow, e, SlowDuration));
                     }
                 }
+
                 yield return new WaitForSeconds(TickInterval);
             }
         }
 
-        private IEnumerator RemoveSlowAfter(Effect effect, EnemyBehavior enemy, float duration)
+        private IEnumerator RemoveEffectAfter(Effect effect, EnemyBehavior e, float duration)
         {
             yield return new WaitForSeconds(duration);
-            enemy.RemoveEffect(effect);
+            e.RemoveEffect(effect);
         }
 
         private IEnumerator AutoDestroy()
         {
             yield return new WaitForSeconds(Lifetime);
-            _scaleOut = transform
+            transform
                 .DoLocalScale(Vector3.zero, 0.5f)
                 .SetEasing(EasingType.SineIn)
                 .SetOnFinish(() => gameObject.SetActive(false));
