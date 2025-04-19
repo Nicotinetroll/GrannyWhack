@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3de06d914d096c418f6b67caafbcfea, type: 3}
   m_Name: Machine Gun
   m_EditorClassIdentifier: 
+  isCharacterSpecific: 1
+  allowedCharacterName: MAGE
+  minCharacterLevel: 1
   type: 1102
   title: Machine Gun
   description: Crazy...

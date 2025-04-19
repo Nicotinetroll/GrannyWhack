@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3f0c3b47c29b524683086d39bed3a7d, type: 3}
   m_Name: Silver Stakes Data
   m_EditorClassIdentifier: 
+  isCharacterSpecific: 1
+  allowedCharacterName: MAGE
+  minCharacterLevel: 1
   type: 204
   title: Silver Stakes
   description: Throws several sharp piercing stakes

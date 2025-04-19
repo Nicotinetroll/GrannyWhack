@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Rolling Stone Data
   m_EditorClassIdentifier: 
   isCharacterSpecific: 1
-  allowedCharacterName: REDNECK
+  allowedCharacterName: MAGE
   minCharacterLevel: 1
   type: 3
   title: Rolling Stone

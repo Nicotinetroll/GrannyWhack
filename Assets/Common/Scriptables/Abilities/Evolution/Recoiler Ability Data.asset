@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b45cb7027aba0e42a578f2da7fde9b6, type: 3}
   m_Name: Recoiler Ability Data
   m_EditorClassIdentifier: 
+  isCharacterSpecific: 1
+  allowedCharacterName: MAGE
+  minCharacterLevel: 1
   type: 207
   title: Recoiler
   description: Throws an upgraded swift boomerang

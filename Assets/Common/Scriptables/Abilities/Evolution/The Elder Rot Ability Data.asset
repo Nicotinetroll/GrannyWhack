@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89e62bba5c9a8465fac42fcc293e3d57, type: 3}
   m_Name: The Elder Rot Ability Data
   m_EditorClassIdentifier: 
+  isCharacterSpecific: 1
+  allowedCharacterName: MAGE
+  minCharacterLevel: 1
   type: 210
   title: The Elder Rot
   description: Cupcake ipsum

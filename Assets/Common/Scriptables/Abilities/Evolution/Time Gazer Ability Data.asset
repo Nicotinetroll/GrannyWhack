@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 991052d635f55094a817218699c72c87, type: 3}
   m_Name: Time Gazer Ability Data
   m_EditorClassIdentifier: 
+  isCharacterSpecific: 1
+  allowedCharacterName: NIJNA
+  minCharacterLevel: 1
   type: 201
   title: Time Gazer
   description: Slows enemies around, dealing additional damage

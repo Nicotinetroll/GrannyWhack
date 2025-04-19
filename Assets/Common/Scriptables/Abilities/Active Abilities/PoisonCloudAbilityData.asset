@@ -35,7 +35,7 @@ MonoBehaviour:
     ticksPerSecond: 1
     slowAmount: 0.6
     slowDuration: 2
-    fallSpeed: 10
+    fallSpeed: 6
   - cloudsCount: 3
     timeBetweenClouds: 0.5
     abilityCooldown: 10
@@ -70,7 +70,7 @@ MonoBehaviour:
     timeBetweenClouds: 0.5
     abilityCooldown: 10
     cloudLifetime: 5
-    radius: 1.5
+    radius: 1.7
     damage: 12
     ticksPerSecond: 1
     slowAmount: 0.6

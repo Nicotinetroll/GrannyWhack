@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10f85165c00ab52478088ba91528ee1f, type: 3}
   m_Name: Lunar Projector Ability Data
   m_EditorClassIdentifier: 
+  isCharacterSpecific: 1
+  allowedCharacterName: MAGE
+  minCharacterLevel: 1
   type: 209
   title: Lunar Projector
   description: Projects several orbiting light beams

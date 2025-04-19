@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4993d821a20ea2e45a1f02d5edff9cd4, type: 3}
   m_Name: Cooldown Ability Data
   m_EditorClassIdentifier: 
+  isCharacterSpecific: 0
+  allowedCharacterName: 
+  minCharacterLevel: 1
   type: 105
   title: Hourglass
   description: Reduces ability cooldowns
@@ -28,8 +31,8 @@ MonoBehaviour:
   - cooldownMultiplier: 0.76
   - cooldownMultiplier: 0.7
   - cooldownMultiplier: 0.65
-  - cooldownMultiplier: 0.55
-  - cooldownMultiplier: 0.5
-  - cooldownMultiplier: 0.45
-  - cooldownMultiplier: 0.4
+  - cooldownMultiplier: 0.6
+  - cooldownMultiplier: 0.57
+  - cooldownMultiplier: 0.54
+  - cooldownMultiplier: 0.52
   - cooldownMultiplier: 0.35

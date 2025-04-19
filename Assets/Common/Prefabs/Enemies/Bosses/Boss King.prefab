@@ -323,7 +323,7 @@ MonoBehaviour:
   shootVFXPrefab: {fileID: 5124166242607940835, guid: 3b7507cbf49a98548a9440443ee9d843,
     type: 3}
   spawnedEnemyType: 16
-  spawningWavesCount: 5
+  spawningWavesCount: 3
   spawnedEnemiesCount: 1
   durationBetweenSpawning: 1
   durationBetweenWarningAndSpawning: 1

@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bbb4463f118f3d4bb9544bfbd915f0c, type: 3}
   m_Name: Mace Ball Ability Data
   m_EditorClassIdentifier: 
+  isCharacterSpecific: 1
+  allowedCharacterName: MAGE
+  minCharacterLevel: 1
   type: 203
   title: Mace Ball
   description: Cute spiky friend

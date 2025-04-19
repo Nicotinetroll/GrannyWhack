@@ -26,38 +26,38 @@ MonoBehaviour:
   isEvolution: 0
   evolutionRequirements: []
   levels:
-  - abilityCooldown: 2
+  - abilityCooldown: 3
     slashesCount: 3
     damage: 6
     slashSize: 1
-    timeBetweenSlashes: 0.2
+    timeBetweenSlashes: 0.3
     randomRotation: 1
     enableKickBack: 0
     bounceRadius: 1
     bounceChance: 0.5
-  - abilityCooldown: 2
+  - abilityCooldown: 3
     slashesCount: 4
     damage: 9
     slashSize: 1.2
-    timeBetweenSlashes: 0.2
+    timeBetweenSlashes: 0.3
     randomRotation: 1
     enableKickBack: 0
     bounceRadius: 1
     bounceChance: 0.5
-  - abilityCooldown: 1
+  - abilityCooldown: 2.5
     slashesCount: 5
     damage: 13
     slashSize: 1.4
-    timeBetweenSlashes: 0.2
+    timeBetweenSlashes: 0.3
     randomRotation: 1
     enableKickBack: 0
     bounceRadius: 1
     bounceChance: 0.5
-  - abilityCooldown: 1
+  - abilityCooldown: 2.5
     slashesCount: 5
     damage: 17
     slashSize: 1.6
-    timeBetweenSlashes: 0.18
+    timeBetweenSlashes: 0.25
     randomRotation: 1
     enableKickBack: 0
     bounceRadius: 1
@@ -66,7 +66,7 @@ MonoBehaviour:
     slashesCount: 5
     damage: 20
     slashSize: 1.6
-    timeBetweenSlashes: 0.15
+    timeBetweenSlashes: 0.2
     randomRotation: 1
     enableKickBack: 1
     bounceRadius: 1
