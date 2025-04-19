@@ -323,7 +323,7 @@ MonoBehaviour:
     cooldown: 0
     audioClip:
       audioClip: {fileID: 8300000, guid: 0de6b10639dc04d89862810f0f1445c8, type: 3}
-      volume: {x: 0.15, y: 0.15}
+      volume: {x: 0.07, y: 0.07}
       pitch: {x: 1, y: 1}
   - name: Death Blade Attack
     cooldown: 0
@@ -336,5 +336,5 @@ MonoBehaviour:
     cooldown: 0
     audioClip:
       audioClip: {fileID: 8300000, guid: 0de6b10639dc04d89862810f0f1445c8, type: 3}
-      volume: {x: 0.15, y: 0.15}
+      volume: {x: 0.04, y: 0.04}
       pitch: {x: 1, y: 1}

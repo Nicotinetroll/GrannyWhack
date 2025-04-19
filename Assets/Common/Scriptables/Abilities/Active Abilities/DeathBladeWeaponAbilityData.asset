@@ -21,43 +21,43 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 732686cc2e8a5a442b22f0a390857309, type: 3}
   prefab: {fileID: 5349004258488764192, guid: e917c55593dad234f8f5573626b4ea7a, type: 3}
   isActiveAbility: 1
-  isWeaponAbility: 1
+  isWeaponAbility: 0
   isEndgameAbility: 0
   isEvolution: 0
   evolutionRequirements: []
   levels:
   - abilityCooldown: 2
-    slashesCount: 4
+    slashesCount: 3
     damage: 6
     slashSize: 1
     timeBetweenSlashes: 0.2
     randomRotation: 1
     enableKickBack: 0
   - abilityCooldown: 2
-    slashesCount: 6
-    damage: 10
+    slashesCount: 4
+    damage: 9
     slashSize: 1.2
-    timeBetweenSlashes: 0.1
+    timeBetweenSlashes: 0.2
     randomRotation: 1
     enableKickBack: 0
   - abilityCooldown: 1
-    slashesCount: 2
-    damage: 15
+    slashesCount: 5
+    damage: 13
     slashSize: 1.4
-    timeBetweenSlashes: 0.3
+    timeBetweenSlashes: 0.2
     randomRotation: 1
     enableKickBack: 0
   - abilityCooldown: 1
-    slashesCount: 2
+    slashesCount: 5
+    damage: 17
+    slashSize: 1.6
+    timeBetweenSlashes: 0.18
+    randomRotation: 1
+    enableKickBack: 0
+  - abilityCooldown: 1
+    slashesCount: 5
     damage: 20
     slashSize: 1.6
-    timeBetweenSlashes: 0.25
-    randomRotation: 1
-    enableKickBack: 0
-  - abilityCooldown: 1
-    slashesCount: 2
-    damage: 35
-    slashSize: 1.6
-    timeBetweenSlashes: 0.25
+    timeBetweenSlashes: 0.15
     randomRotation: 1
     enableKickBack: 1

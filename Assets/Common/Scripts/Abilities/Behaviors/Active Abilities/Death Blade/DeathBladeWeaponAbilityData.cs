@@ -9,13 +9,13 @@ namespace OctoberStudio.Abilities
         private void Awake()
         {
             type = AbilityType.DeathBlade;
-            isWeaponAbility = true;
+            //isWeaponAbility = true;
         }
 
         private void OnValidate()
         {
             type = AbilityType.DeathBlade;
-            isWeaponAbility = true;
+            //isWeaponAbility = true;
         }
     }
 

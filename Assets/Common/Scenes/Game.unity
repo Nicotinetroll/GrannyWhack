@@ -2505,12 +2505,17 @@ PrefabInstance:
     - target: {fileID: 849641011305831769, guid: 8e6d8d2dabc65504d87acf063e0db163,
         type: 3}
       propertyPath: maxRerollCharges
-      value: 1000
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 849641011305831769, guid: 8e6d8d2dabc65504d87acf063e0db163,
         type: 3}
       propertyPath: rerollUnlockLevel
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 849641011305831769, guid: 8e6d8d2dabc65504d87acf063e0db163,
+        type: 3}
+      propertyPath: defaultMagnetRadius
+      value: 0.85
       objectReference: {fileID: 0}
     - target: {fileID: 849641011305831769, guid: 8e6d8d2dabc65504d87acf063e0db163,
         type: 3}
