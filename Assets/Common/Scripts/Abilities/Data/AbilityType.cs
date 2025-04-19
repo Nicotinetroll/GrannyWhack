@@ -16,6 +16,7 @@ namespace OctoberStudio
         
         // NIJNA
         DeathBlade = 11,
+        PoisonCloud = 12,
 
         Magnet = 100,
         MoveSpeed = 101,
