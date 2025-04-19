@@ -1,3 +1,4 @@
+// DeathBladeWeaponAbilityBehavior.cs
 using System.Collections;
 using System.Collections.Generic;
 using OctoberStudio.Pool;
@@ -5,11 +6,10 @@ using UnityEngine;
 
 namespace OctoberStudio.Abilities
 {
-    public class DeathBladeWeaponAbilityBehavior
+    public class DeathBladeWeaponAbilityBehavior 
         : AbilityBehavior<DeathBladeWeaponAbilityData, DeathBladeWeaponAbilityLevel>
     {
-        public static readonly int DEATH_BLADE_ATTACK_HASH =
-            "Death Blade Attack".GetHashCode();
+        public static readonly int DEATH_BLADE_ATTACK_HASH = "Death Blade Attack".GetHashCode();
 
         [SerializeField] private GameObject bladePrefab;
 
@@ -17,10 +17,8 @@ namespace OctoberStudio.Abilities
         private readonly List<DeathBladeSlashBehavior> _active = new();
         private Coroutine _abilityCoroutine;
 
-        private float Cooldown =>
-            AbilityLevel.AbilityCooldown * PlayerBehavior.Player.CooldownMultiplier;
-        private float SlashDelay =>
-            AbilityLevel.TimeBetweenSlashes * PlayerBehavior.Player.CooldownMultiplier;
+        private float Cooldown => AbilityLevel.AbilityCooldown * PlayerBehavior.Player.CooldownMultiplier;
+        private float SlashDelay => AbilityLevel.TimeBetweenSlashes * PlayerBehavior.Player.CooldownMultiplier;
 
         void Awake()
         {
@@ -39,41 +37,27 @@ namespace OctoberStudio.Abilities
         {
             while (true)
             {
-                // Gather live enemies
+                // find initial target (closest to player)
                 var enemies = StageController.EnemiesSpawner.GetAllEnemies();
                 Vector2 center = PlayerBehavior.CenterPosition;
 
-                // Initial target: closest to player
-                EnemyBehavior prevTarget = null;
-                float bestDist = float.MaxValue;
+                EnemyBehavior prev = null;
+                float best = float.MaxValue;
                 foreach (var e in enemies)
                 {
                     float d = ((Vector2)e.transform.position - center).sqrMagnitude;
-                    if (d < bestDist)
-                    {
-                        bestDist = d;
-                        prevTarget = e;
-                    }
+                    if (d < best) { best = d; prev = e; }
                 }
 
-                // Chain through each slash as a bounce
+                // chain through each slash
                 for (int i = 0; i < AbilityLevel.SlashesCount; i++)
                 {
                     var slash = _slashPool.GetEntity();
+                    slash.transform.position = prev != null ? prev.Center : center;
 
-                    if (prevTarget != null)
-                        slash.transform.position = prevTarget.Center;
-                    else
-                        slash.transform.position = center;
-
-                    // Random Z rotation if enabled
                     if (AbilityLevel.RandomRotation)
-                    {
-                        float rz = Random.Range(0f, 360f);
-                        slash.transform.rotation = Quaternion.Euler(0, 0, rz);
-                    }
+                        slash.transform.rotation = Quaternion.Euler(0,0,Random.Range(0f,360f));
 
-                    // Configure slash
                     slash.DamageMultiplier = AbilityLevel.Damage;
                     slash.KickBack = AbilityLevel.EnableKickBack;
                     slash.Size = AbilityLevel.SlashSize;
@@ -85,43 +69,46 @@ namespace OctoberStudio.Abilities
                     GameController.AudioManager.PlaySound(DEATH_BLADE_ATTACK_HASH);
                     yield return new WaitForSeconds(SlashDelay);
 
-                    // Determine next bounce: closest to prevTarget (excluding itself)
-                    EnemyBehavior next = null;
-                    float minDist = float.MaxValue;
-                    Vector2 fromPos = prevTarget != null ? prevTarget.Center : center;
-                    foreach (var e in enemies)
+                    // decide bounce
+                    if (prev != null && Random.value <= AbilityLevel.BounceChance)
                     {
-                        if (e == prevTarget) continue;
-                        float dist2 = ((Vector2)e.transform.position - fromPos).sqrMagnitude;
-                        if (dist2 < minDist)
+                        EnemyBehavior next = null;
+                        float minD = float.MaxValue;
+                        Vector2 from = prev.Center;
+
+                        // search within radius
+                        foreach (var e in enemies)
                         {
-                            minDist = dist2;
-                            next = e;
+                            if (e == prev) continue;
+                            float d2 = ((Vector2)e.transform.position - from).sqrMagnitude;
+                            if (d2 <= AbilityLevel.BounceRadius * AbilityLevel.BounceRadius && d2 < minD)
+                            {
+                                minD = d2; next = e;
+                            }
                         }
+                        prev = next ?? prev;
                     }
-                    prevTarget = next ?? prevTarget;
+                    // else prev remains same
                 }
 
-                // Cooldown
+                // cooldown
                 float rem = Cooldown - AbilityLevel.SlashesCount * SlashDelay;
                 if (rem < 0.1f) rem = 0.1f;
                 yield return new WaitForSeconds(rem);
             }
         }
 
-        private void OnSlashFinished(DeathBladeSlashBehavior slash)
+        private void OnSlashFinished(DeathBladeSlashBehavior s)
         {
-            slash.onFinished -= OnSlashFinished;
-            _active.Remove(slash);
+            s.onFinished -= OnSlashFinished;
+            _active.Remove(s);
         }
 
         private void Disable()
         {
-            foreach (var s in _active)
-                s.Disable();
+            foreach (var s in _active) s.Disable();
             _active.Clear();
-            if (_abilityCoroutine != null)
-                StopCoroutine(_abilityCoroutine);
+            if (_abilityCoroutine != null) StopCoroutine(_abilityCoroutine);
         }
 
         public override void Clear()
