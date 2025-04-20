@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 using OctoberStudio.Abilities;
 using OctoberStudio.Save;
 
@@ -9,23 +8,26 @@ namespace OctoberStudio.UI
     public class EvoAbilitiesDisplayBehavior : MonoBehaviour
     {
         [Header("Data & Prefabs")]
+        [Tooltip("Your CharactersDatabase ScriptableObject")]
         [SerializeField] private CharactersDatabase charactersDatabase;
+        [Tooltip("Your AbilitiesDatabase ScriptableObject")]
         [SerializeField] private AbilitiesDatabase  abilitiesDatabase;
-        [SerializeField] private CharactersSave      characterSave;   // optional, auto‑fetched if null
+        [Tooltip("Optional: leave blank to auto‑fetch from SaveManager")]
+        [SerializeField] private CharactersSave      characterSave;
+        [Tooltip("One generic Evo‑item prefab with EvoAbilityItemBehavior on it")]
         [SerializeField] private GameObject          evoItemPrefab;
 
-        [Header("Layout (must have a HorizontalLayoutGroup)")]
+        [Header("Layout")]
+        [Tooltip("The RectTransform under your Evo Upgrades HorizontalLayoutGroup")]
         [SerializeField] private RectTransform       container;
-
-        private const string TargetCharacterName = "NIJNA";
 
         private void Start()
         {
+            // grab save if not set
             if (characterSave == null)
                 characterSave = GameController
                                    .SaveManager
                                    .GetSave<CharactersSave>("Characters");
-
             characterSave.onSelectedCharacterChanged += Refresh;
             Refresh();
         }
@@ -38,40 +40,36 @@ namespace OctoberStudio.UI
 
         private void Refresh()
         {
-            // 1) clear any existing icons
+            // 1) current character & level
+            var charData  = charactersDatabase.GetCharacterData(characterSave.SelectedCharacterId);
+            int charLevel = CharacterLevelSystem.GetLevel(charData);
+
+            // 2) clear out any old icons
             for (int i = container.childCount - 1; i >= 0; i--)
                 Destroy(container.GetChild(i).gameObject);
 
-            // 2) spawn only Evo abilities whose AllowedCharacterName == "NIJNA"
+            // 3) loop through the DB
             for (int i = 0; i < abilitiesDatabase.AbilitiesCount; i++)
             {
                 var ad = abilitiesDatabase.GetAbility(i);
-                if (ad == null) 
+                if (ad == null || !ad.IsEvolution)
                     continue;
 
-                // must be an evolution ability
-                if (!ad.IsEvolution) 
+                // 4) filter by character restriction
+                if (ad.IsCharacterSpecific && ad.AllowedCharacterName != charData.Name)
                     continue;
 
-                // must be marked character‑specific to NIJNA
-                if (!ad.IsCharacterSpecific || ad.AllowedCharacterName != TargetCharacterName)
-                    continue;
+                // 5) check the *character* level unlock, not your ability‐level requirement
+                int reqLvl   = ad.MinCharacterLevel;
+                bool unlocked = charLevel >= reqLvl;
 
-                // instantiate under the layout group
+                Debug.Log($"[EvoUI] '{ad.Title}' → charLvl={charLevel}, minCharLvl={reqLvl}, unlocked={unlocked}");
+
+                // 6) spawn & configure
                 var go = Instantiate(evoItemPrefab, container, false);
-
-                // configure the icon (always “unlocked” here)
-                go.GetComponent<EvoAbilityItemBehavior>()
-                  .Setup(ad.Icon, true);
-
-                // reset RectTransform so layout group places it properly
-                var rt = go.GetComponent<RectTransform>();
-                rt.anchoredPosition = Vector2.zero;
-                rt.localScale       = Vector3.one;
+                go.GetComponent<EvoAbilityItemBehavior>().Setup(ad.Icon, unlocked);
             }
-
-            // 3) force the HorizontalLayoutGroup to rebuild positions
-            LayoutRebuilder.ForceRebuildLayoutImmediate(container);
         }
+
     }
 }
