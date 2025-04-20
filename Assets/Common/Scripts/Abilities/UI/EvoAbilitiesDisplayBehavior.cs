@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI;             // for LayoutRebuilder
+using UnityEngine.UI;
 using OctoberStudio.Abilities;
 using OctoberStudio.Save;
 
@@ -11,11 +11,13 @@ namespace OctoberStudio.UI
         [Header("Data & Prefabs")]
         [SerializeField] private CharactersDatabase charactersDatabase;
         [SerializeField] private AbilitiesDatabase  abilitiesDatabase;
-        [SerializeField] private CharactersSave      characterSave;   // optional
-        [SerializeField] private GameObject          evoItemPrefab;   // generic prefab
+        [SerializeField] private CharactersSave      characterSave;   // optional, auto‑fetched if null
+        [SerializeField] private GameObject          evoItemPrefab;
 
         [Header("Layout (must have a HorizontalLayoutGroup)")]
         [SerializeField] private RectTransform       container;
+
+        private const string TargetCharacterName = "NIJNA";
 
         private void Start()
         {
@@ -36,31 +38,39 @@ namespace OctoberStudio.UI
 
         private void Refresh()
         {
-            // 1) Grab current char data & level
-            var data           = charactersDatabase.GetCharacterData(characterSave.SelectedCharacterId);
-            int characterLevel = CharacterLevelSystem.GetLevel(data);
-
-            // 2) Clear old items
+            // 1) clear any existing icons
             for (int i = container.childCount - 1; i >= 0; i--)
                 Destroy(container.GetChild(i).gameObject);
 
-            // 3) Spawn new Evo items
+            // 2) spawn only Evo abilities whose AllowedCharacterName == "NIJNA"
             for (int i = 0; i < abilitiesDatabase.AbilitiesCount; i++)
             {
                 var ad = abilitiesDatabase.GetAbility(i);
-                if (ad == null || !ad.IsEvolution)
+                if (ad == null) 
                     continue;
 
-                bool unlocked = characterLevel >= ad.MinCharacterLevel;
+                // must be an evolution ability
+                if (!ad.IsEvolution) 
+                    continue;
 
-                // ←—— This ensures the item's RectTransform is reset into the container
+                // must be marked character‑specific to NIJNA
+                if (!ad.IsCharacterSpecific || ad.AllowedCharacterName != TargetCharacterName)
+                    continue;
+
+                // instantiate under the layout group
                 var go = Instantiate(evoItemPrefab, container, false);
 
+                // configure the icon (always “unlocked” here)
                 go.GetComponent<EvoAbilityItemBehavior>()
-                  .Setup(ad.Icon, unlocked);
+                  .Setup(ad.Icon, true);
+
+                // reset RectTransform so layout group places it properly
+                var rt = go.GetComponent<RectTransform>();
+                rt.anchoredPosition = Vector2.zero;
+                rt.localScale       = Vector3.one;
             }
 
-            // 4) Now force the layout group to recalculate positions/sizes
+            // 3) force the HorizontalLayoutGroup to rebuild positions
             LayoutRebuilder.ForceRebuildLayoutImmediate(container);
         }
     }

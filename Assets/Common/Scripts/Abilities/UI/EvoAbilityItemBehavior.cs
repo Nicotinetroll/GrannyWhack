@@ -23,15 +23,15 @@ namespace OctoberStudio.UI
         /// </summary>
         public void Setup(Sprite iconSprite, bool unlocked)
         {
-            // 1) Enable all Image components in this clone
+            // 1) make sure all images are on (in case parent prefab had them off)
             foreach (var img in GetComponentsInChildren<Image>(true))
-            {
                 img.enabled = true;
-            }
 
-            // 2) assign the sprite & interactability
-            iconImage.sprite      = iconSprite;
-            _button.interactable   = unlocked;
+            // 2) assign sprite & interactability
+            iconImage.sprite    = iconSprite;
+            _button.interactable = unlocked;
+
+            // 3) lock‑overlay alpha 1 when locked, 0 when unlocked
             disabledOverlay.alpha = unlocked ? 0f : 1f;
         }
     }

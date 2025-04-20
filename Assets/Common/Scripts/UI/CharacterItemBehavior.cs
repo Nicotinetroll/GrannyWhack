@@ -14,33 +14,32 @@ namespace OctoberStudio.UI
         public RectTransform Rect => rect;
 
         [Header("Info")]
-        [SerializeField] Image   iconImage;
-        [SerializeField] TMP_Text titleLabel;
-        [SerializeField] GameObject startingAbilityObject;
-        [SerializeField] Image   startingAbilityImage;
+        [SerializeField] private Image   iconImage;
+        [SerializeField] private TMP_Text titleLabel;
+        [SerializeField] private GameObject startingAbilityObject;
+        [SerializeField] private Image   startingAbilityImage;
 
         [Header("Button")]
-        [SerializeField] Button  upgradeButton;
-        [SerializeField] Sprite  enabledButtonSprite;
-        [SerializeField] Sprite  disabledButtonSprite;
-        [SerializeField] Sprite  selectedButtonSprite;
+        [SerializeField] private Button  upgradeButton;
+        [SerializeField] private Sprite  enabledButtonSprite;
+        [SerializeField] private Sprite  disabledButtonSprite;
+        [SerializeField] private Sprite  selectedButtonSprite;
 
         [Header("Stats")]
-        [SerializeField] TMP_Text hpText;
-        [SerializeField] TMP_Text damageText;
-        [SerializeField] TMP_Text levelLabel;
+        [SerializeField] private TMP_Text hpText;
+        [SerializeField] private TMP_Text damageText;
+        [SerializeField] private TMP_Text levelLabel;
 
         [Space]
-        [SerializeField] ScalingLabelBehavior costLabel;
-        [SerializeField] TMP_Text buttonText;
+        [SerializeField] private ScalingLabelBehavior costLabel;
+        [SerializeField] private TMP_Text           buttonText;
 
-        public CurrencySave   GoldCurrency   { get; private set; }
+        public CurrencySave GoldCurrency { get; private set; }
         private CharactersSave charactersSave;
 
         public Selectable Selectable => upgradeButton;
-
-        public CharacterData Data        { get; private set; }
-        public int           CharacterId { get; private set; }
+        public CharacterData Data { get; private set; }
+        public int CharacterId { get; private set; }
         public bool IsSelected { get; private set; }
 
         public UnityAction<CharacterItemBehavior> onNavigationSelected;
@@ -51,30 +50,32 @@ namespace OctoberStudio.UI
         }
 
         /// <summary>
-        /// Used in your shop/selection screen.
+        /// Call once to initialize this item in your shop/selection UI.
         /// </summary>
         public void Init(int id, CharacterData characterData, AbilitiesDatabase database)
         {
             Data        = characterData;
             CharacterId = id;
 
-            // hook saves once
+            // subscribe to SelectedCharacterChanged
             if (charactersSave == null)
             {
                 charactersSave = GameController
                                    .SaveManager
                                    .GetSave<CharactersSave>("Characters");
-                charactersSave.onSelectedCharacterChanged += RedrawVisuals;
+                charactersSave.onSelectedCharacterChanged += OnSelectedCharacterChanged;
             }
+
+            // subscribe to gold changes
             if (GoldCurrency == null)
             {
                 GoldCurrency = GameController
                                    .SaveManager
                                    .GetSave<CurrencySave>("gold");
-                GoldCurrency.onGoldAmountChanged += _ => RedrawVisuals();
+                GoldCurrency.onGoldAmountChanged += OnGoldAmountChanged;
             }
 
-            // starting‑ability icon
+            // setup starting ability icon
             startingAbilityObject.SetActive(characterData.HasStartingAbility);
             if (characterData.HasStartingAbility)
             {
@@ -85,44 +86,27 @@ namespace OctoberStudio.UI
             RedrawVisuals();
         }
 
-        /// <summary>
-        /// Call this instead of Init(...) when you just need to display
-        /// the selected character as a logo replacement (no button).
-        /// </summary>
-        public void SetupSelected(CharacterData characterData)
+        private void OnSelectedCharacterChanged()
         {
-            Data = characterData;
-
-            // icon + name
-            titleLabel.text  = Data.Name;
-            iconImage.sprite = Data.Icon;
-
-            // stats: HP, Damage, Level
-            hpText.text     = Data.BaseHP.ToString("F0");
-            float dmg       = Data.BaseDamage + CharacterLevelSystem.GetDamageBonus(Data);
-            damageText.text = dmg.ToString("F2");
-            levelLabel.text = CharacterLevelSystem.GetLevel(Data).ToString();
-
-            // hide all button UI
-            upgradeButton.gameObject.SetActive(false);
-            costLabel.gameObject.SetActive(false);
-            buttonText.gameObject.SetActive(false);
-
-            // optionally show starting ability icon or hide
-            startingAbilityObject.SetActive(false);
+            RedrawVisuals();
         }
 
-        /* ───── visual refresh ─────────────────────────────────────────── */
+        private void OnGoldAmountChanged(int _)
+        {
+            RedrawVisuals();
+        }
 
         private void RedrawVisuals()
         {
+            // guard against destroyed UI
+            if (titleLabel == null) return;
+
             titleLabel.text  = Data.Name;
             iconImage.sprite = Data.Icon;
+            hpText.text      = Data.BaseHP.ToString("F0");
 
-            hpText.text = Data.BaseHP.ToString("F0");
-
-            float dmg = Data.BaseDamage + CharacterLevelSystem.GetDamageBonus(Data);
-            damageText.text = dmg.ToString("F2");
+            float dmg        = Data.BaseDamage + CharacterLevelSystem.GetDamageBonus(Data);
+            damageText.text  = dmg.ToString("F2");
 
             if (levelLabel != null)
                 levelLabel.text = $"{CharacterLevelSystem.GetLevel(Data)}";
@@ -132,45 +116,46 @@ namespace OctoberStudio.UI
 
         private void RedrawButton()
         {
+            // guard
+            if (upgradeButton == null) return;
+
             if (charactersSave.HasCharacterBeenBought(CharacterId))
             {
-                costLabel.gameObject.SetActive(false);
-                buttonText.gameObject.SetActive(true);
+                costLabel?.gameObject.SetActive(false);
+                buttonText?.gameObject.SetActive(true);
 
                 if (charactersSave.SelectedCharacterId == CharacterId)
                 {
-                    upgradeButton.interactable = false;
-                    upgradeButton.image.sprite = selectedButtonSprite;
-                    buttonText.text = "SELECTED";
+                    upgradeButton.interactable      = false;
+                    upgradeButton.image.sprite     = selectedButtonSprite;
+                    buttonText.text                = "SELECTED";
                 }
                 else
                 {
-                    upgradeButton.interactable = true;
-                    upgradeButton.image.sprite = enabledButtonSprite;
-                    buttonText.text = "SELECT";
+                    upgradeButton.interactable      = true;
+                    upgradeButton.image.sprite     = enabledButtonSprite;
+                    buttonText.text                = "SELECT";
                 }
             }
             else
             {
-                costLabel.gameObject.SetActive(true);
-                buttonText.gameObject.SetActive(false);
+                costLabel?.gameObject.SetActive(true);
+                buttonText?.gameObject.SetActive(false);
 
-                costLabel.SetAmount(Data.Cost);
+                costLabel?.SetAmount(Data.Cost);
 
                 if (GoldCurrency.CanAfford(Data.Cost))
                 {
-                    upgradeButton.interactable = true;
+                    upgradeButton.interactable  = true;
                     upgradeButton.image.sprite = enabledButtonSprite;
                 }
                 else
                 {
-                    upgradeButton.interactable = false;
+                    upgradeButton.interactable  = false;
                     upgradeButton.image.sprite = disabledButtonSprite;
                 }
             }
         }
-
-        /* ───── button click / gold updates ───────────────────────────── */
 
         private void SelectButtonClick()
         {
@@ -185,8 +170,6 @@ namespace OctoberStudio.UI
             GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
             EventSystem.current.SetSelectedGameObject(upgradeButton.gameObject);
         }
-
-        /* ───── navigation hooks ─────────────────────────────────────── */
 
         public void Select()
         {
@@ -211,15 +194,18 @@ namespace OctoberStudio.UI
             }
         }
 
-        /* ───── cleanup ──────────────────────────────────────────────── */
-
         public void Clear()
         {
-            if (GoldCurrency != null)
-                GoldCurrency.onGoldAmountChanged -= _ => RedrawVisuals();
-
             if (charactersSave != null)
-                charactersSave.onSelectedCharacterChanged -= RedrawVisuals;
+                charactersSave.onSelectedCharacterChanged -= OnSelectedCharacterChanged;
+            if (GoldCurrency != null)
+                GoldCurrency.onGoldAmountChanged   -= OnGoldAmountChanged;
+        }
+
+        private void OnDestroy()
+        {
+            // ensure cleanup
+            Clear();
         }
     }
 }

@@ -92,5 +92,25 @@ namespace OctoberStudio
 
             e.lvl = lvl;
         }
+        
+        /// <summary> Maximum level from config (read-only) </summary>
+        public static int MaxLevel
+        {
+            get
+            {
+                EnsureInit();
+                return cfg != null ? cfg.MaxLevel : 1;
+            }
+        }
+
+        /// <summary> Force‑set a character’s level (for debug / tools). </summary>
+        public static void SetLevel(CharacterData c, int level)
+        {
+            EnsureInit();
+            if (save == null || c == null) return;
+
+            var entry = Get(c);
+            entry.lvl = Mathf.Clamp(level, 1, MaxLevel);
+        }
     }
 }
