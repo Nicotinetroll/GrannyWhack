@@ -1,27 +1,26 @@
-using OctoberStudio.Audio;
-using OctoberStudio.Easing;
-using OctoberStudio.Upgrades.UI;
 using UnityEngine;
-using UnityEngine.Events;
+using OctoberStudio;        // for GameController & CharactersSave
+using OctoberStudio.Audio;  // for AudioManager
+using OctoberStudio.UI;
+using OctoberStudio.Upgrades.UI; // for SelectedCharacterItemBehavior
 
 namespace OctoberStudio.UI
 {
     public class MainMenuScreenBehavior : MonoBehaviour
     {
-        private Canvas canvas;
+        [Header("Windows")]
+        [SerializeField] private LobbyWindowBehavior      lobbyWindow;
+        [SerializeField] private UpgradesWindowBehavior   upgradesWindow;
+        [SerializeField] private SettingsWindowBehavior   settingsWindow;
+        [SerializeField] private CharactersWindowBehavior charactersWindow;
+        
 
-        [SerializeField] LobbyWindowBehavior lobbyWindow;
-        [SerializeField] UpgradesWindowBehavior upgradesWindow;
-        [SerializeField] SettingsWindowBehavior settingsWindow;
-        [SerializeField] CharactersWindowBehavior charactersWindow;
-
-        private void Awake()
-        {
-            canvas = GetComponent<Canvas>();
-        }
+        [Header("Data")]
+        [SerializeField] private CharactersDatabase charactersDatabase;
 
         private void Start()
         {
+            // existing window inits
             lobbyWindow.Init(ShowUpgrades, ShowSettings, ShowCharacters);
             upgradesWindow.Init(HideUpgrades);
             settingsWindow.Init(HideSettings);
@@ -31,7 +30,6 @@ namespace OctoberStudio.UI
         private void ShowUpgrades()
         {
             GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
-
             lobbyWindow.Close();
             upgradesWindow.Open();
         }
@@ -39,7 +37,6 @@ namespace OctoberStudio.UI
         private void HideUpgrades()
         {
             GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
-
             upgradesWindow.Close();
             lobbyWindow.Open();
         }
@@ -47,7 +44,6 @@ namespace OctoberStudio.UI
         private void ShowCharacters()
         {
             GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
-
             lobbyWindow.Close();
             charactersWindow.Open();
         }
@@ -55,7 +51,6 @@ namespace OctoberStudio.UI
         private void HideCharacters()
         {
             GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
-
             charactersWindow.Close();
             lobbyWindow.Open();
         }
@@ -63,7 +58,6 @@ namespace OctoberStudio.UI
         private void ShowSettings()
         {
             GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
-
             lobbyWindow.Close();
             settingsWindow.Open();
         }
@@ -71,7 +65,6 @@ namespace OctoberStudio.UI
         private void HideSettings()
         {
             GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
-
             settingsWindow.Close();
             lobbyWindow.Open();
         }

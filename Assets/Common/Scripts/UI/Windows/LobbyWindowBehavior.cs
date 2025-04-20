@@ -8,109 +8,132 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using OctoberStudio.Abilities;
+using OctoberStudio.UI;
 
 namespace OctoberStudio.UI
 {
     public class LobbyWindowBehavior : MonoBehaviour
     {
-        [SerializeField] StagesDatabase stagesDatabase;
+        [Header("Header Display")]
+        [SerializeField] private SelectedCharacterItemBehavior selectedDisplay;
+        [SerializeField] private CharactersDatabase           charactersDatabase;
+        [SerializeField] private AbilitiesDatabase            abilitiesDatabase;
 
-        [Space]
-        [SerializeField] Image stageIcon;
-        [SerializeField] Image lockImage;
-        [SerializeField] TMP_Text stageLabel;
-        [SerializeField] TMP_Text stageNumberLabel;
+        [Header("Stages")]
+        [SerializeField] private StagesDatabase stagesDatabase;
 
-        [Space]
-        [SerializeField] Button playButton;
-        [SerializeField] Button upgradesButton;
-        [SerializeField] Button settingsButton;
-        [SerializeField] Button charactersButton;
-        [SerializeField] Button leftButton;
-        [SerializeField] Button rightButton;
+        [Space] [Header("Stage UI")]
+        [SerializeField] private Image    stageIcon;
+        [SerializeField] private Image    lockImage;
+        [SerializeField] private TMP_Text stageLabel;
+        [SerializeField] private TMP_Text stageNumberLabel;
 
-        [Space]
-        [SerializeField] Sprite playButtonEnabledSprite;
-        [SerializeField] Sprite playButtonDisabledSprite;
+        [Space] [Header("Buttons")]
+        [SerializeField] private Button playButton;
+        [SerializeField] private Button upgradesButton;
+        [SerializeField] private Button settingsButton;
+        [SerializeField] private Button charactersButton;
+        [SerializeField] private Button leftButton;
+        [SerializeField] private Button rightButton;
 
-        [Space]
-        [SerializeField] Image continueBackgroundImage;
-        [SerializeField] RectTransform contituePopupRect;
-        [SerializeField] Button confirmButton;
-        [SerializeField] Button cancelButton;
+        [Space] 
+        [SerializeField] private Sprite playButtonEnabledSprite;
+        [SerializeField] private Sprite playButtonDisabledSprite;
 
-        private StageSave save;
+        [Space] [Header("Continue Popup")]
+        [SerializeField] private Image         continueBackgroundImage;
+        [SerializeField] private RectTransform continuePopupRect;
+        [SerializeField] private Button        confirmButton;
+        [SerializeField] private Button        cancelButton;
+
+        private StageSave      stageSave;
+        private CharactersSave charactersSave;
 
         private void Awake()
         {
-            playButton.onClick.AddListener(OnPlayButtonClicked);
-            leftButton.onClick.AddListener(DecrementSelectedStageId);
-            rightButton.onClick.AddListener(IncremenSelectedStageId);
-
+            playButton   .onClick.AddListener(OnPlayButtonClicked);
+            leftButton   .onClick.AddListener(DecrementSelectedStageId);
+            rightButton  .onClick.AddListener(IncremenSelectedStageId);
             confirmButton.onClick.AddListener(ConfirmButtonClicked);
-            cancelButton.onClick.AddListener(CancelButtonClicked);
+            cancelButton .onClick.AddListener(CancelButtonClicked);
         }
 
         private void Start()
         {
-            save = GameController.SaveManager.GetSave<StageSave>("Stage");
+            // — Stage save & UI init —
+            stageSave = GameController.SaveManager.GetSave<StageSave>("Stage");
+            stageSave.onSelectedStageChanged += InitStage;
 
-            save.onSelectedStageChanged += InitStage;
+            // — Character save & header display init —
+            charactersSave = GameController.SaveManager.GetSave<CharactersSave>("Characters");
+            charactersSave.onSelectedCharacterChanged += UpdateSelectedDisplay;
+            UpdateSelectedDisplay();
 
-            if (save.IsPlaying && GameController.FirstTimeLoaded)
+            // — Continue pop‑up or default selection —
+            if (stageSave.IsPlaying && GameController.FirstTimeLoaded)
             {
                 continueBackgroundImage.gameObject.SetActive(true);
-
-                contituePopupRect.gameObject.SetActive(true);
-
+                continuePopupRect       .gameObject.SetActive(true);
                 EventSystem.current.SetSelectedGameObject(confirmButton.gameObject);
-
-                InitStage(save.SelectedStageId);
-            } else
+                InitStage(stageSave.SelectedStageId);
+            }
+            else
             {
                 EventSystem.current.SetSelectedGameObject(playButton.gameObject);
-                save.SetSelectedStageId(save.MaxReachedStageId);
+                stageSave.SetSelectedStageId(stageSave.MaxReachedStageId);
             }
 
+            // — Input hooks —
             GameController.InputManager.onInputChanged += OnInputChanged;
             GameController.InputManager.InputAsset.UI.Settings.performed += OnSettingsInputClicked;
         }
 
-        public void Init(UnityAction onUpgradesButtonClicked, UnityAction onSettingsButtonClicked, UnityAction onCharactersButtonClicked)
+        private void UpdateSelectedDisplay()
         {
-            upgradesButton.onClick.AddListener(onUpgradesButtonClicked);
-            settingsButton.onClick.AddListener(onSettingsButtonClicked);
-            charactersButton.onClick.AddListener(onCharactersButtonClicked);
+            if (selectedDisplay == null
+                || charactersDatabase == null
+                || abilitiesDatabase == null
+                || charactersSave == null)
+                return;
+
+            var data = charactersDatabase.GetCharacterData(
+                charactersSave.SelectedCharacterId);
+
+            selectedDisplay.Setup(data, abilitiesDatabase);
+        }
+
+        public void Init(UnityAction onUpgrades, UnityAction onSettings, UnityAction onCharacters)
+        {
+            upgradesButton .onClick.AddListener(onUpgrades);
+            settingsButton .onClick.AddListener(onSettings);
+            charactersButton.onClick.AddListener(onCharacters);
         }
 
         public void InitStage(int stageId)
         {
             var stage = stagesDatabase.GetStage(stageId);
+            stageLabel      .text   = stage.DisplayName;
+            stageNumberLabel.text   = $"Stage {stageId + 1}";
+            stageIcon       .sprite = stage.Icon;
 
-            stageLabel.text = stage.DisplayName;
-            stageNumberLabel.text = $"Stage {stageId + 1}";
-            stageIcon.sprite = stage.Icon;
+            bool locked = stageId > stageSave.MaxReachedStageId;
+            lockImage.gameObject.SetActive(locked);
 
-            if(save.SelectedStageId > save.MaxReachedStageId)
-            {
-                lockImage.gameObject.SetActive(true);
-                playButton.interactable = false;
-                playButton.image.sprite = playButtonDisabledSprite;
-            } else
-            {
-                lockImage.gameObject.SetActive(false);
-                playButton.interactable = true;
-                playButton.image.sprite = playButtonEnabledSprite;
-            }
+            playButton.interactable = !locked;
+            playButton.image.sprite = locked
+                ? playButtonDisabledSprite
+                : playButtonEnabledSprite;
 
-            leftButton.gameObject.SetActive(!save.IsFirstStageSelected);
-            rightButton.gameObject.SetActive(save.SelectedStageId != stagesDatabase.StagesCount - 1);
+            leftButton .gameObject.SetActive(!stageSave.IsFirstStageSelected);
+            rightButton.gameObject.SetActive(stageId != stagesDatabase.StagesCount - 1);
         }
 
         public void Open()
         {
             gameObject.SetActive(true);
-            EasingManager.DoNextFrame(() => EventSystem.current.SetSelectedGameObject(playButton.gameObject));
+            EasingManager.DoNextFrame(() =>
+                EventSystem.current.SetSelectedGameObject(playButton.gameObject));
 
             GameController.InputManager.onInputChanged += OnInputChanged;
             GameController.InputManager.InputAsset.UI.Settings.performed += OnSettingsInputClicked;
@@ -119,18 +142,17 @@ namespace OctoberStudio.UI
         public void Close()
         {
             gameObject.SetActive(false);
-
             GameController.InputManager.onInputChanged -= OnInputChanged;
             GameController.InputManager.InputAsset.UI.Settings.performed -= OnSettingsInputClicked;
         }
 
-        public void OnPlayButtonClicked()
+        private void OnPlayButtonClicked()
         {
-            save.IsPlaying = true;
-            save.ResetStageData = true;
-            save.Time = 0f;
-            save.XP = 0f;
-            save.XPLEVEL = 0;
+            stageSave.IsPlaying      = true;
+            stageSave.ResetStageData = true;
+            stageSave.Time           = 0f;
+            stageSave.XP             = 0f;
+            stageSave.XPLEVEL        = 0;
 
             GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
             GameController.LoadStage();
@@ -139,80 +161,74 @@ namespace OctoberStudio.UI
         private void IncremenSelectedStageId()
         {
             GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
-            save.SetSelectedStageId(save.SelectedStageId + 1);
-
-            if (!rightButton.gameObject.activeSelf)
-            {
-                if (leftButton.gameObject.activeSelf)
-                {
-                    EventSystem.current.SetSelectedGameObject(leftButton.gameObject);
-                } else
-                {
-                    EventSystem.current.SetSelectedGameObject(playButton.gameObject);
-                }
-            }
+            stageSave.SetSelectedStageId(stageSave.SelectedStageId + 1);
+            FallbackSelect(leftButton.gameObject, playButton.gameObject, rightButton.gameObject);
         }
 
         private void DecrementSelectedStageId()
         {
             GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
-            save.SetSelectedStageId(save.SelectedStageId - 1);
-
-            if (!leftButton.gameObject.activeSelf)
-            {
-                if (rightButton.gameObject.activeSelf)
-                {
-                    EventSystem.current.SetSelectedGameObject(rightButton.gameObject);
-                }
-                else
-                {
-                    EventSystem.current.SetSelectedGameObject(playButton.gameObject);
-                }
-            }
+            stageSave.SetSelectedStageId(stageSave.SelectedStageId - 1);
+            FallbackSelect(rightButton.gameObject, playButton.gameObject, leftButton.gameObject);
         }
 
-        private void OnDestroy()
+        private void FallbackSelect(GameObject primary, GameObject secondary, GameObject tertiary)
         {
-            save.onSelectedStageChanged -= InitStage;
-            GameController.InputManager.onInputChanged -= OnInputChanged;
-        }
-
-        private void OnSettingsInputClicked(InputAction.CallbackContext context)
-        {
-            settingsButton.onClick?.Invoke();
+            if (primary.activeSelf)
+                EventSystem.current.SetSelectedGameObject(primary);
+            else if (secondary.activeSelf)
+                EventSystem.current.SetSelectedGameObject(secondary);
+            else
+                EventSystem.current.SetSelectedGameObject(tertiary);
         }
 
         private void ConfirmButtonClicked()
         {
-            save.ResetStageData = false;
-
+            stageSave.ResetStageData = false;
             GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
             GameController.LoadStage();
         }
 
         private void CancelButtonClicked()
         {
-            save.IsPlaying = false;
+            stageSave.IsPlaying = false;
+            continueBackgroundImage
+                .DoAlpha(0, 0.3f)
+                .SetOnFinish(() =>
+                    continueBackgroundImage.gameObject.SetActive(false));
 
-            continueBackgroundImage.DoAlpha(0, 0.3f).SetOnFinish(() => continueBackgroundImage.gameObject.SetActive(false));
-            contituePopupRect.DoAnchorPosition(Vector2.down * 2500, 0.3f).SetEasing(EasingType.SineIn).SetOnFinish(() => contituePopupRect.gameObject.SetActive(false));
+            continuePopupRect
+                .DoAnchorPosition(Vector2.down * 2500, 0.3f)
+                .SetEasing(EasingType.SineIn)
+                .SetOnFinish(() =>
+                    continuePopupRect.gameObject.SetActive(false));
 
             EventSystem.current.SetSelectedGameObject(playButton.gameObject);
         }
 
-        private void OnInputChanged(InputType prevInputType, InputType inputType)
+        private void OnSettingsInputClicked(InputAction.CallbackContext _)
         {
-            if(prevInputType == InputType.UIJoystick)
+            settingsButton.onClick?.Invoke();
+        }
+
+        private void OnInputChanged(InputType prev, InputType current)
+        {
+            if (prev == InputType.UIJoystick)
             {
-                if (continueBackgroundImage.gameObject.activeSelf)
-                {
-                    EventSystem.current.SetSelectedGameObject(confirmButton.gameObject);
-                }
-                else
-                {
-                    EventSystem.current.SetSelectedGameObject(playButton.gameObject);
-                }
+                var toSelect = continueBackgroundImage.gameObject.activeSelf
+                    ? confirmButton.gameObject
+                    : playButton.gameObject;
+                EventSystem.current.SetSelectedGameObject(toSelect);
             }
+        }
+
+        private void OnDestroy()
+        {
+            stageSave.onSelectedStageChanged        -= InitStage;
+            GameController.InputManager.onInputChanged -= OnInputChanged;
+            GameController.InputManager.InputAsset.UI.Settings.performed -= OnSettingsInputClicked;
+            if (charactersSave != null)
+                charactersSave.onSelectedCharacterChanged -= UpdateSelectedDisplay;
         }
     }
 }
