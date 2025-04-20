@@ -18,14 +18,21 @@ namespace OctoberStudio.UI
         }
 
         /// <summary>
-        /// iconSprite: the ability’s icon.  
+        /// iconSprite: the ability’s icon.
         /// unlocked:   whether the player’s level >= the required Evo level.
         /// </summary>
         public void Setup(Sprite iconSprite, bool unlocked)
         {
+            // 1) Enable all Image components in this clone
+            foreach (var img in GetComponentsInChildren<Image>(true))
+            {
+                img.enabled = true;
+            }
+
+            // 2) assign the sprite & interactability
             iconImage.sprite      = iconSprite;
             _button.interactable   = unlocked;
-            disabledOverlay.alpha = unlocked ? 0f : 0.5f;
+            disabledOverlay.alpha = unlocked ? 0f : 1f;
         }
     }
 }
