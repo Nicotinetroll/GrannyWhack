@@ -1,12 +1,14 @@
+using System.Linq;
 using OctoberStudio.Abilities;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace OctoberStudio.UI
 {
     /// <summary>
-    /// Read‑only display of a CharacterData: icon, name, HP, damage, level, starting ability, and XP bar.
+    /// Read‑only display of a CharacterData: icon, name, HP, damage, level,
+    /// starting ability, XP bar, and next‑unlock text.
     /// </summary>
     public class SelectedCharacterItemBehavior : MonoBehaviour
     {
@@ -24,43 +26,69 @@ namespace OctoberStudio.UI
         [SerializeField] private Image      abilityIconImage;
 
         [Header("XP Bar")]
-        [SerializeField] private CharacterExperienceUI xpBar;  // ← the XP‑bar component
+        [SerializeField] private CharacterExperienceUI xpBar;
+
+        [Header("Next Unlock")]
+        [SerializeField] private TMP_Text nextUnlockLabel;
 
         /// <summary>
-        /// Populate using the CharacterData and fetch ability icon from the AbilitiesDatabase.
+        /// Populates the display.  Pass in the full AbilitiesDatabase
+        /// so we can compute the very next EVO unlock level.
         /// </summary>
         public void Setup(CharacterData data, AbilitiesDatabase db)
         {
-            Debug.Log($"[SelectedDisplay] Setup called for {data.Name}. HasStartingAbility={data.HasStartingAbility}");
-
             // Icon & Name
             iconImage.sprite = data.Icon;
             titleLabel.text  = data.Name;
 
-            // Base HP
+            // HP & Damage
             hpText.text = data.BaseHP.ToString("F0");
-
-            // Damage = base + per‑level bonus
             float dmg = data.BaseDamage + CharacterLevelSystem.GetDamageBonus(data);
             damageText.text = dmg.ToString("F1");
 
             // Level
             int lvl = CharacterLevelSystem.GetLevel(data);
-            levelLabel.text = $"{lvl}";
+            levelLabel.text = $"Lv. {lvl}";
 
-            // Starting Ability
+            // Starting‑ability icon
             bool has = data.HasStartingAbility;
             abilityIconContainer.SetActive(has);
             if (has && db != null)
             {
                 var ad = db.GetAbility(data.StartingAbility);
-                Debug.Log($"[SelectedDisplay] Found starting ability icon={ad.Icon.name}");
                 abilityIconImage.sprite = ad.Icon;
             }
 
-            // Finally, drive the XP bar
+            // XP bar
             if (xpBar != null)
                 xpBar.Setup(data);
+
+            // Next‑unlock text
+            if (nextUnlockLabel != null && db != null)
+            {
+                // find all EVO abilities for exactly this character
+                var nextLevels =
+                    Enumerable.Range(0, db.AbilitiesCount)
+                              .Select(i => db.GetAbility(i))
+                              .Where(ad => ad != null
+                                        && ad.IsEvolution
+                                        && ad.IsCharacterSpecific
+                                        && ad.AllowedCharacterName == data.Name)
+                              .Select(ad => ad.MinCharacterLevel)
+                              .Distinct()
+                              .OrderBy(x => x);
+
+                // pick the first one above the current level
+                var upcoming = nextLevels.FirstOrDefault(x => x > lvl);
+                if (upcoming > 0)
+                {
+                    nextUnlockLabel.text = $"Next unlock at level {upcoming}.";
+                }
+                else
+                {
+                    nextUnlockLabel.text = "All EVO abilities unlocked!";
+                }
+            }
         }
     }
 }

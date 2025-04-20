@@ -1011,6 +1011,7 @@ MonoBehaviour:
   abilityIconContainer: {fileID: 5492270809625455736}
   abilityIconImage: {fileID: 817299144876521304}
   xpBar: {fileID: 5859740346818270089}
+  nextUnlockLabel: {fileID: 5045573702703684510}
 --- !u!1 &5492270809625455736
 GameObject:
   m_ObjectHideFlags: 0

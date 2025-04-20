@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using OctoberStudio.Abilities;
 using OctoberStudio.Save;
@@ -40,36 +41,50 @@ namespace OctoberStudio.UI
 
         private void Refresh()
         {
-            // 1) current character & level
-            var charData  = charactersDatabase.GetCharacterData(characterSave.SelectedCharacterId);
+            // 1) Fetch current character & level
+            var charData = charactersDatabase.GetCharacterData(characterSave.SelectedCharacterId);
             int charLevel = CharacterLevelSystem.GetLevel(charData);
 
-            // 2) clear out any old icons
+            // 2) Clear out old icons
             for (int i = container.childCount - 1; i >= 0; i--)
                 Destroy(container.GetChild(i).gameObject);
 
-            // 3) loop through the DB
+            Debug.Log($"[EvoUI] Refresh for '{charData.Name}' (lvl {charLevel})");
+
+            // 3) Gather only this character’s EVO abilities
+            var evoList = new List<AbilityData>();
             for (int i = 0; i < abilitiesDatabase.AbilitiesCount; i++)
             {
                 var ad = abilitiesDatabase.GetAbility(i);
                 if (ad == null || !ad.IsEvolution)
                     continue;
 
-                // 4) filter by character restriction
-                if (ad.IsCharacterSpecific && ad.AllowedCharacterName != charData.Name)
+                // ✂️ SKIP any global EVO (must be character‑specific)
+                if (!ad.IsCharacterSpecific)
                     continue;
 
-                // 5) check the *character* level unlock, not your ability‐level requirement
-                int reqLvl   = ad.MinCharacterLevel;
-                bool unlocked = charLevel >= reqLvl;
+                // ✂️ SKIP if it isn’t assigned to this character
+                if (ad.AllowedCharacterName != charData.Name)
+                    continue;
 
-                Debug.Log($"[EvoUI] '{ad.Title}' → charLvl={charLevel}, minCharLvl={reqLvl}, unlocked={unlocked}");
+                evoList.Add(ad);
+            }
 
-                // 6) spawn & configure
+            // 4) Sort low→high unlock‑level
+            evoList.Sort((a, b) => a.MinCharacterLevel.CompareTo(b.MinCharacterLevel));
+
+            // 5) Spawn them in order
+            foreach (var ad in evoList)
+            {
+                bool unlocked = charLevel >= ad.MinCharacterLevel;
+                Debug.Log($"[EvoUI] SPAWNING '{ad.Title}'  charLvl={charLevel}, minCharLvl={ad.MinCharacterLevel}, unlocked={unlocked}");
+
                 var go = Instantiate(evoItemPrefab, container, false);
                 go.GetComponent<EvoAbilityItemBehavior>().Setup(ad.Icon, unlocked);
             }
         }
+
+
 
     }
 }
