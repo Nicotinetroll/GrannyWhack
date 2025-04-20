@@ -1711,7 +1711,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4690460460951384127}
   - component: {fileID: 4335580367421592444}
-  - component: {fileID: 914994159312251284}
+  - component: {fileID: 3350128991979357796}
   m_Layer: 5
   m_Name: Evo Upogrades
   m_TagString: Untagged
@@ -1769,7 +1769,7 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &914994159312251284
+--- !u!114 &3350128991979357796
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1783,7 +1783,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   charactersDatabase: {fileID: 11400000, guid: 94ea5f0fdccb79e4cbdd7bd522bc3dc2, type: 2}
   abilitiesDatabase: {fileID: 11400000, guid: 0647b23f7b3015041b61926ed80fbbe4, type: 2}
-  evoItemPrefab: {fileID: 6204508437310491885}
+  evoItemPrefab: {fileID: 1647829923465882728, guid: ed8b5971bb759d9418f5171b40e0f33a,
+    type: 3}
   container: {fileID: 4690460460951384127}
 --- !u!1 &8224494415707633675
 GameObject:
@@ -2406,12 +2407,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ed8b5971bb759d9418f5171b40e0f33a, type: 3}
---- !u!1 &6204508437310491885 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1647829923465882728, guid: ed8b5971bb759d9418f5171b40e0f33a,
-    type: 3}
-  m_PrefabInstance: {fileID: 4667016848200376453}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &7381591712035678902 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2788921780304448051, guid: ed8b5971bb759d9418f5171b40e0f33a,
