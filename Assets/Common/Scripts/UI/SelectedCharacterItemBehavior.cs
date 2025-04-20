@@ -48,7 +48,7 @@ namespace OctoberStudio.UI
 
             // Level
             int lvl = CharacterLevelSystem.GetLevel(data);
-            levelLabel.text = $"Lv. {lvl}";
+            levelLabel.text = $"{lvl}";
 
             // Starting‑ability icon
             bool has = data.HasStartingAbility;
