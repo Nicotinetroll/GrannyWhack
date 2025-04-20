@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace OctoberStudio.UI
 {
     /// <summary>
-    /// Read‑only display of a CharacterData: icon, name, HP, damage, level, starting ability.
+    /// Read‑only display of a CharacterData: icon, name, HP, damage, level, starting ability, and XP bar.
     /// </summary>
     public class SelectedCharacterItemBehavior : MonoBehaviour
     {
@@ -23,11 +23,16 @@ namespace OctoberStudio.UI
         [SerializeField] private GameObject abilityIconContainer;
         [SerializeField] private Image      abilityIconImage;
 
+        [Header("XP Bar")]
+        [SerializeField] private CharacterExperienceUI xpBar;  // ← the XP‑bar component
+
         /// <summary>
-        /// Populate using the CharacterData and fetch any icons from the AbilitiesDatabase.
+        /// Populate using the CharacterData and fetch ability icon from the AbilitiesDatabase.
         /// </summary>
         public void Setup(CharacterData data, AbilitiesDatabase db)
         {
+            Debug.Log($"[SelectedDisplay] Setup called for {data.Name}. HasStartingAbility={data.HasStartingAbility}");
+
             // Icon & Name
             iconImage.sprite = data.Icon;
             titleLabel.text  = data.Name;
@@ -49,8 +54,13 @@ namespace OctoberStudio.UI
             if (has && db != null)
             {
                 var ad = db.GetAbility(data.StartingAbility);
+                Debug.Log($"[SelectedDisplay] Found starting ability icon={ad.Icon.name}");
                 abilityIconImage.sprite = ad.Icon;
             }
+
+            // Finally, drive the XP bar
+            if (xpBar != null)
+                xpBar.Setup(data);
         }
     }
 }

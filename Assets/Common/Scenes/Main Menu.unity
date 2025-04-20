@@ -876,6 +876,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Main Menu Screen
       objectReference: {fileID: 0}
+    - target: {fileID: 916626590536908922, guid: 7dfbe892154909b41aea43c2840561fd,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 939537393383497307, guid: 7dfbe892154909b41aea43c2840561fd,
         type: 3}
       propertyPath: m_Pivot.x
@@ -1007,10 +1012,26 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 49.999878
       objectReference: {fileID: 0}
+    - target: {fileID: 6715060153709263133, guid: 7dfbe892154909b41aea43c2840561fd,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7079349279560309183, guid: 7dfbe892154909b41aea43c2840561fd,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8677301087917815751, guid: 7dfbe892154909b41aea43c2840561fd,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 3643190279692242219, guid: 7dfbe892154909b41aea43c2840561fd, type: 3}
     - {fileID: 812940220998637063, guid: 7dfbe892154909b41aea43c2840561fd, type: 3}
+    - {fileID: 4328057143210685530, guid: 7dfbe892154909b41aea43c2840561fd, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7dfbe892154909b41aea43c2840561fd, type: 3}

@@ -61,16 +61,16 @@ namespace OctoberStudio.UI
 
         private void Start()
         {
-            // — Stage save & UI init —
+            // Stage save
             stageSave = GameController.SaveManager.GetSave<StageSave>("Stage");
             stageSave.onSelectedStageChanged += InitStage;
 
-            // — Character save & header display init —
+            // Character save & header display
             charactersSave = GameController.SaveManager.GetSave<CharactersSave>("Characters");
             charactersSave.onSelectedCharacterChanged += UpdateSelectedDisplay;
             UpdateSelectedDisplay();
 
-            // — Continue pop‑up or default selection —
+            // Continue popup or default
             if (stageSave.IsPlaying && GameController.FirstTimeLoaded)
             {
                 continueBackgroundImage.gameObject.SetActive(true);
@@ -84,7 +84,7 @@ namespace OctoberStudio.UI
                 stageSave.SetSelectedStageId(stageSave.MaxReachedStageId);
             }
 
-            // — Input hooks —
+            // Input hooks
             GameController.InputManager.onInputChanged += OnInputChanged;
             GameController.InputManager.InputAsset.UI.Settings.performed += OnSettingsInputClicked;
         }
@@ -92,14 +92,15 @@ namespace OctoberStudio.UI
         private void UpdateSelectedDisplay()
         {
             if (selectedDisplay == null
-                || charactersDatabase == null
-                || abilitiesDatabase == null
-                || charactersSave == null)
+             || charactersDatabase == null
+             || abilitiesDatabase == null
+             || charactersSave == null)
                 return;
 
             var data = charactersDatabase.GetCharacterData(
                 charactersSave.SelectedCharacterId);
 
+            // **Pass BOTH databases into Setup**
             selectedDisplay.Setup(data, abilitiesDatabase);
         }
 
