@@ -37,6 +37,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  xpPerKill: 0.0026
-  xpPerDamage: 0.0002
-  damagePerLevel: 0.041666
+  xpPerKill: 0.0036
+  xpPerDamage: 0.0003
+  damagePerLevel: 0.05
