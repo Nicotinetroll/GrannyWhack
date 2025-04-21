@@ -1,3 +1,4 @@
+// Assets/Common/Scripts/UI/EvoAbilityItemBehavior.cs
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,10 +15,9 @@ namespace OctoberStudio.UI
 
         private void Awake()
         {
-            // Cache the Button (will also cover null-case)
             _button = GetComponent<Button>();
             if (_button == null)
-                Debug.LogWarning("[EvoAbilityItemBehavior] No Button found on " + name);
+                Debug.LogWarning("[EvoAbilityItemBehavior] No Button on " + name);
         }
 
         /// <summary>
@@ -26,22 +26,22 @@ namespace OctoberStudio.UI
         /// </summary>
         public void Setup(Sprite iconSprite, bool unlocked)
         {
-            // 1) assign the sprite if possible
+            // 1) icon
             if (iconImage != null)
                 iconImage.sprite = iconSprite;
-            else
-                Debug.LogWarning($"[EvoAbilityItemBehavior] iconImage is null on '{name}'");
 
-            // 2) button interactability
+            // 2) interactability
             if (_button != null)
                 _button.interactable = unlocked;
 
-            // 3) show/hide the overlay
+            // 3) overlay
             if (disabledOverlay != null)
             {
                 disabledOverlay.alpha          = unlocked ? 0f : 1f;
                 disabledOverlay.blocksRaycasts = !unlocked;
             }
+
+            Debug.Log($"[EvoAbilityItem] '{name}' unlocked={unlocked}");
         }
     }
 }

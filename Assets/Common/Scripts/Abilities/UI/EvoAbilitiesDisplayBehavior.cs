@@ -1,3 +1,5 @@
+// Assets/Common/Scripts/UI/EvoAbilitiesDisplayBehavior.cs
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using OctoberStudio.Abilities;
@@ -9,22 +11,16 @@ namespace OctoberStudio.UI
     public class EvoAbilitiesDisplayBehavior : MonoBehaviour
     {
         [Header("Data & Prefabs")]
-        [Tooltip("Your CharactersDatabase ScriptableObject")]
         [SerializeField] private CharactersDatabase charactersDatabase;
-        [Tooltip("Your AbilitiesDatabase ScriptableObject")]
         [SerializeField] private AbilitiesDatabase  abilitiesDatabase;
-        [Tooltip("Optional: leave blank to auto‑fetch from SaveManager")]
         [SerializeField] private CharactersSave      characterSave;
-        [Tooltip("One generic Evo‑item prefab with EvoAbilityItemBehavior on it")]
         [SerializeField] private GameObject          evoItemPrefab;
 
         [Header("Layout")]
-        [Tooltip("The RectTransform under your Evo Upgrades HorizontalLayoutGroup")]
         [SerializeField] private RectTransform       container;
 
         private void Start()
         {
-            // grab save if not set
             if (characterSave == null)
                 characterSave = GameController
                                    .SaveManager
@@ -42,29 +38,27 @@ namespace OctoberStudio.UI
         private void Refresh()
         {
             // 1) Fetch current character & level
-            var charData = charactersDatabase.GetCharacterData(characterSave.SelectedCharacterId);
+            var charData  = charactersDatabase.GetCharacterData(characterSave.SelectedCharacterId);
             int charLevel = CharacterLevelSystem.GetLevel(charData);
+
+            Debug.Log($"[EvoUI] Refresh for '{charData.Name}' (lvl {charLevel})");
 
             // 2) Clear out old icons
             for (int i = container.childCount - 1; i >= 0; i--)
                 Destroy(container.GetChild(i).gameObject);
-
-            Debug.Log($"[EvoUI] Refresh for '{charData.Name}' (lvl {charLevel})");
 
             // 3) Gather only this character’s EVO abilities
             var evoList = new List<AbilityData>();
             for (int i = 0; i < abilitiesDatabase.AbilitiesCount; i++)
             {
                 var ad = abilitiesDatabase.GetAbility(i);
-                if (ad == null || !ad.IsEvolution)
+                if (ad == null || !ad.IsEvolution || !ad.IsCharacterSpecific)
                     continue;
 
-                // ✂️ SKIP any global EVO (must be character‑specific)
-                if (!ad.IsCharacterSpecific)
-                    continue;
-
-                // ✂️ SKIP if it isn’t assigned to this character
-                if (ad.AllowedCharacterName != charData.Name)
+                // now do a case‑insensitive match
+                if (!string.Equals(ad.AllowedCharacterName,
+                                   charData.Name,
+                                   StringComparison.OrdinalIgnoreCase))
                     continue;
 
                 evoList.Add(ad);
@@ -73,18 +67,23 @@ namespace OctoberStudio.UI
             // 4) Sort low→high unlock‑level
             evoList.Sort((a, b) => a.MinCharacterLevel.CompareTo(b.MinCharacterLevel));
 
+            if (evoList.Count == 0)
+            {
+                Debug.Log($"[EvoUI] No EVO abilities defined for '{charData.Name}'");
+                // you may want to show a special "none available" label here
+                return;
+            }
+
             // 5) Spawn them in order
             foreach (var ad in evoList)
             {
                 bool unlocked = charLevel >= ad.MinCharacterLevel;
-                Debug.Log($"[EvoUI] SPAWNING '{ad.Title}'  charLvl={charLevel}, minCharLvl={ad.MinCharacterLevel}, unlocked={unlocked}");
+                Debug.Log($"[EvoUI] SPAWNING '{ad.Title}'  " +
+                          $"charLvl={charLevel}, minCharLvl={ad.MinCharacterLevel}, unlocked={unlocked}");
 
                 var go = Instantiate(evoItemPrefab, container, false);
                 go.GetComponent<EvoAbilityItemBehavior>().Setup(ad.Icon, unlocked);
             }
         }
-
-
-
     }
 }

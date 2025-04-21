@@ -2468,7 +2468,7 @@ GameObject:
   - component: {fileID: 5439372593582521500}
   - component: {fileID: 9040368110961789922}
   - component: {fileID: 4296189930020318671}
-  - component: {fileID: 2773094446415335397}
+  - component: {fileID: 1667298819748317523}
   m_Layer: 5
   m_Name: Lobby Character Window
   m_TagString: Untagged
@@ -2543,7 +2543,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &2773094446415335397
+--- !u!114 &1667298819748317523
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2552,12 +2552,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8401933773176376946}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 459142f0224e61e43b9e64b26ea265ff, type: 3}
+  m_Script: {fileID: 11500000, guid: cc62199140c70bd4e9abe74433eb212f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedDisplay: {fileID: 8509435500206645402}
-  charactersDatabase: {fileID: 11400000, guid: 94ea5f0fdccb79e4cbdd7bd522bc3dc2, type: 2}
-  abilitiesDatabase: {fileID: 11400000, guid: 0647b23f7b3015041b61926ed80fbbe4, type: 2}
   stagesDatabase: {fileID: 11400000, guid: dd33ab26d59ba964bb14dc6f04f2b921, type: 2}
   stageIcon: {fileID: 1475824424870841465}
   lockImage: {fileID: 4910041649146452678}
@@ -2566,7 +2563,6 @@ MonoBehaviour:
   playButton: {fileID: 733574886921337801}
   upgradesButton: {fileID: 9024719352065338271}
   settingsButton: {fileID: 6340436409630685349}
-  charactersButton: {fileID: 6472192626776291548}
   leftButton: {fileID: 6224736711445286931}
   rightButton: {fileID: 8936149094485232539}
   playButtonEnabledSprite: {fileID: 21300000, guid: a4088e99fa611aa4b9d9c04d5c43b541,
@@ -2574,7 +2570,7 @@ MonoBehaviour:
   playButtonDisabledSprite: {fileID: 21300000, guid: 3877251ea12389449ad7cb7bad961758,
     type: 3}
   continueBackgroundImage: {fileID: 2853635931403320612}
-  continuePopupRect: {fileID: 0}
+  continuePopupRect: {fileID: 6336223162754425441}
   confirmButton: {fileID: 422071376920892840}
   cancelButton: {fileID: 604761589794825559}
 --- !u!1 &8565036420527909144
@@ -3227,15 +3223,3 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 8712514812145375333}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8509435500206645402 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1080446711046568191, guid: a81b799a77cf9634fbf031879f8a1e1d,
-    type: 3}
-  m_PrefabInstance: {fileID: 8712514812145375333}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30da5c4a8648b91499e1a6ed1b90f810, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

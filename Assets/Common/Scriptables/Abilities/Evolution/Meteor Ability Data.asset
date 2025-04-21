@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Meteor Ability Data
   m_EditorClassIdentifier: 
   isCharacterSpecific: 1
-  allowedCharacterName: MAGE
+  allowedCharacterName: EMAX
   minCharacterLevel: 10
   type: 206
   title: Meteor

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Silver Stakes Data
   m_EditorClassIdentifier: 
   isCharacterSpecific: 1
-  allowedCharacterName: MAGE
+  allowedCharacterName: Mage
   minCharacterLevel: 20
   type: 204
   title: Silver Stakes

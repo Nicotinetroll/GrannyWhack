@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Twin Daggers Ability Data
   m_EditorClassIdentifier: 
   isCharacterSpecific: 1
-  allowedCharacterName: NIJNA
+  allowedCharacterName: Ninja
   minCharacterLevel: 25
   type: 208
   title: Twin Daggers

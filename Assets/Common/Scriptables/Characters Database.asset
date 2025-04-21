@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Characters Database
   m_EditorClassIdentifier: 
   characters:
-  - name: NIJNA
+  - name: Ninja
     cost: 0
     icon: {fileID: 838262661, guid: 791abc5027c954755a68bc7d7d2f805d, type: 3}
     prefab: {fileID: 2921880940271959218, guid: 85d2cb894c49f40f7b88674a5fe2bb34,
@@ -22,7 +22,7 @@ MonoBehaviour:
     startingAbility: 1001
     baseHP: 100
     baseDamage: 1
-  - name: MAGE
+  - name: Mage
     cost: 1000
     icon: {fileID: 1344277449, guid: 7018a5ac9d5c24c76811607ec142ab96, type: 3}
     prefab: {fileID: 2921880940271959218, guid: 7de6d3d2b639a40b0bc2422c27685f24,

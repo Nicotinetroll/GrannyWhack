@@ -6,11 +6,10 @@ using OctoberStudio;
 using OctoberStudio.Abilities;
 using OctoberStudio.Save;
 using OctoberStudio.Upgrades;
-using OctoberStudio.UI;    // ← for CharacterXPBar
 
 namespace OctoberStudio.UI
 {
-    public class SelectedCharacterItemBehavior : MonoBehaviour
+    public class SelectedCharacterUIBehavior : MonoBehaviour
     {
         [Header("Info")]
         [SerializeField] private Image    iconImage;
@@ -25,7 +24,7 @@ namespace OctoberStudio.UI
         [SerializeField] private GameObject abilityIconContainer;
         [SerializeField] private Image      abilityIconImage;
 
-        [Header("XP Bar")]                            // ← now uses CharacterXPBar
+        [Header("XP Bar")]
         [SerializeField] private CharacterXPBar xpBar;
 
         [Header("Next Unlock")]
@@ -37,37 +36,33 @@ namespace OctoberStudio.UI
         [Header("Upgrades (optional)")]
         [SerializeField] private UpgradesDatabase upgradesDatabase;
 
-        // runtime state
         private UpgradesSave      upgradesSave;
         private CharacterData     currentData;
         private AbilitiesDatabase currentDb;
 
         /// <summary>
-        /// Call this from your lobby to wire up the display.
+        /// Call once to populate; will auto‐refresh on damage‐upgrade changes.
         /// </summary>
         public void Setup(CharacterData data, AbilitiesDatabase db)
         {
             currentData = data;
             currentDb   = db;
 
-            // icon & name
+            // Icon & name
             iconImage.sprite = data.Icon;
             titleLabel.text  = data.Name;
 
-            // listen for shop upgrades
+            // Subscribe to global upgrades
             if (upgradesSave == null)
             {
-                upgradesSave = GameController
-                                  .SaveManager
-                                  .GetSave<UpgradesSave>("Upgrades Save");
+                upgradesSave = GameController.SaveManager.GetSave<UpgradesSave>("Upgrades Save");
                 upgradesSave.Init();
                 upgradesSave.onUpgradeLevelChanged += OnUpgradeLevelChanged;
             }
 
-            // ensure our play‑time tracker is running
+            // Ensure the playtime tracker is initialized
             CharacterPlaytimeSystem.Init(GameController.SaveManager);
 
-            // draw the whole card
             RedrawAll();
         }
 
@@ -76,11 +71,9 @@ namespace OctoberStudio.UI
             // HP
             hpText.text = currentData.BaseHP.ToString("F0");
 
-            // Base + level bonus
-            float basePlusLevel = currentData.BaseDamage
-                               + CharacterLevelSystem.GetDamageBonus(currentData);
+            // DAMAGE = base + level bonus + global multiplier
+            float basePlusLevel = currentData.BaseDamage + CharacterLevelSystem.GetDamageBonus(currentData);
 
-            // Shop “damage” multiplier
             if (upgradesDatabase == null)
                 upgradesDatabase = Resources.Load<UpgradesDatabase>("UpgradesDatabase");
 
@@ -88,20 +81,17 @@ namespace OctoberStudio.UI
             var upgDef = upgradesDatabase?.GetUpgrade(UpgradeType.Damage);
             if (upgDef != null && upgDef.LevelsCount > 0)
             {
-                int shopLevel = GameController.UpgradesManager
-                                             .GetUpgradeLevel(UpgradeType.Damage);
+                int shopLevel = GameController.UpgradesManager.GetUpgradeLevel(UpgradeType.Damage);
                 if (shopLevel > 0)
                 {
-                    // level 1 → index 0, level 2 → index 1, etc.
                     int idx = Mathf.Clamp(shopLevel - 1, 0, upgDef.LevelsCount - 1);
                     multiplier = upgDef.GetLevel(idx).Value;
                 }
             }
 
-            damageText.text = (basePlusLevel * multiplier)
-                                 .ToString("F1");
+            damageText.text = (basePlusLevel * multiplier).ToString("F1");
 
-            // Level number
+            // LEVEL
             int lvl = CharacterLevelSystem.GetLevel(currentData);
             levelLabel.text = $"{lvl}";
 
@@ -114,35 +104,33 @@ namespace OctoberStudio.UI
                 abilityIconImage.sprite = ad.Icon;
             }
 
-            // **Slider‑based XP bar**
+            // XP BAR
             xpBar?.Setup(currentData);
 
-            // Next‑unlock text
+            // NEXT EVO UNLOCK
             if (nextUnlockLabel != null && currentDb != null)
             {
-                var unlockLevels = Enumerable
-                    .Range(0, currentDb.AbilitiesCount)
-                    .Select(i => currentDb.GetAbility(i))
-                    .Where(ad => ad != null
-                              && ad.IsEvolution
-                              && ad.IsCharacterSpecific
-                              && ad.AllowedCharacterName == currentData.Name)
-                    .Select(ad => ad.MinCharacterLevel)
-                    .Distinct()
-                    .OrderBy(x => x);
+                var nextLevels = Enumerable.Range(0, currentDb.AbilitiesCount)
+                                           .Select(i => currentDb.GetAbility(i))
+                                           .Where(ad => ad.IsEvolution
+                                                     && ad.IsCharacterSpecific
+                                                     && ad.AllowedCharacterName == currentData.Name)
+                                           .Select(ad => ad.MinCharacterLevel)
+                                           .Distinct()
+                                           .OrderBy(x => x);
 
-                int next = unlockLevels.FirstOrDefault(x => x > lvl);
-                nextUnlockLabel.text = next > 0
-                    ? $"Next unlock at level {next}."
+                int upcoming = nextLevels.FirstOrDefault(x => x > lvl);
+                nextUnlockLabel.text = upcoming > 0
+                    ? $"Next unlock at level {upcoming}."
                     : "All EVO abilities unlocked!";
             }
 
-            // Total play time
+            // TOTAL PLAYTIME
             if (playtimeText != null)
             {
-                float sec = CharacterPlaytimeSystem.GetTime(currentData);
-                int mm = Mathf.FloorToInt(sec / 60f);
-                int ss = Mathf.FloorToInt(sec % 60f);
+                float seconds = CharacterPlaytimeSystem.GetTime(currentData);
+                int mm = Mathf.FloorToInt(seconds / 60f);
+                int ss = Mathf.FloorToInt(seconds % 60f);
                 playtimeText.text = $"{mm:00}:{ss:00}";
             }
         }

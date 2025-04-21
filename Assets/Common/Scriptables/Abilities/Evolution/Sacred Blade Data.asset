@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Sacred Blade Data
   m_EditorClassIdentifier: 
   isCharacterSpecific: 1
-  allowedCharacterName: NIJNA
+  allowedCharacterName: Ninja
   minCharacterLevel: 10
   type: 1101
   title: Sacred Blade

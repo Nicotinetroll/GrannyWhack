@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Thunder Ring Ability Data
   m_EditorClassIdentifier: 
   isCharacterSpecific: 1
-  allowedCharacterName: MAGE
+  allowedCharacterName: Mage
   minCharacterLevel: 5
   type: 202
   title: Thunder Ring

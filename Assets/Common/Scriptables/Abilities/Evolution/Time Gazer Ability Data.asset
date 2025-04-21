@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Time Gazer Ability Data
   m_EditorClassIdentifier: 
   isCharacterSpecific: 1
-  allowedCharacterName: NIJNA
+  allowedCharacterName: Ninja
   minCharacterLevel: 15
   type: 201
   title: Time Gazer
