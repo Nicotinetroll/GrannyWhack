@@ -31,3 +31,12 @@ MonoBehaviour:
     startingAbility: 6
     baseHP: 70
     baseDamage: 1.5
+  - name: EMAX
+    cost: 100000
+    icon: {fileID: 21300000, guid: 519dafacd208bb64c83d5124be03b09d, type: 3}
+    prefab: {fileID: 2921880940271959218, guid: 7de6d3d2b639a40b0bc2422c27685f24,
+      type: 3}
+    hasStartingAbility: 0
+    startingAbility: 6
+    baseHP: 200
+    baseDamage: 2

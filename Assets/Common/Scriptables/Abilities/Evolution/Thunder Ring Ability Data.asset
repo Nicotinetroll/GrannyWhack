@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isCharacterSpecific: 1
   allowedCharacterName: MAGE
-  minCharacterLevel: 1
+  minCharacterLevel: 5
   type: 202
   title: Thunder Ring
   description: Strikes from above with devastating ball lighning projectiles

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Scepter Data
   m_EditorClassIdentifier: 
   isCharacterSpecific: 1
-  allowedCharacterName: MAGE
+  allowedCharacterName: EMAX
   minCharacterLevel: 1
   type: 1100
   title: Ancient Scepter

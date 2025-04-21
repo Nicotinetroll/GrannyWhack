@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: The Elder Rot Ability Data
   m_EditorClassIdentifier: 
   isCharacterSpecific: 1
-  allowedCharacterName: MAGE
+  allowedCharacterName: EMAX
   minCharacterLevel: 1
   type: 210
   title: The Elder Rot

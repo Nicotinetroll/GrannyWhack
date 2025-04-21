@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isCharacterSpecific: 1
   allowedCharacterName: MAGE
-  minCharacterLevel: 1
+  minCharacterLevel: 20
   type: 204
   title: Silver Stakes
   description: Throws several sharp piercing stakes

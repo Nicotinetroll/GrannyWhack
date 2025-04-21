@@ -32,7 +32,7 @@ namespace OctoberStudio
         public static int   GetLevel(CharacterData c) { EnsureInit(); return Get(c)?.lvl ?? 1; }
         public static float GetXp   (CharacterData c) { EnsureInit(); return Get(c)?.xp  ?? 0f; }
 
-        /*  NEW  – flat damage bonus **************************************** */
+        /*  NEW  – flat damage bonus (unchanged) ************************** */
         public static float GetDamageBonus(CharacterData c)
         {
             EnsureInit();
@@ -42,26 +42,54 @@ namespace OctoberStudio
 
         public static float DamagePerLevel
             => cfg ? cfg.DamagePerLevel : 0f;
-        /* ******************************************************************* */
+        /* **************************************************************** */
 
+        /// <summary>
+        /// Grant XP **only** from kills; damage is ignored.
+        /// </summary>
         public static void AddMatchResults(CharacterData c, int kills, float damage)
         {
             EnsureInit();
-            if (save == null || c == null) return;          // still no infrastructure? bail.
+            if (save == null || c == null || cfg == null) return;
 
             var entry = Get(c);
             if (entry == null) return;
 
-            float inc = kills  * cfg.XpPerKill +
-                        damage * cfg.XpPerDamage;
+            // XP from kills only (damage ignored)
+            float inc = kills * cfg.XpPerKill;
 
-            int prev = entry.lvl;
+            int prevLevel = entry.lvl;
             entry.xp += inc;
+
+            // —— compute % toward next level ——
+            // total XP in hand
+            float xpTotal = entry.xp;
+            // simulate peeling off xp requirements up to current level
+            float xpPending = xpTotal;
+            int lvlCounter = 1;
+            while (lvlCounter < cfg.MaxLevel && xpPending >= cfg.GetXpForLevel(lvlCounter + 1))
+            {
+                xpPending -= cfg.GetXpForLevel(lvlCounter + 1);
+                lvlCounter++;
+            }
+            // xp needed to reach next level
+            float xpForNext = (lvlCounter < cfg.MaxLevel)
+                ? cfg.GetXpForLevel(lvlCounter + 1)
+                : cfg.GetXpForLevel(lvlCounter);
+            // percentage progress
+            float percent = xpForNext > 0f
+                ? (xpPending / xpForNext) * 100f
+                : 100f;
+
+            // reorder: now recalc actual level
             RecalcLevel(entry);
 
-            Debug.Log($"[Character‑XP] {c.Name}: +{inc:F0} XP (total {entry.xp:F0})  "
-                    + $"Level {prev} → {entry.lvl}");
+            Debug.Log(
+                $"[Character‑XP] {c.Name}: +{inc:F0} XP from {kills} kills  " +
+                $"(total {entry.xp:F0})  Level {prevLevel} → {entry.lvl}  " +
+                $"{percent:F1}% to next");
         }
+
 
         /* ── helpers ───────────────────────────────────────────────── */
         static CharacterLevelEntry Get(CharacterData c)
@@ -92,7 +120,7 @@ namespace OctoberStudio
 
             e.lvl = lvl;
         }
-        
+
         /// <summary> Maximum level from config (read-only) </summary>
         public static int MaxLevel
         {
