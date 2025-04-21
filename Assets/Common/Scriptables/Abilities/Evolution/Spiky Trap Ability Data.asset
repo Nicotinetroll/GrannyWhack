@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isCharacterSpecific: 1
   allowedCharacterName: Mage
-  minCharacterLevel: 1
+  minCharacterLevel: 5
   type: 205
   title: Spiky Trap
   description: Draws an explosive rune with spikes
