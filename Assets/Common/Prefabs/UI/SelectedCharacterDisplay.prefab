@@ -64,6 +64,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rectMask: {fileID: 314937592955010929}
+  emptyPadding: 528.7
+  fullPadding: 11.6
 --- !u!1 &1551807202284758364
 GameObject:
   m_ObjectHideFlags: 0
@@ -1012,6 +1014,7 @@ MonoBehaviour:
   abilityIconImage: {fileID: 817299144876521304}
   xpBar: {fileID: 5859740346818270089}
   nextUnlockLabel: {fileID: 5045573702703684510}
+  upgradesDatabase: {fileID: 11400000, guid: f249c53865e711542a3df804b8db1786, type: 2}
 --- !u!1 &5492270809625455736
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,8 +1,10 @@
 using System.Linq;
-using OctoberStudio.Abilities;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using OctoberStudio.Abilities;
+using OctoberStudio.Save;
+using OctoberStudio.Upgrades;
 
 namespace OctoberStudio.UI
 {
@@ -31,9 +33,13 @@ namespace OctoberStudio.UI
         [Header("Next Unlock")]
         [SerializeField] private TMP_Text nextUnlockLabel;
 
+        [Header("Upgrades (optional)")]
+        [Tooltip("Global upgrades that apply to all characters. " +
+                 "If left blank, will load from Resources/UpgradesDatabase.")]
+        [SerializeField] private UpgradesDatabase upgradesDatabase;
+
         /// <summary>
-        /// Populates the display.  Pass in the full AbilitiesDatabase
-        /// so we can compute the very next EVO unlock level.
+        /// Populates the display.
         /// </summary>
         public void Setup(CharacterData data, AbilitiesDatabase db)
         {
@@ -41,10 +47,39 @@ namespace OctoberStudio.UI
             iconImage.sprite = data.Icon;
             titleLabel.text  = data.Name;
 
-            // HP & Damage
+            // HP
             hpText.text = data.BaseHP.ToString("F0");
-            float dmg = data.BaseDamage + CharacterLevelSystem.GetDamageBonus(data);
-            damageText.text = dmg.ToString("F1");
+
+            // —— DAMAGE CALCULATION —— //
+
+            // 1) base + level bonus
+            float basePlusLevel = data.BaseDamage + CharacterLevelSystem.GetDamageBonus(data);
+
+            // 2) ensure we have an upgradesDatabase
+            if (upgradesDatabase == null)
+                upgradesDatabase = Resources.Load<UpgradesDatabase>("UpgradesDatabase");
+
+            // 3) compute multiplier (default = 1; only apply if shopLevel > 0)
+            float multiplier = 1f;
+            if (upgradesDatabase != null)
+            {
+                var upgDef = upgradesDatabase.GetUpgrade(UpgradeType.Damage);
+                if (upgDef != null && upgDef.LevelsCount > 0)
+                {
+                    int shopLevel = GameController.UpgradesManager.GetUpgradeLevel(UpgradeType.Damage);
+                    if (shopLevel > 0)
+                    {
+                        int idx = Mathf.Clamp(shopLevel - 1, 0, upgDef.LevelsCount - 1);
+                        multiplier = upgDef.GetLevel(idx).Value;
+                    }
+                }
+            }
+
+            // 4) final effective damage
+            float effectiveDamage = basePlusLevel * multiplier;
+            damageText.text = effectiveDamage.ToString("F1");
+
+            // —— END DAMAGE —— //
 
             // Level
             int lvl = CharacterLevelSystem.GetLevel(data);
@@ -60,34 +95,25 @@ namespace OctoberStudio.UI
             }
 
             // XP bar
-            if (xpBar != null)
-                xpBar.Setup(data);
+            xpBar?.Setup(data);
 
             // Next‑unlock text
             if (nextUnlockLabel != null && db != null)
             {
-                // find all EVO abilities for exactly this character
-                var nextLevels =
-                    Enumerable.Range(0, db.AbilitiesCount)
-                              .Select(i => db.GetAbility(i))
-                              .Where(ad => ad != null
-                                        && ad.IsEvolution
-                                        && ad.IsCharacterSpecific
-                                        && ad.AllowedCharacterName == data.Name)
-                              .Select(ad => ad.MinCharacterLevel)
-                              .Distinct()
-                              .OrderBy(x => x);
+                var nextLevels = Enumerable.Range(0, db.AbilitiesCount)
+                                           .Select(i => db.GetAbility(i))
+                                           .Where(ad => ad != null
+                                                     && ad.IsEvolution
+                                                     && ad.IsCharacterSpecific
+                                                     && ad.AllowedCharacterName == data.Name)
+                                           .Select(ad => ad.MinCharacterLevel)
+                                           .Distinct()
+                                           .OrderBy(x => x);
 
-                // pick the first one above the current level
-                var upcoming = nextLevels.FirstOrDefault(x => x > lvl);
-                if (upcoming > 0)
-                {
-                    nextUnlockLabel.text = $"Next unlock at level {upcoming}.";
-                }
-                else
-                {
-                    nextUnlockLabel.text = "All EVO abilities unlocked!";
-                }
+                int upcoming = nextLevels.FirstOrDefault(x => x > lvl);
+                nextUnlockLabel.text = upcoming > 0
+                    ? $"Next unlock at level {upcoming}."
+                    : "All EVO abilities unlocked!";
             }
         }
     }

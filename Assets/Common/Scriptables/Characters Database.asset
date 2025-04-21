@@ -23,11 +23,11 @@ MonoBehaviour:
     baseHP: 100
     baseDamage: 1
   - name: MAGE
-    cost: 100000
+    cost: 1000
     icon: {fileID: 1344277449, guid: 7018a5ac9d5c24c76811607ec142ab96, type: 3}
     prefab: {fileID: 2921880940271959218, guid: 7de6d3d2b639a40b0bc2422c27685f24,
       type: 3}
     hasStartingAbility: 1
     startingAbility: 6
-    baseHP: 1000
-    baseDamage: 100
+    baseHP: 70
+    baseDamage: 1.5

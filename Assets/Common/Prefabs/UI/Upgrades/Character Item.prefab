@@ -825,7 +825,8 @@ MonoBehaviour:
     type: 3}
   hpText: {fileID: 9082535081712375949}
   damageText: {fileID: 2539605004402149940}
-  levelLabel: {fileID: 3440474766722725348}
+  levelText: {fileID: 3440474766722725348}
+  upgradesDatabase: {fileID: 11400000, guid: f249c53865e711542a3df804b8db1786, type: 2}
   costLabel: {fileID: 8329066159667466281}
   buttonText: {fileID: 5303362122317141466}
 --- !u!1 &5492270809625455736

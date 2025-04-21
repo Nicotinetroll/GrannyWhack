@@ -2,6 +2,7 @@ using UnityEngine;
 using OctoberStudio;        // for GameController & CharactersSave
 using OctoberStudio.Audio;  // for AudioManager
 using OctoberStudio.UI;
+using OctoberStudio.UI.Windows;
 using OctoberStudio.Upgrades.UI; // for SelectedCharacterItemBehavior
 
 namespace OctoberStudio.UI

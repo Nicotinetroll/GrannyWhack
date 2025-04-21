@@ -14,7 +14,10 @@ namespace OctoberStudio.UI
 
         private void Awake()
         {
+            // Cache the Button (will also cover null-case)
             _button = GetComponent<Button>();
+            if (_button == null)
+                Debug.LogWarning("[EvoAbilityItemBehavior] No Button found on " + name);
         }
 
         /// <summary>
@@ -23,18 +26,20 @@ namespace OctoberStudio.UI
         /// </summary>
         public void Setup(Sprite iconSprite, bool unlocked)
         {
-            // 1) assign the sprite
-            iconImage.sprite = iconSprite;
+            // 1) assign the sprite if possible
+            if (iconImage != null)
+                iconImage.sprite = iconSprite;
+            else
+                Debug.LogWarning($"[EvoAbilityItemBehavior] iconImage is null on '{name}'");
 
             // 2) button interactability
-            _button.interactable = unlocked;
+            if (_button != null)
+                _button.interactable = unlocked;
 
             // 3) show/hide the overlay
             if (disabledOverlay != null)
             {
-                // fully transparent when unlocked, opaque when locked
-                disabledOverlay.alpha = unlocked ? 0f : 1f;
-                // block clicks when locked
+                disabledOverlay.alpha          = unlocked ? 0f : 1f;
                 disabledOverlay.blocksRaycasts = !unlocked;
             }
         }
