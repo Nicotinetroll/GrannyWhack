@@ -30,27 +30,24 @@ namespace OctoberStudio.UI
         [SerializeField] private TMP_Text nextUnlockLabel;
 
         [Header("Upgrades (optional)")]
-        [Tooltip("Global upgrades that apply to all characters.\n" +
-                 "If blank, will load from Resources/UpgradesDatabase")]
         [SerializeField] private UpgradesDatabase upgradesDatabase;
 
-        private UpgradesSave       upgradesSave;
-        private CharacterData      currentData;
-        private AbilitiesDatabase  currentDb;
+        private UpgradesSave      upgradesSave;
+        private CharacterData     currentData;
+        private AbilitiesDatabase currentDb;
 
         public void Setup(CharacterData data, AbilitiesDatabase db)
         {
             currentData = data;
             currentDb   = db;
 
-            // Icon & Name
             iconImage.sprite = data.Icon;
             titleLabel.text  = data.Name;
 
-            // Subscribe to upgrades
             if (upgradesSave == null)
             {
-                upgradesSave = GameController.SaveManager.GetSave<UpgradesSave>("Upgrades");
+                upgradesSave = GameController.SaveManager.GetSave<UpgradesSave>("Upgrades Save");
+                upgradesSave.Init();
                 upgradesSave.onUpgradeLevelChanged += OnUpgradeLevelChanged;
             }
 
@@ -59,36 +56,30 @@ namespace OctoberStudio.UI
 
         private void RedrawAll()
         {
-            // HP
             hpText.text = currentData.BaseHP.ToString("F0");
 
-            // DAMAGE same logic as CharacterItemBehavior
             float basePlusLevel = currentData.BaseDamage + CharacterLevelSystem.GetDamageBonus(currentData);
+
             if (upgradesDatabase == null)
                 upgradesDatabase = Resources.Load<UpgradesDatabase>("UpgradesDatabase");
 
             float multiplier = 1f;
-            if (upgradesDatabase != null)
+            var upgDef = upgradesDatabase?.GetUpgrade(UpgradeType.Damage);
+            if (upgDef != null && upgDef.LevelsCount > 0)
             {
-                var upgDef = upgradesDatabase.GetUpgrade(UpgradeType.Damage);
-                if (upgDef != null && upgDef.LevelsCount > 0)
+                int shopLevel = GameController.UpgradesManager.GetUpgradeLevel(UpgradeType.Damage);
+                if (shopLevel > 0)
                 {
-                    int shopLevel = GameController.UpgradesManager.GetUpgradeLevel(UpgradeType.Damage);
-                    if (shopLevel > 0)
-                    {
-                        int idx = Mathf.Clamp(shopLevel - 1, 0, upgDef.LevelsCount - 1);
-                        multiplier = upgDef.GetLevel(idx).Value;
-                    }
+                    int idx        = Mathf.Clamp(shopLevel - 1, 0, upgDef.LevelsCount - 1);
+                    multiplier     = upgDef.GetLevel(idx).Value;
                 }
             }
 
             damageText.text = (basePlusLevel * multiplier).ToString("F1");
 
-            // Level
             int lvl = CharacterLevelSystem.GetLevel(currentData);
             levelLabel.text = $"{lvl}";
 
-            // Starting ability
             bool has = currentData.HasStartingAbility;
             abilityIconContainer.SetActive(has);
             if (has && currentDb != null)
@@ -97,10 +88,8 @@ namespace OctoberStudio.UI
                 abilityIconImage.sprite = ad.Icon;
             }
 
-            // XP Bar
             xpBar?.Setup(currentData);
 
-            // Next unlock
             if (nextUnlockLabel != null && currentDb != null)
             {
                 var nextLevels = Enumerable.Range(0, currentDb.AbilitiesCount)
@@ -111,7 +100,6 @@ namespace OctoberStudio.UI
                                            .Select(ad => ad.MinCharacterLevel)
                                            .Distinct()
                                            .OrderBy(x => x);
-
                 int upcoming = nextLevels.FirstOrDefault(x => x > lvl);
                 nextUnlockLabel.text = upcoming > 0
                     ? $"Next unlock at level {upcoming}."
