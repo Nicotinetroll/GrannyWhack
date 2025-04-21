@@ -10,24 +10,31 @@ namespace OctoberStudio.UI
         [Header("XP Fill Mask")]
         [SerializeField] private RectMask2D rectMask;
 
+        [Header("Padding Bounds (px)")]
+        [Tooltip("Right padding when XP = 0% (completely empty)")]
+        [SerializeField] private float emptyPadding = 528.7f;
+        [Tooltip("Right padding when XP = 100% (completely full)")]
+        [SerializeField] private float fullPadding  = 11.6f;
+
         private CharacterData data;
         private CharacterLevelingConfig cfg;
+        private CanvasGroup canvasGroup;
 
         void Awake()
         {
-            // Load the same config your level system uses
+            // grab the leveling config used by CharacterLevelSystem
             cfg = Resources.Load<CharacterLevelingConfig>("CharacterLevelingConfig");
-            // Hide until you call Setup
-            GetComponent<CanvasGroup>().alpha = 0f;
+            canvasGroup = GetComponent<CanvasGroup>();
+            canvasGroup.alpha = 0f;  // hide until Setup is called
         }
 
         /// <summary>
-        /// Call once to bind this bar to a specific character.
+        /// Binds this bar to a character and makes it visible.
         /// </summary>
         public void Setup(CharacterData character)
         {
             data = character;
-            GetComponent<CanvasGroup>().alpha = 1f;
+            canvasGroup.alpha = 1f;
             UpdateFill();
         }
 
@@ -39,24 +46,25 @@ namespace OctoberStudio.UI
 
         private void UpdateFill()
         {
-            // total XP & current level
+            // 1) get total XP and current level
             float totalXp = CharacterLevelSystem.GetXp(data);
             int   lvl     = CharacterLevelSystem.GetLevel(data);
 
-            // XP thresholds
-            float xpForThis = (lvl > 1) ? cfg.GetXpForLevel(lvl) : 0f;
-            float xpForNext = cfg.GetXpForLevel(Mathf.Min(lvl + 1, cfg.MaxLevel));
+            // 2) compute XP needed for current & next level
+            float xpThis  = (lvl > 1)
+                            ? cfg.GetXpForLevel(lvl)
+                            : 0f;
+            float xpNext  = cfg.GetXpForLevel(Mathf.Min(lvl + 1, cfg.MaxLevel));
 
-            // normalized progress in [0,1]
-            float xpInLevel = Mathf.Clamp(totalXp - xpForThis, 0f, xpForNext - xpForThis);
-            float frac      = (xpForNext - xpForThis) > 0f
-                              ? xpInLevel / (xpForNext - xpForThis)
-                              : 1f;
+            // 3) fraction [0,1] of XP through this level
+            float inLevel = Mathf.Clamp(totalXp - xpThis, 0f, xpNext - xpThis);
+            float frac    = (xpNext - xpThis) > 0f
+                            ? inLevel / (xpNext - xpThis)
+                            : 1f;
 
-            // adjust right‑padding to mask off the empty portion
-            float width = rectMask.rectTransform.rect.width;
-            var pad     = rectMask.padding;
-            pad.z       = width * (1f - frac);
+            // 4) linearly interpolate right‐padding between emptyPadding → fullPadding
+            var pad      = rectMask.padding;
+            pad.z        = Mathf.Lerp(emptyPadding, fullPadding, frac);
             rectMask.padding = pad;
         }
     }
