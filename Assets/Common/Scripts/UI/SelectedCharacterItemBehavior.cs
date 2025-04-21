@@ -2,6 +2,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using OctoberStudio;
 using OctoberStudio.Abilities;
 using OctoberStudio.Save;
 using OctoberStudio.Upgrades;
@@ -29,6 +30,9 @@ namespace OctoberStudio.UI
         [Header("Next Unlock")]
         [SerializeField] private TMP_Text nextUnlockLabel;
 
+        [Header("Total Play Time")]
+        [SerializeField] private TMP_Text playtimeText;
+
         [Header("Upgrades (optional)")]
         [SerializeField] private UpgradesDatabase upgradesDatabase;
 
@@ -51,13 +55,18 @@ namespace OctoberStudio.UI
                 upgradesSave.onUpgradeLevelChanged += OnUpgradeLevelChanged;
             }
 
+            // ensure playtime system ready
+            CharacterPlaytimeSystem.Init(GameController.SaveManager);
+
             RedrawAll();
         }
 
         private void RedrawAll()
         {
+            // HP
             hpText.text = currentData.BaseHP.ToString("F0");
 
+            // DAMAGE
             float basePlusLevel = currentData.BaseDamage + CharacterLevelSystem.GetDamageBonus(currentData);
 
             if (upgradesDatabase == null)
@@ -70,16 +79,18 @@ namespace OctoberStudio.UI
                 int shopLevel = GameController.UpgradesManager.GetUpgradeLevel(UpgradeType.Damage);
                 if (shopLevel > 0)
                 {
-                    int idx        = Mathf.Clamp(shopLevel - 1, 0, upgDef.LevelsCount - 1);
-                    multiplier     = upgDef.GetLevel(idx).Value;
+                    int idx    = Mathf.Clamp(shopLevel - 1, 0, upgDef.LevelsCount - 1);
+                    multiplier = upgDef.GetLevel(idx).Value;
                 }
             }
 
             damageText.text = (basePlusLevel * multiplier).ToString("F1");
 
+            // Level
             int lvl = CharacterLevelSystem.GetLevel(currentData);
             levelLabel.text = $"{lvl}";
 
+            // Starting ability
             bool has = currentData.HasStartingAbility;
             abilityIconContainer.SetActive(has);
             if (has && currentDb != null)
@@ -88,8 +99,10 @@ namespace OctoberStudio.UI
                 abilityIconImage.sprite = ad.Icon;
             }
 
+            // XP bar
             xpBar?.Setup(currentData);
 
+            // Next‑unlock
             if (nextUnlockLabel != null && currentDb != null)
             {
                 var nextLevels = Enumerable.Range(0, currentDb.AbilitiesCount)
@@ -100,10 +113,20 @@ namespace OctoberStudio.UI
                                            .Select(ad => ad.MinCharacterLevel)
                                            .Distinct()
                                            .OrderBy(x => x);
+
                 int upcoming = nextLevels.FirstOrDefault(x => x > lvl);
                 nextUnlockLabel.text = upcoming > 0
                     ? $"Next unlock at level {upcoming}."
                     : "All EVO abilities unlocked!";
+            }
+
+            // Total play time
+            if (playtimeText != null)
+            {
+                float sec = CharacterPlaytimeSystem.GetTime(currentData);
+                int mm = Mathf.FloorToInt(sec / 60f);
+                int ss = Mathf.FloorToInt(sec % 60f);
+                playtimeText.text = $"{mm:00}:{ss:00}";
             }
         }
 

@@ -1,3 +1,4 @@
+using OctoberStudio;               // for CharacterPlaytimeSystem
 using OctoberStudio.Abilities;
 using OctoberStudio.Extensions;
 using OctoberStudio.Pool;
@@ -12,7 +13,6 @@ namespace OctoberStudio
     {
         private static StageController instance;
         private CharacterData cachedCharacter;
-
 
         [SerializeField] StagesDatabase database;
         [SerializeField] PlayableDirector director;
@@ -48,55 +48,51 @@ namespace OctoberStudio
 
         private StageSave stageSave;
 
-        // StageController.cs – Awake()
         private void Awake()
         {
+            // Initialize playtime tracker
+            CharacterPlaytimeSystem.Init(GameController.SaveManager);
+
             instance  = this;
             stageSave = GameController.SaveManager.GetSave<StageSave>("Stage");
 
-            /* ──────────────────────────────────────────────────────────────
-               FIX – make sure the per‑run counters start from 0 every time
-               (the previous value was being re‑used because ResetStageData
-               was never turned on for the next run).
-               ──────────────────────────────────────────────────────────────*/
-            stageSave.ResetStageData = true;   //  let every system know this is a fresh round
-            stageSave.EnemiesKilled  = 0;      //  wipe the carry‑over kill counter
-            GameController.SaveManager.Save(false);   // quick silent save
-            
+            // Reset per‑run counters
+            stageSave.ResetStageData = true;
+            stageSave.EnemiesKilled  = 0;
+            GameController.SaveManager.Save(false);
+
             if (PlayerBehavior.Player != null)
                 cachedCharacter = PlayerBehavior.Player.Data;
-
         }
 
-        
-        // ── StageController.cs ─────────────────────────────────────────────
         private void GrantCharacterExperience()
         {
-            // refresh the cache in case we didn't have it yet
             if (cachedCharacter == null && PlayerBehavior.Player != null)
                 cachedCharacter = PlayerBehavior.Player.Data;
 
             if (cachedCharacter == null)
             {
                 Debug.LogWarning("[StageController] Missing CharacterData – XP not granted.");
-                return;  // bail gracefully, no crashes
+                return;
             }
 
-            float totalDamage = playerStats ? playerStats.TotalDamage : 0f;
+            // 1) Record this run’s play time and flush it right away
+            CharacterPlaytimeSystem.AddTime(cachedCharacter, stageSave.TimeAlive);
+            GameController.SaveManager.Save(false);
 
+            // 2) Grant XP as before
+            float totalDamage = playerStats ? playerStats.TotalDamage : 0f;
             CharacterLevelSystem.AddMatchResults(
                 cachedCharacter,
                 stageSave.EnemiesKilled,
                 totalDamage);
         }
 
-
-
         private void Start()
         {
             Stage = database.GetStage(stageSave.SelectedStageId);
 
-            // Reset player stats if this is a new run
+            // Reset stats on new run
             if (stageSave.ResetStageData && playerStats != null)
             {
                 playerStats.ResetStats();
@@ -104,10 +100,8 @@ namespace OctoberStudio
                 GameController.SaveManager.Save(true);
             }
 
-            // Load stage timeline
             director.playableAsset = Stage.Timeline;
 
-            // Init systems
             spawner.Init(director);
             experienceManager.Init(testingPreset);
             dropManager.Init();
@@ -115,10 +109,8 @@ namespace OctoberStudio
             abilityManager.Init(testingPreset, PlayerBehavior.Player.Data);
             cameraManager.Init(Stage);
 
-            PlayerBehavior.Player.onPlayerDied += OnGameFailed;
-            experienceManager.onXpLevelChanged += OnPlayerLevelUp;
-
-            // 🛡️ Invincibility after closing ability panel
+            PlayerBehavior.Player.onPlayerDied    += OnGameFailed;
+            experienceManager.onXpLevelChanged  += OnPlayerLevelUp;
             GameScreen.AbilitiesWindow.onPanelClosed += () =>
             {
                 PlayerBehavior.Player.StartInvincibility(1f);
@@ -126,35 +118,30 @@ namespace OctoberStudio
 
             director.stopped += TimelineStopped;
 
-            // Rewind time if needed (based on saved state or preset)
+            // Rewind timeline if needed
             if (testingPreset != null)
             {
                 director.time = testingPreset.StartTime;
             }
             else
             {
-                var time = stageSave.Time;
-                var bossClips = director.GetClips<BossTrack, Boss>();
-
-                foreach (var bossClip in bossClips)
+                double time = stageSave.Time;
+                var clips = director.GetClips<BossTrack, Boss>();
+                foreach (var clip in clips)
                 {
-                    if (time >= bossClip.start && time <= bossClip.end)
+                    if (time >= clip.start && time <= clip.end)
                     {
-                        time = (float)bossClip.start;
+                        time = clip.start;
                         break;
                     }
                 }
-
                 director.time = time;
             }
 
             director.Play();
 
-            // 🎵 Set custom music
             if (Stage.UseCustomMusic)
-            {
                 GameController.ChangeMusic(Stage.MusicName);
-            }
         }
 
         private void OnPlayerLevelUp(int level)
@@ -162,12 +149,13 @@ namespace OctoberStudio
             Debug.Log($"Player leveled up to {level}.");
         }
 
-        private void TimelineStopped(PlayableDirector director)
+        private void TimelineStopped(PlayableDirector _)
         {
             if (!gameObject.activeSelf) return;
-            
+
             GrantCharacterExperience();
 
+            // Update max reached stage
             if (stageSave.MaxReachedStageId < stageSave.SelectedStageId + 1 &&
                 stageSave.SelectedStageId + 1 < database.StagesCount)
             {
@@ -186,8 +174,8 @@ namespace OctoberStudio
         {
             Time.timeScale = 0;
             stageSave.IsPlaying = false;
-            
-            GrantCharacterExperience();   
+
+            GrantCharacterExperience();
             GameController.SaveManager.Save(true);
 
             gameScreen.Hide();
