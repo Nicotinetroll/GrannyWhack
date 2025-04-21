@@ -1,6 +1,7 @@
 using OctoberStudio.Save;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace OctoberStudio.Upgrades
 {
@@ -10,6 +11,11 @@ namespace OctoberStudio.Upgrades
         [SerializeField] UpgradeSave[] savedUpgrades;
 
         private Dictionary<UpgradeType, int> upgradesLevels;
+
+        /// <summary>
+        /// Fired whenever an upgrade’s level is set or changed.
+        /// </summary>
+        public event UnityAction<UpgradeType, int> onUpgradeLevelChanged;
 
         public void Init()
         {
@@ -59,6 +65,9 @@ namespace OctoberStudio.Upgrades
             {
                 upgradesLevels.Add(upgrade, level);
             }
+
+            // Notify listeners that the level has changed
+            onUpgradeLevelChanged?.Invoke(upgrade, level);
         }
 
         public void RemoveUpgrade(UpgradeType upgrade)
@@ -71,16 +80,20 @@ namespace OctoberStudio.Upgrades
 
         public void Flush()
         {
+            // if someone calls Flush() before Init(), make sure our dict exists
+            if (upgradesLevels == null)
+                Init();
+
             savedUpgrades = new UpgradeSave[upgradesLevels.Count];
 
             int i = 0;
-
             foreach (var upgrade in upgradesLevels.Keys)
             {
                 var upgradeSave = new UpgradeSave(upgrade, upgradesLevels[upgrade]);
                 savedUpgrades[i++] = upgradeSave;
             }
         }
+
 
         public void Clear()
         {

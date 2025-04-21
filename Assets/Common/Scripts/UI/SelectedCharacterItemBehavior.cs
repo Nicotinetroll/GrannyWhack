@@ -8,10 +8,6 @@ using OctoberStudio.Upgrades;
 
 namespace OctoberStudio.UI
 {
-    /// <summary>
-    /// Read‑only display of a CharacterData: icon, name, HP, damage, level,
-    /// starting ability, XP bar, and next‑unlock text.
-    /// </summary>
     public class SelectedCharacterItemBehavior : MonoBehaviour
     {
         [Header("Info")]
@@ -34,32 +30,43 @@ namespace OctoberStudio.UI
         [SerializeField] private TMP_Text nextUnlockLabel;
 
         [Header("Upgrades (optional)")]
-        [Tooltip("Global upgrades that apply to all characters. " +
-                 "If left blank, will load from Resources/UpgradesDatabase.")]
+        [Tooltip("Global upgrades that apply to all characters.\n" +
+                 "If blank, will load from Resources/UpgradesDatabase")]
         [SerializeField] private UpgradesDatabase upgradesDatabase;
 
-        /// <summary>
-        /// Populates the display.
-        /// </summary>
+        private UpgradesSave       upgradesSave;
+        private CharacterData      currentData;
+        private AbilitiesDatabase  currentDb;
+
         public void Setup(CharacterData data, AbilitiesDatabase db)
         {
+            currentData = data;
+            currentDb   = db;
+
             // Icon & Name
             iconImage.sprite = data.Icon;
             titleLabel.text  = data.Name;
 
+            // Subscribe to upgrades
+            if (upgradesSave == null)
+            {
+                upgradesSave = GameController.SaveManager.GetSave<UpgradesSave>("Upgrades");
+                upgradesSave.onUpgradeLevelChanged += OnUpgradeLevelChanged;
+            }
+
+            RedrawAll();
+        }
+
+        private void RedrawAll()
+        {
             // HP
-            hpText.text = data.BaseHP.ToString("F0");
+            hpText.text = currentData.BaseHP.ToString("F0");
 
-            // —— DAMAGE CALCULATION —— //
-
-            // 1) base + level bonus
-            float basePlusLevel = data.BaseDamage + CharacterLevelSystem.GetDamageBonus(data);
-
-            // 2) ensure we have an upgradesDatabase
+            // DAMAGE same logic as CharacterItemBehavior
+            float basePlusLevel = currentData.BaseDamage + CharacterLevelSystem.GetDamageBonus(currentData);
             if (upgradesDatabase == null)
                 upgradesDatabase = Resources.Load<UpgradesDatabase>("UpgradesDatabase");
 
-            // 3) compute multiplier (default = 1; only apply if shopLevel > 0)
             float multiplier = 1f;
             if (upgradesDatabase != null)
             {
@@ -75,37 +82,32 @@ namespace OctoberStudio.UI
                 }
             }
 
-            // 4) final effective damage
-            float effectiveDamage = basePlusLevel * multiplier;
-            damageText.text = effectiveDamage.ToString("F1");
-
-            // —— END DAMAGE —— //
+            damageText.text = (basePlusLevel * multiplier).ToString("F1");
 
             // Level
-            int lvl = CharacterLevelSystem.GetLevel(data);
+            int lvl = CharacterLevelSystem.GetLevel(currentData);
             levelLabel.text = $"{lvl}";
 
-            // Starting‑ability icon
-            bool has = data.HasStartingAbility;
+            // Starting ability
+            bool has = currentData.HasStartingAbility;
             abilityIconContainer.SetActive(has);
-            if (has && db != null)
+            if (has && currentDb != null)
             {
-                var ad = db.GetAbility(data.StartingAbility);
+                var ad = currentDb.GetAbility(currentData.StartingAbility);
                 abilityIconImage.sprite = ad.Icon;
             }
 
-            // XP bar
-            xpBar?.Setup(data);
+            // XP Bar
+            xpBar?.Setup(currentData);
 
-            // Next‑unlock text
-            if (nextUnlockLabel != null && db != null)
+            // Next unlock
+            if (nextUnlockLabel != null && currentDb != null)
             {
-                var nextLevels = Enumerable.Range(0, db.AbilitiesCount)
-                                           .Select(i => db.GetAbility(i))
-                                           .Where(ad => ad != null
-                                                     && ad.IsEvolution
+                var nextLevels = Enumerable.Range(0, currentDb.AbilitiesCount)
+                                           .Select(i => currentDb.GetAbility(i))
+                                           .Where(ad => ad.IsEvolution
                                                      && ad.IsCharacterSpecific
-                                                     && ad.AllowedCharacterName == data.Name)
+                                                     && ad.AllowedCharacterName == currentData.Name)
                                            .Select(ad => ad.MinCharacterLevel)
                                            .Distinct()
                                            .OrderBy(x => x);
@@ -115,6 +117,18 @@ namespace OctoberStudio.UI
                     ? $"Next unlock at level {upcoming}."
                     : "All EVO abilities unlocked!";
             }
+        }
+
+        private void OnUpgradeLevelChanged(UpgradeType type, int _)
+        {
+            if (type == UpgradeType.Damage)
+                RedrawAll();
+        }
+
+        private void OnDestroy()
+        {
+            if (upgradesSave != null)
+                upgradesSave.onUpgradeLevelChanged -= OnUpgradeLevelChanged;
         }
     }
 }

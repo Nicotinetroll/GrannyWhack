@@ -31,28 +31,27 @@ namespace OctoberStudio.UI
         [Header("Stats")]
         [SerializeField] private TMP_Text hpText;
         [SerializeField] private TMP_Text damageText;
-        [SerializeField] private TMP_Text levelText;  // ★ New for level display
+        [SerializeField] private TMP_Text levelText;
 
         [Header("Upgrades (optional)")]
-        [Tooltip("Global upgrades that apply to all characters.\n" +
-                 "If left blank, will load from Resources/UpgradesDatabase.")]
         [SerializeField] private UpgradesDatabase upgradesDatabase;
 
         [Space]
         [SerializeField] private ScalingLabelBehavior costLabel;
         [SerializeField] private TMP_Text buttonText;
 
-        public CurrencySave   GoldCurrency { get; private set; }
         private CharactersSave charactersSave;
-
-        public Selectable Selectable => upgradeButton;
+        private UpgradesSave   upgradesSave;
+        public CurrencySave    GoldCurrency { get; private set; }
 
         public CharacterData Data { get; private set; }
         public int           CharacterId { get; private set; }
 
-        public bool IsSelected { get; private set; }
-
+        public Selectable Selectable => upgradeButton;
         public UnityAction<CharacterItemBehavior> onNavigationSelected;
+
+        // track nav focus
+        private bool IsSelected;
 
         private void Start()
         {
@@ -61,24 +60,31 @@ namespace OctoberStudio.UI
 
         public void Init(int id, CharacterData characterData, AbilitiesDatabase database)
         {
-            Data = characterData;
+            Data        = characterData;
             CharacterId = id;
 
-            // Subscribe to when selected character changes (to update visuals)
+            // subscribe to character selection changes
             if (charactersSave == null)
             {
                 charactersSave = GameController.SaveManager.GetSave<CharactersSave>("Characters");
                 charactersSave.onSelectedCharacterChanged += RedrawVisuals;
             }
 
-            // Subscribe to gold changes (to update buy/select button)
+            // subscribe to gold changes
             if (GoldCurrency == null)
             {
                 GoldCurrency = GameController.SaveManager.GetSave<CurrencySave>("gold");
                 GoldCurrency.onGoldAmountChanged += OnGoldAmountChanged;
             }
 
-            // Starting ability icon
+            // subscribe to upgrades
+            if (upgradesSave == null)
+            {
+                upgradesSave = GameController.SaveManager.GetSave<UpgradesSave>("Upgrades");
+                upgradesSave.onUpgradeLevelChanged += OnUpgradeLevelChanged;
+            }
+
+            // starting ability icon
             startingAbilityObject.SetActive(characterData.HasStartingAbility);
             if (characterData.HasStartingAbility && database != null)
             {
@@ -86,17 +92,16 @@ namespace OctoberStudio.UI
                 startingAbilityImage.sprite = ad.Icon;
             }
 
-            // Initial draw
             RedrawVisuals();
         }
 
         private void RedrawVisuals()
         {
-            // Icon & Title
+            // Icon & Name
             titleLabel.text  = Data.Name;
             iconImage.sprite = Data.Icon;
 
-            // Level display
+            // Level
             if (levelText != null)
             {
                 int lvl = CharacterLevelSystem.GetLevel(Data);
@@ -106,16 +111,12 @@ namespace OctoberStudio.UI
             // HP
             hpText.text = Data.BaseHP.ToString("F0");
 
-            // —— DAMAGE CALCULATION —— //
-
-            // 1) base + level bonus
+            // DAMAGE
             float basePlusLevel = Data.BaseDamage + CharacterLevelSystem.GetDamageBonus(Data);
 
-            // 2) lazy‑load upgradesDatabase if needed
             if (upgradesDatabase == null)
                 upgradesDatabase = Resources.Load<UpgradesDatabase>("UpgradesDatabase");
 
-            // 3) compute multiplier (default=1, apply only if shopLevel > 0)
             float multiplier = 1f;
             if (upgradesDatabase != null)
             {
@@ -131,26 +132,19 @@ namespace OctoberStudio.UI
                 }
             }
 
-            // 4) final effective damage
-            float effectiveDamage = basePlusLevel * multiplier;
-            damageText.text = effectiveDamage.ToString("F1");
+            damageText.text = (basePlusLevel * multiplier).ToString("F1");
 
-            // —— END DAMAGE —— //
-
-            // Refresh buy/select button
             RedrawButton();
         }
 
         private void RedrawButton()
         {
             bool owned = charactersSave.HasCharacterBeenBought(CharacterId);
-
             costLabel.gameObject.SetActive(!owned);
             buttonText.gameObject.SetActive(owned);
 
             if (owned)
             {
-                // already owned: show SELECT / SELECTED
                 if (charactersSave.SelectedCharacterId == CharacterId)
                 {
                     upgradeButton.interactable = false;
@@ -166,9 +160,7 @@ namespace OctoberStudio.UI
             }
             else
             {
-                // not owned: show COST and buy button
                 costLabel.SetAmount(Data.Cost);
-
                 if (GoldCurrency.CanAfford(Data.Cost))
                 {
                     upgradeButton.interactable = true;
@@ -184,40 +176,26 @@ namespace OctoberStudio.UI
 
         private void SelectButtonClick()
         {
-            // Buy if needed
             if (!charactersSave.HasCharacterBeenBought(CharacterId))
             {
                 GoldCurrency.Withdraw(Data.Cost);
                 charactersSave.AddBoughtCharacter(CharacterId);
             }
 
-            // Select character
             charactersSave.SetSelectedCharacterId(CharacterId);
             GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
-
-            // Re‑focus this button
             EventSystem.current.SetSelectedGameObject(upgradeButton.gameObject);
         }
 
-        private void OnGoldAmountChanged(int amount)
+        private void OnGoldAmountChanged(int _)    => RedrawButton();
+        private void OnUpgradeLevelChanged(UpgradeType type, int _) 
         {
-            // Gold changed → maybe enable/disable buy button
-            RedrawButton();
-        }
-
-        public void Select()
-        {
-            EventSystem.current.SetSelectedGameObject(upgradeButton.gameObject);
-        }
-
-        public void Unselect()
-        {
-            IsSelected = false;
+            if (type == UpgradeType.Damage)
+                RedrawVisuals();
         }
 
         private void Update()
         {
-            // Track navigation focus to fire onNavigationSelected once
             if (!IsSelected && EventSystem.current.currentSelectedGameObject == upgradeButton.gameObject)
             {
                 IsSelected = true;
@@ -229,12 +207,31 @@ namespace OctoberStudio.UI
             }
         }
 
+        // ★ PUBLIC SELECT METHODS ★
+        /// <summary>
+        /// Explicitly select this item (for gamepad/keyboard nav).
+        /// </summary>
+        public void Select()
+        {
+            EventSystem.current.SetSelectedGameObject(upgradeButton.gameObject);
+        }
+
+        /// <summary>
+        /// Clear the internal focus flag so it can re‑fire onNavigationSelected next time.
+        /// </summary>
+        public void Unselect()
+        {
+            IsSelected = false;
+        }
+
         public void Clear()
         {
             if (GoldCurrency != null)
                 GoldCurrency.onGoldAmountChanged -= OnGoldAmountChanged;
             if (charactersSave != null)
                 charactersSave.onSelectedCharacterChanged -= RedrawVisuals;
+            if (upgradesSave != null)
+                upgradesSave.onUpgradeLevelChanged -= OnUpgradeLevelChanged;
         }
     }
 }
