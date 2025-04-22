@@ -2,41 +2,38 @@ using UnityEngine;
 
 namespace OctoberStudio
 {
-    /// <summary>Designer‑tweakable numbers for character leveling.</summary>
     [CreateAssetMenu(
         fileName = "CharacterLevelingConfig",
         menuName = "OctoberStudio/Character/Leveling Config")]
     public class CharacterLevelingConfig : ScriptableObject
     {
-        [Header("Leveling")]
-        [SerializeField, Min(1)]
-        int maxLevel = 50;
-
-        [Tooltip("Curve mapping level → XP required to reach that level (not cumulative).")]
-        [SerializeField]
-        AnimationCurve xpCurve = AnimationCurve.Linear(1, 0, 50, 1000);
-
-        [Tooltip("XP awarded per enemy kill.")]
-        [SerializeField]
-        float xpPerKill = 1f;
+        [Header("Leveling Curve")]
+        [SerializeField, Min(1)]    int maxLevel        = 25;
+        [SerializeField]            AnimationCurve xpCurve = AnimationCurve.Linear(1, 0, 25, 100);
+        
+        [Header("XP Sources")]
+        [Tooltip("XP awarded per enemy kill (if you still want this)")]
+        [SerializeField]            float xpPerKill     = 1f;
+        [Tooltip("XP awarded per damage point dealt (if you still want this)")]
+        [SerializeField]            float xpPerDamage   = 0.01f;
+        [Tooltip("XP awarded each completed stage")]
+        [SerializeField]            float xpPerStage    = 1f;
 
         [Header("Damage Scaling")]
-        [Tooltip("Flat damage bonus per level (level 1 = +0).")]
-        [SerializeField, Min(0)]
-        float damagePerLevel = 1f;
+        [Tooltip("Flat damage bonus per level (level 1 = +0)")]
+        [SerializeField, Min(0)]    float damagePerLevel = 1f;
 
-        /// <summary>Maximum achievable level.</summary>
-        public int MaxLevel => maxLevel;
-
-        /// <summary>XP awarded for each kill.</summary>
-        public float XpPerKill => xpPerKill;
-
-        /// <summary>Flat damage bonus gained per level beyond level 1.</summary>
+        public int   MaxLevel       => maxLevel;
+        public float XpPerKill      => xpPerKill;
+        public float XpPerDamage    => xpPerDamage;
+        public float XpPerStage     => xpPerStage;
         public float DamagePerLevel => damagePerLevel;
 
-        /// <summary>
-        /// XP needed **to reach** the given <paramref name="level"/> (not cumulative).
-        /// </summary>
-        public float GetXpForLevel(int level) => xpCurve.Evaluate(level);
+        /// <summary>XP needed to reach exactly the given level (not cumulative).</summary>
+        public float GetXpForLevel(int level)
+        {
+            level = Mathf.Clamp(level, 1, maxLevel);
+            return xpCurve.Evaluate(level);
+        }
     }
 }

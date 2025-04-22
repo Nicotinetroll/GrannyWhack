@@ -18,10 +18,26 @@ MonoBehaviour:
   devStartLevel: -1
   levels:
   - cost: 200
-    value: 0.9
+    value: 0.96
   - cost: 400
-    value: 0.8
+    value: 0.92
   - cost: 1000
-    value: 0.7
+    value: 0.88
   - cost: 2000
-    value: 0.6
+    value: 0.84
+  - cost: 3000
+    value: 0.8
+  - cost: 4000
+    value: 0.76
+  - cost: 5000
+    value: 0.72
+  - cost: 6000
+    value: 0.68
+  - cost: 7000
+    value: 0.66
+  - cost: 8000
+    value: 0.64
+  - cost: 9000
+    value: 0.62
+  - cost: 1000
+    value: 0.62

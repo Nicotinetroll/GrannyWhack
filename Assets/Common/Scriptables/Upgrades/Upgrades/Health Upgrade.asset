@@ -18,10 +18,10 @@ MonoBehaviour:
   devStartLevel: -1
   levels:
   - cost: 200
-    value: 100
+    value: 10
   - cost: 400
-    value: 200
+    value: 15
   - cost: 1000
-    value: 300
+    value: 20
   - cost: 2000
-    value: 400
+    value: 25

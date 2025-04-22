@@ -17,5 +17,5 @@ MonoBehaviour:
   title: REVIVE
   devStartLevel: -1
   levels:
-  - cost: 100000
+  - cost: 1000000
     value: 0
