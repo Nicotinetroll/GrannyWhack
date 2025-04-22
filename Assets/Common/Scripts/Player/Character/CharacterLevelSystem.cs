@@ -1,50 +1,27 @@
 using UnityEngine;
 using OctoberStudio.Save;
-using System.Linq;
 
 namespace OctoberStudio
 {
     public static class CharacterLevelSystem
     {
-        /* ── runtime refs ───────────────────────────────────────────── */
         static CharacterLevelSave      save;
         static CharacterLevelingConfig cfg;
 
-        /* ── lazy bootstrap ─────────────────────────────────────────── */
         static void EnsureInit()
         {
             if (save != null && cfg != null) return;
+            if (GameController.SaveManager == null) return;
 
-            if (GameController.SaveManager == null)
-            {
-                Debug.LogWarning("[CharacterLevelSystem] SaveManager not ready. Aborting init.");
-                return;
-            }
-
-            save = GameController.SaveManager
-                                  .GetSave<CharacterLevelSave>("CharacterLevels");
-
-            cfg = Resources.Load<CharacterLevelingConfig>("CharacterLevelingConfig");
+            save = GameController.SaveManager.GetSave<CharacterLevelSave>("CharacterLevels");
+            cfg  = Resources.Load<CharacterLevelingConfig>("CharacterLevelingConfig");
             if (cfg == null)
-                Debug.LogWarning("[CharacterLevelSystem] No CharacterLevelingConfig asset found in Resources!");
+                Debug.LogWarning("[CharacterLevelSystem] Missing CharacterLevelingConfig.");
         }
 
-        /* ── public API ─────────────────────────────────────────────── */
-        /// <summary>Current level (≥1).</summary>
-        public static int GetLevel(CharacterData c)
-        {
-            EnsureInit();
-            return GetEntry(c)?.lvl ?? 1;
-        }
+        public static int   GetLevel(CharacterData c) { EnsureInit(); return GetEntry(c)?.lvl ?? 1; }
+        public static float GetXp   (CharacterData c) { EnsureInit(); return GetEntry(c)?.xp  ?? 0f; }
 
-        /// <summary>Total accumulated XP.</summary>
-        public static float GetXp(CharacterData c)
-        {
-            EnsureInit();
-            return GetEntry(c)?.xp  ?? 0f;
-        }
-
-        /// <summary>Flat damage bonus = (level – 1) × damagePerLevel</summary>
         public static float GetDamageBonus(CharacterData c)
         {
             EnsureInit();
@@ -52,76 +29,54 @@ namespace OctoberStudio
             return (lvl - 1) * (cfg?.DamagePerLevel ?? 0f);
         }
 
-        /// <summary>Maximum level from your config.</summary>
         public static int MaxLevel
         {
-            get
-            {
-                EnsureInit();
-                return cfg != null ? cfg.MaxLevel : 1;
-            }
+            get { EnsureInit(); return cfg != null ? cfg.MaxLevel : 1; }
         }
 
-        /// <summary>Force‑set a character’s level (for debug / tools).</summary>
         public static void SetLevel(CharacterData c, int level)
         {
             EnsureInit();
             if (save == null || c == null) return;
-
-            var entry = GetEntry(c);
-            if (entry == null) return;
-
-            entry.lvl = Mathf.Clamp(level, 1, MaxLevel);
+            var e = GetEntry(c);
+            e.lvl = Mathf.Clamp(level, 1, MaxLevel);
         }
 
         /// <summary>
-        /// Grant XP **only** from kills; damage ignored.  Recalculates level and logs percent‑to‑next.
+        /// Award XP for kills (damage ignored here). Recalculates level.
         /// </summary>
         public static void AddMatchResults(CharacterData c, int kills, float damage)
         {
             EnsureInit();
-            if (save == null || c == null || cfg == null) return;
+            if (save == null || cfg == null || c == null) return;
 
-            var entry = GetEntry(c);
-            if (entry == null) return;
-
+            var e   = GetEntry(c);
             float inc = kills * cfg.XpPerKill;
-            int prevLevel = entry.lvl;
-            entry.xp += inc;
-
-            // calculate percent towards next before we bump level
-            float xpPending = entry.xp;
-            int lvlCounter = 1;
-            while (lvlCounter < cfg.MaxLevel &&
-                   xpPending >= cfg.GetXpForLevel(lvlCounter + 1))
-            {
-                xpPending -= cfg.GetXpForLevel(lvlCounter + 1);
-                lvlCounter++;
-            }
-            float xpForNext = (lvlCounter < cfg.MaxLevel)
-                ? cfg.GetXpForLevel(lvlCounter + 1)
-                : cfg.GetXpForLevel(lvlCounter);
-            float percent = xpForNext > 0f
-                ? (xpPending / xpForNext) * 100f
-                : 100f;
-
-            // now actually recalc level
-            RecalcLevel(entry);
-
-            Debug.Log(
-                $"[Character‑XP] {c.Name}: +{inc:F0} XP from {kills} kills  " +
-                $"(total {entry.xp:F0})  Level {prevLevel} → {entry.lvl}  " +
-                $"{percent:F1}% to next");
+            e.xp += inc;
+            RecalcLevel(e);
+            Debug.Log($"[Character‑XP] {c.Name}: +{inc:F0} XP from kills → Level {e.lvl}");
         }
 
-        /* ── private helpers ───────────────────────────────────────── */
+        /// <summary>
+        /// Award XP each time the PLAYER levels up.
+        /// </summary>
+        public static void AddPlayerLevelResults(CharacterData c, int times)
+        {
+            EnsureInit();
+            if (save == null || cfg == null || c == null) return;
+
+            var e = GetEntry(c);
+            float inc = times * cfg.XpPerPlayerLevel;
+            e.xp += inc;
+            RecalcLevel(e);
+            Debug.Log($"[Character‑XP] {c.Name}: +{inc:F0} XP from player levels → Level {e.lvl}");
+        }
+
         static CharacterLevelEntry GetEntry(CharacterData c)
         {
             EnsureInit();
             var e = save.Entries.Find(x => x.name == c.Name);
             if (e != null) return e;
-
-            // create new entry
             e = new CharacterLevelEntry { name = c.Name };
             save.Entries.Add(e);
             return e;
@@ -130,17 +85,13 @@ namespace OctoberStudio
         static void RecalcLevel(CharacterLevelEntry e)
         {
             if (cfg == null) return;
-
-            int   lvl       = 1;
-            float xpPending = e.xp;
-
+            int   lvl  = 1;
+            float xp   = e.xp;
             while (lvl < cfg.MaxLevel &&
-                   xpPending >= cfg.GetXpForLevel(lvl + 1))
+                   xp >= cfg.GetCumulativeXpForLevel(lvl + 1))
             {
-                xpPending -= cfg.GetXpForLevel(lvl + 1);
                 lvl++;
             }
-
             e.lvl = lvl;
         }
     }

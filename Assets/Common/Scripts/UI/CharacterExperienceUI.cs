@@ -51,6 +51,7 @@ namespace OctoberStudio.UI
             int   lvl     = CharacterLevelSystem.GetLevel(data);
 
             // 2) compute XP needed for current & next level
+            //    (fixed call: no stray <user__selection> tags)
             float xpThis  = (lvl > 1)
                             ? cfg.GetXpForLevel(lvl)
                             : 0f;
