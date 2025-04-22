@@ -46,7 +46,7 @@ public static class CharacterLevelTools
         SaveAndNotify(data, max);
     }
 
-    private static void SaveAndNotify(CharacterData data, int lvl)
+    static void SaveAndNotify(CharacterData data, int lvl)
     {
         // Persist immediately
         GameController.SaveManager.Save(true);
