@@ -24,4 +24,22 @@ MonoBehaviour:
   enemyDamage: 1
   enemyHP: 1
   useCustomMusic: 1
+  musicNames:
+  - Doom1
+  - Doom2
+  - Doom3
+  - Doom4
+  - Doom5
+  - Doom6
+  - Doom7
+  - Doom8
+  - Doom9
+  - Doom10
+  - Doom11
+  - Doom12
+  - Doom13
+  - Doom14
+  - Doom15
+  - Doom16
+  - Doom17
   musicName: Stage 1

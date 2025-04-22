@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Timeline;
+using System.Collections.Generic;
 
 namespace OctoberStudio
 {
@@ -48,7 +49,14 @@ namespace OctoberStudio
         [SerializeField] bool useCustomMusic;
         public bool UseCustomMusic => useCustomMusic;
 
-        [SerializeField] string musicName;
+        [Header("Music Tracks (pick one at random)")]
+        [Tooltip("List of names matching entries in your AudioDatabase.Sounds")]
+        [SerializeField] private List<string> musicNames = new List<string>();
+        public IReadOnlyList<string> MusicNames => musicNames;
+
+        [System.Obsolete("Use MusicNames instead")]
+        [SerializeField] private string musicName;
+        [System.Obsolete("Use MusicNames instead")]
         public string MusicName => musicName;
     }
 

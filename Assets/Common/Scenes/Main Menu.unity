@@ -603,6 +603,120 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currenciesManager: {fileID: 1692006227}
   upgradesManager: {fileID: 515345912}
+--- !u!1 &1176821622
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1176821625}
+  - component: {fileID: 1176821624}
+  - component: {fileID: 1176821623}
+  m_Layer: 5
+  m_Name: idle_down
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!95 &1176821623
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1176821622}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 2f3caa9104174133b9ad4de1734b5eaf, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!212 &1176821624
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1176821622}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 4294967295
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 20000
+  m_Sprite: {fileID: 21300000, guid: 2738b72dc29a4866a034d5ff27542500, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 3.6, y: 3}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 0
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!224 &1176821625
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1176821622}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 250, y: 250, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 1017, y: 1810}
+  m_SizeDelta: {x: 3.6, y: 3}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1280856057
 GameObject:
   m_ObjectHideFlags: 0
@@ -2901,7 +3015,7 @@ PrefabInstance:
     - target: {fileID: 3156050307976110429, guid: 7dfbe892154909b41aea43c2840561fd,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 258
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3156050307976110429, guid: 7dfbe892154909b41aea43c2840561fd,
         type: 3}
@@ -3226,7 +3340,7 @@ PrefabInstance:
     - target: {fileID: 4555860656211657286, guid: 7dfbe892154909b41aea43c2840561fd,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 258
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4555860656211657286, guid: 7dfbe892154909b41aea43c2840561fd,
         type: 3}
@@ -3399,6 +3513,26 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6739933947807689134, guid: 7dfbe892154909b41aea43c2840561fd,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6739933947807689134, guid: 7dfbe892154909b41aea43c2840561fd,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 298
+      objectReference: {fileID: 0}
+    - target: {fileID: 6739933947807689135, guid: 7dfbe892154909b41aea43c2840561fd,
+        type: 3}
+      propertyPath: m_FlipX
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6739933947807689135, guid: 7dfbe892154909b41aea43c2840561fd,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 2000
+      objectReference: {fileID: 0}
     - target: {fileID: 7079349279560309183, guid: 7dfbe892154909b41aea43c2840561fd,
         type: 3}
       propertyPath: m_IsActive
@@ -3417,7 +3551,7 @@ PrefabInstance:
     - target: {fileID: 7169137386240779640, guid: 7dfbe892154909b41aea43c2840561fd,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 258
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7169137386240779640, guid: 7dfbe892154909b41aea43c2840561fd,
         type: 3}
@@ -3472,7 +3606,7 @@ PrefabInstance:
     - target: {fileID: 7474364538198206584, guid: 7dfbe892154909b41aea43c2840561fd,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 258
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7474364538198206584, guid: 7dfbe892154909b41aea43c2840561fd,
         type: 3}
@@ -4198,6 +4332,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 690092620}
+  - {fileID: 1176821625}
   - {fileID: 747485149951833033}
   - {fileID: 1280856060}
   - {fileID: 958558145}

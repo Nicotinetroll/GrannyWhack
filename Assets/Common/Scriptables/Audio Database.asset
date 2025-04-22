@@ -313,7 +313,7 @@ MonoBehaviour:
       audioClip: {fileID: 8300000, guid: e016ec0812c9ac3498fa9edd3a6b9981, type: 3}
       volume: {x: 0.1, y: 0.1}
       pitch: {x: 1, y: 1}
-  - name: Main Menu Music
+  - name: MenuTheme
     cooldown: 0
     audioClip:
       audioClip: {fileID: 8300000, guid: bba729ed1de45446c9b2aae55553dfdd, type: 3}
@@ -337,10 +337,118 @@ MonoBehaviour:
       audioClip: {fileID: 8300000, guid: 296823b5c18f009449188eb54d40536e, type: 3}
       volume: {x: 0.3, y: 0.35}
       pitch: {x: 1, y: 1.4}
+  - name: Doom1
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: 9e815c7853edb4bf0afb06fc681afaf7, type: 3}
+      volume: {x: 0.1, y: 0.1}
+      pitch: {x: 1, y: 1}
+  - name: Doom2
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: f160904a0ae54433ea0d181d7a9bb280, type: 3}
+      volume: {x: 0.1, y: 0.1}
+      pitch: {x: 1, y: 1}
+  - name: Doom3
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: feb46056adbcc451aa406c8a156b33ae, type: 3}
+      volume: {x: 0.1, y: 0.1}
+      pitch: {x: 1, y: 1}
+  - name: Doom4
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: 99319d480ce064e3bbde01e4682127b9, type: 3}
+      volume: {x: 0.1, y: 0.1}
+      pitch: {x: 1, y: 1}
+  - name: Doom5
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: acd94440e7f96456193668db8e3faf6b, type: 3}
+      volume: {x: 0.1, y: 0.1}
+      pitch: {x: 1, y: 1}
+  - name: Doom6
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: 3c2feafd392ce4adb920a6f72ad945f0, type: 3}
+      volume: {x: 0.1, y: 0.1}
+      pitch: {x: 1, y: 1}
+  - name: Doom7
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: 823d26ee1695241bebe9bc8bbf7791a3, type: 3}
+      volume: {x: 0.1, y: 0.1}
+      pitch: {x: 1, y: 1}
+  - name: Doom8
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: 7b39a8ed362bb4a1fb4df5aad220f61a, type: 3}
+      volume: {x: 0.1, y: 0.1}
+      pitch: {x: 1, y: 1}
+  - name: Doom9
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: 619e17d3141bf4b04bea68d1ebfafb77, type: 3}
+      volume: {x: 0.1, y: 0.1}
+      pitch: {x: 1, y: 1}
+  - name: Doom10
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: 5d5fa524d076840aebbe831800e13cf9, type: 3}
+      volume: {x: 0.1, y: 0.1}
+      pitch: {x: 1, y: 1}
+  - name: Doom11
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: d90a81c70d270423c98d0a378d891474, type: 3}
+      volume: {x: 0.1, y: 0.1}
+      pitch: {x: 1, y: 1}
+  - name: Doom12
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: de86bd570ce4d428a987b1052a53ebdf, type: 3}
+      volume: {x: 0.1, y: 0.1}
+      pitch: {x: 1, y: 1}
+  - name: Doom13
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: 4578da4c97fb54f5496e6aac722c4202, type: 3}
+      volume: {x: 0.1, y: 0.1}
+      pitch: {x: 1, y: 1}
+  - name: Doom14
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: 26983e3d162854c0ab1bbcc36dfe44f6, type: 3}
+      volume: {x: 0.1, y: 0.1}
+      pitch: {x: 1, y: 1}
+  - name: Doom15
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: c653fce90a0ec487caa279321a154163, type: 3}
+      volume: {x: 0.1, y: 0.1}
+      pitch: {x: 1, y: 1}
+  - name: Doom16
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: ea792253a0f5947f5afb192db71a7b0b, type: 3}
+      volume: {x: 0.1, y: 0.1}
+      pitch: {x: 1, y: 1}
+  - name: Doom17
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: 932b311ee8b414e4885979ad21b24846, type: 3}
+      volume: {x: 0.1, y: 0.1}
+      pitch: {x: 1, y: 1}
+  - name: Doom18
+    cooldown: 0
+    audioClip:
+      audioClip: {fileID: 8300000, guid: e4e3f02b8b27546ef99463b0d26fa904, type: 3}
+      volume: {x: 0.1, y: 0.1}
+      pitch: {x: 1, y: 1}
   music:
     name: 
     cooldown: 0
     audioClip:
-      audioClip: {fileID: 8300000, guid: 0de6b10639dc04d89862810f0f1445c8, type: 3}
-      volume: {x: 0.04, y: 0.04}
+      audioClip: {fileID: 8300000, guid: 9e815c7853edb4bf0afb06fc681afaf7, type: 3}
+      volume: {x: 0.1, y: 0.1}
       pitch: {x: 1, y: 1}
