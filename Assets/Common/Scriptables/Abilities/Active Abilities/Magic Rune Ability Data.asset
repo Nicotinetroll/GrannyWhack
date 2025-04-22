@@ -30,7 +30,7 @@ MonoBehaviour:
     abilityCooldown: 5
     mineSpawnRadius: 2.5
     mineLifetime: 7
-    damage: 3.5
+    damage: 35
     mineSize: 1.4
     mineTriggerRadius: 0.4
     mineDamageRadius: 1.4
@@ -38,7 +38,7 @@ MonoBehaviour:
     abilityCooldown: 5
     mineSpawnRadius: 2.5
     mineLifetime: 8
-    damage: 4
+    damage: 40
     mineSize: 1.6
     mineTriggerRadius: 0.45
     mineDamageRadius: 1.6
@@ -46,7 +46,7 @@ MonoBehaviour:
     abilityCooldown: 5
     mineSpawnRadius: 2.5
     mineLifetime: 9
-    damage: 4.5
+    damage: 45
     mineSize: 1.8
     mineTriggerRadius: 0.5
     mineDamageRadius: 1.8
@@ -54,7 +54,7 @@ MonoBehaviour:
     abilityCooldown: 5
     mineSpawnRadius: 2.5
     mineLifetime: 9
-    damage: 5
+    damage: 50
     mineSize: 1.8
     mineTriggerRadius: 0.5
     mineDamageRadius: 1.8
@@ -62,7 +62,7 @@ MonoBehaviour:
     abilityCooldown: 5
     mineSpawnRadius: 2.5
     mineLifetime: 9
-    damage: 7.5
+    damage: 75
     mineSize: 1.8
     mineTriggerRadius: 0.5
     mineDamageRadius: 1.8

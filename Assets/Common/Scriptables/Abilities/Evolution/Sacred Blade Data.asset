@@ -34,6 +34,6 @@ MonoBehaviour:
   levels:
   - abilityCooldown: 2
     slashesCount: 4
-    damage: 11.5
+    damage: 115
     slashSize: 1.5
     timeBetweenSlashes: 0.2

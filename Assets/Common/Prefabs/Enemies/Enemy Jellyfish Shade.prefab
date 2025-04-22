@@ -77,7 +77,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 0.55
   damage: 50
-  hp: 437.5
+  hp: 3500
   canBeKickedBack: 0
   shouldFadeIn: 0
   rb: {fileID: 5611959192970924213}
@@ -92,7 +92,7 @@ MonoBehaviour:
   attackType: 1
   minProjectilesPerAttack: 3
   maxProjectilesPerAttack: 8
-  timeBetweenProjectiles: 0.22
+  timeBetweenProjectiles: 0.15
   projectileDamage: 50
   projectileSpread: 1
   overrideProjectileSpeed: 1
@@ -103,7 +103,7 @@ MonoBehaviour:
     type: 3}
   rangedAttackCooldown: 3
   useAttackAnimation: 1
-  minDistanceToPlayerForAttacking: 20
+  minDistanceToPlayerForAttacking: 7
   changeSpeedDuringAttackAnimation: 1
   speedDuringAttackAnimation: 0
 --- !u!58 &1982295306974641257

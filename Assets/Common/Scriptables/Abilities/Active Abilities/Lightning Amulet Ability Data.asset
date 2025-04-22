@@ -26,32 +26,32 @@ MonoBehaviour:
   isEvolution: 0
   evolutionRequirements: []
   levels:
-  - damage: 3.5
-    additionalDamage: 2
+  - damage: 35
+    additionalDamage: 20
     additionalDamageRadius: 1
     lightningsCount: 2
     abilityCooldown: 5
     durationBetweenHits: 0.5
-  - damage: 5
-    additionalDamage: 3.5
+  - damage: 50
+    additionalDamage: 35
     additionalDamageRadius: 1
     lightningsCount: 2
     abilityCooldown: 5
     durationBetweenHits: 0.5
-  - damage: 7.5
-    additionalDamage: 4.5
+  - damage: 75
+    additionalDamage: 45
     additionalDamageRadius: 1
     lightningsCount: 3
     abilityCooldown: 5
     durationBetweenHits: 0.4
-  - damage: 9.6
-    additionalDamage: 6.3
+  - damage: 96
+    additionalDamage: 63
     additionalDamageRadius: 1
     lightningsCount: 4
     abilityCooldown: 5
     durationBetweenHits: 0.4
-  - damage: 12.3
-    additionalDamage: 9.6
+  - damage: 123
+    additionalDamage: 96
     additionalDamageRadius: 1
     lightningsCount: 4
     abilityCooldown: 5

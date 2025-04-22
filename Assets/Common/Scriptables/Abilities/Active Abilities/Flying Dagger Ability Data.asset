@@ -32,7 +32,7 @@ MonoBehaviour:
     abilityCooldown: 5
     throwingForce: 8
     spread: 20
-    damage: 2.6
+    damage: 26
     projectileSize: 1.2
   - projectileCount: 3
     projectileLifetime: 4
@@ -40,7 +40,7 @@ MonoBehaviour:
     abilityCooldown: 5
     throwingForce: 8
     spread: 20
-    damage: 3.2
+    damage: 32
     projectileSize: 1.2
   - projectileCount: 3
     projectileLifetime: 4
@@ -48,7 +48,7 @@ MonoBehaviour:
     abilityCooldown: 5
     throwingForce: 8
     spread: 20
-    damage: 4
+    damage: 40
     projectileSize: 1.4
   - projectileCount: 3
     projectileLifetime: 4
@@ -56,7 +56,7 @@ MonoBehaviour:
     abilityCooldown: 5
     throwingForce: 8
     spread: 20
-    damage: 4.5
+    damage: 45
     projectileSize: 1.4
   - projectileCount: 3
     projectileLifetime: 4
@@ -64,7 +64,7 @@ MonoBehaviour:
     abilityCooldown: 5
     throwingForce: 8
     spread: 20
-    damage: 6.5
+    damage: 65
     projectileSize: 1.4
   - projectileCount: 4
     projectileLifetime: 4
@@ -72,5 +72,5 @@ MonoBehaviour:
     abilityCooldown: 5
     throwingForce: 8
     spread: 20
-    damage: 6.5
+    damage: 65
     projectileSize: 1.4

@@ -28,31 +28,31 @@ MonoBehaviour:
   levels:
   - abilityCooldown: 2
     slashesCount: 1
-    damage: 1.2
+    damage: 12
     slashSize: 1
     timeBetweenSlashes: 0.2
   - abilityCooldown: 2
     slashesCount: 1
-    damage: 1.7
+    damage: 17
     slashSize: 1.2
     timeBetweenSlashes: 0.2
   - abilityCooldown: 2
     slashesCount: 2
-    damage: 2.3
+    damage: 23
     slashSize: 1.4
     timeBetweenSlashes: 0.2
   - abilityCooldown: 2
     slashesCount: 3
-    damage: 3
+    damage: 30
     slashSize: 1.5
     timeBetweenSlashes: 0.2
   - abilityCooldown: 2
     slashesCount: 4
-    damage: 4.5
+    damage: 45
     slashSize: 1.5
     timeBetweenSlashes: 0.2
   - abilityCooldown: 2
     slashesCount: 4
-    damage: 5
+    damage: 50
     slashSize: 1.6
     timeBetweenSlashes: 0.2

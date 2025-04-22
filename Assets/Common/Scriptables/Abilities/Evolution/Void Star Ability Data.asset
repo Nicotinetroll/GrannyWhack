@@ -32,7 +32,7 @@ MonoBehaviour:
     requiredAbilityLevel: 0
     shouldRemoveAfterEvolution: 0
   levels:
-  - damage: 3
+  - damage: 30
     projectilesCount: 6
     radius: 1.5
     angularSpeed: -300

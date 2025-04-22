@@ -27,20 +27,20 @@ MonoBehaviour:
   evolutionRequirements: []
   levels:
   - fieldRadius: 1
-    damage: 0.6
+    damage: 6
     damageCooldown: 1
   - fieldRadius: 1.1
-    damage: 0.9
+    damage: 9
     damageCooldown: 1
   - fieldRadius: 1.2
-    damage: 1.3
+    damage: 13
     damageCooldown: 1
   - fieldRadius: 1.3
-    damage: 1.6
+    damage: 16
     damageCooldown: 1
   - fieldRadius: 1.4
-    damage: 2
+    damage: 20
     damageCooldown: 1
   - fieldRadius: 1.4
-    damage: 2.4
+    damage: 24
     damageCooldown: 1
