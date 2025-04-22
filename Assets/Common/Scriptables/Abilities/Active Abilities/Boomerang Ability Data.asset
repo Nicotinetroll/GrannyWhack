@@ -31,40 +31,40 @@ MonoBehaviour:
     timeBetweenProjectiles: 0.3
     abilityCooldown: 5
     projectileTravelDistance: 3
-    damage: 26
+    damage: 2.6
     projectileSize: 1
   - projectileCount: 2
     projectileLifetime: 2
     timeBetweenProjectiles: 0.3
     abilityCooldown: 5
     projectileTravelDistance: 3.5
-    damage: 40
+    damage: 4
     projectileSize: 1.25
   - projectileCount: 3
     projectileLifetime: 2
     timeBetweenProjectiles: 0.3
     abilityCooldown: 5
     projectileTravelDistance: 3.5
-    damage: 46
+    damage: 4.6
     projectileSize: 1.25
   - projectileCount: 3
     projectileLifetime: 2
     timeBetweenProjectiles: 0.3
     abilityCooldown: 5
     projectileTravelDistance: 3.5
-    damage: 55
+    damage: 5.5
     projectileSize: 1.25
   - projectileCount: 3
     projectileLifetime: 2
     timeBetweenProjectiles: 0.3
     abilityCooldown: 5
     projectileTravelDistance: 3.5
-    damage: 70
+    damage: 7
     projectileSize: 1.25
   - projectileCount: 3
     projectileLifetime: 2
     timeBetweenProjectiles: 0.3
     abilityCooldown: 5
     projectileTravelDistance: 3.5
-    damage: 80
+    damage: 8
     projectileSize: 1.25

@@ -35,5 +35,5 @@ MonoBehaviour:
   - projectilesCount: 4
     timeBetweenProjectiles: 0.5
     abilityCooldown: 5
-    damage: 360
+    damage: 36
     explosionRadius: 2

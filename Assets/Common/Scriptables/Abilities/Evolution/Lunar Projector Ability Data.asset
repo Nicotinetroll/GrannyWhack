@@ -37,10 +37,4 @@ MonoBehaviour:
     abilityCooldown: 5
     initialRadius: 4
     angularSpeed: 200
-    damage: 30
-  - projectileCount: 25
-    projectileLifetime: 4.5
-    abilityCooldown: 5
-    initialRadius: 5
-    angularSpeed: 200
-    damage: 60
+    damage: 3

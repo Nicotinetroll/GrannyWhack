@@ -34,5 +34,5 @@ MonoBehaviour:
   levels:
   - speed: 2
     angularSpeed: 270
-    damage: 400
+    damage: 40
     size: 1.25

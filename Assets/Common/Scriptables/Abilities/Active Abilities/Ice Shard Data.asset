@@ -28,31 +28,31 @@ MonoBehaviour:
   levels:
   - abilityCooldown: 8
     projectileSpeed: 7
-    damage: 35
+    damage: 3.5
     projectileSize: 1
     projectilesCount: 2
     projectileLifetime: 7
   - abilityCooldown: 8
     projectileSpeed: 8
-    damage: 40
+    damage: 4
     projectileSize: 1
     projectilesCount: 3
     projectileLifetime: 7
   - abilityCooldown: 8
     projectileSpeed: 9
-    damage: 45
+    damage: 4.5
     projectileSize: 1.25
     projectilesCount: 3
     projectileLifetime: 7
   - abilityCooldown: 8
     projectileSpeed: 9
-    damage: 45
+    damage: 5.5
     projectileSize: 1.25
     projectilesCount: 3
     projectileLifetime: 7
   - abilityCooldown: 8
     projectileSpeed: 9
-    damage: 70
+    damage: 7
     projectileSize: 1.25
     projectilesCount: 5
     projectileLifetime: 7

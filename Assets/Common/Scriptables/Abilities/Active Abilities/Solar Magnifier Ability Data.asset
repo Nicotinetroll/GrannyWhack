@@ -30,44 +30,44 @@ MonoBehaviour:
     projectileLifetime: 7
     timeBetweenProjectiles: 1
     projectileCount: 4
-    damagePerSecond: 18
+    damagePerSecond: 1.8
     damageRate: 5
-    additionalDamagePerSecond: 5
+    additionalDamagePerSecond: 0.5
     additionalDamageRadius: 0.4
     projectileSpeed: 6
   - abilityCooldown: 10
     projectileLifetime: 7
     timeBetweenProjectiles: 1
     projectileCount: 5
-    damagePerSecond: 22
+    damagePerSecond: 2.2
     damageRate: 5
-    additionalDamagePerSecond: 6
+    additionalDamagePerSecond: 0.6
     additionalDamageRadius: 0.4
     projectileSpeed: 7
   - abilityCooldown: 10
     projectileLifetime: 8
     timeBetweenProjectiles: 1
     projectileCount: 6
-    damagePerSecond: 26
+    damagePerSecond: 2.6
     damageRate: 5
-    additionalDamagePerSecond: 7
+    additionalDamagePerSecond: 0.7
     additionalDamageRadius: 0.4
     projectileSpeed: 7
   - abilityCooldown: 10
     projectileLifetime: 8
     timeBetweenProjectiles: 1
     projectileCount: 6
-    damagePerSecond: 35
+    damagePerSecond: 3.5
     damageRate: 5
-    additionalDamagePerSecond: 7
+    additionalDamagePerSecond: 0.7
     additionalDamageRadius: 0.4
     projectileSpeed: 7
   - abilityCooldown: 10
     projectileLifetime: 8
     timeBetweenProjectiles: 1
     projectileCount: 6
-    damagePerSecond: 70
+    damagePerSecond: 7
     damageRate: 5
-    additionalDamagePerSecond: 7
+    additionalDamagePerSecond: 0.7
     additionalDamageRadius: 0.4
     projectileSpeed: 7

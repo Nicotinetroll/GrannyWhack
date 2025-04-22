@@ -28,41 +28,41 @@ MonoBehaviour:
   levels:
   - projectilesCount: 2
     timeBetweenFireballs: 0.2
-    abilityCooldown: 5
+    abilityCooldown: 3
     fireballLifetime: 5
     speed: 4
-    damage: 35
+    damage: 3.5
     projectileSize: 1
     explosionRadius: 1.5
   - projectilesCount: 3
     timeBetweenFireballs: 0.2
-    abilityCooldown: 5
+    abilityCooldown: 3
     fireballLifetime: 5
     speed: 4
-    damage: 45
+    damage: 4.5
     projectileSize: 1
     explosionRadius: 1.5
   - projectilesCount: 3
     timeBetweenFireballs: 0.2
-    abilityCooldown: 5
+    abilityCooldown: 3
     fireballLifetime: 5
     speed: 5
-    damage: 55
+    damage: 5.5
     projectileSize: 1.25
     explosionRadius: 1.75
   - projectilesCount: 3
     timeBetweenFireballs: 0.2
-    abilityCooldown: 5
+    abilityCooldown: 3
     fireballLifetime: 5
     speed: 5
-    damage: 65
+    damage: 6.5
     projectileSize: 1.25
     explosionRadius: 1.75
   - projectilesCount: 3
     timeBetweenFireballs: 0.2
-    abilityCooldown: 5
+    abilityCooldown: 3
     fireballLifetime: 5
     speed: 5
-    damage: 105
+    damage: 10.5
     projectileSize: 1.25
     explosionRadius: 2

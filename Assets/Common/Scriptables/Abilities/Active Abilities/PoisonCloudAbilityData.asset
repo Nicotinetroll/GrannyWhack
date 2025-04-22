@@ -31,7 +31,7 @@ MonoBehaviour:
     abilityCooldown: 10
     cloudLifetime: 5
     radius: 1
-    damage: 2
+    damage: 0.2
     ticksPerSecond: 1
     slowAmount: 0.6
     slowDuration: 2
@@ -40,7 +40,7 @@ MonoBehaviour:
     abilityCooldown: 10
     cloudLifetime: 5
     radius: 1.2
-    damage: 3.5
+    damage: 0.35
     ticksPerSecond: 1
     slowAmount: 0.6
     slowDuration: 2
@@ -49,7 +49,7 @@ MonoBehaviour:
     abilityCooldown: 10
     cloudLifetime: 5
     radius: 1.3
-    damage: 5
+    damage: 0.5
     ticksPerSecond: 1
     slowAmount: 0.6
     slowDuration: 2
@@ -58,7 +58,7 @@ MonoBehaviour:
     abilityCooldown: 10
     cloudLifetime: 5
     radius: 1.5
-    damage: 8
+    damage: 0.8
     ticksPerSecond: 1
     slowAmount: 0.6
     slowDuration: 2
@@ -67,7 +67,7 @@ MonoBehaviour:
     abilityCooldown: 10
     cloudLifetime: 5
     radius: 1.7
-    damage: 12
+    damage: 1.2
     ticksPerSecond: 1
     slowAmount: 0.6
     slowDuration: 2
@@ -76,7 +76,7 @@ MonoBehaviour:
     abilityCooldown: 10
     cloudLifetime: 5
     radius: 1.7
-    damage: 16
+    damage: 1.6
     ticksPerSecond: 1
     slowAmount: 0.6
     slowDuration: 2
