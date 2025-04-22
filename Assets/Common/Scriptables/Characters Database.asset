@@ -20,7 +20,7 @@ MonoBehaviour:
       type: 3}
     hasStartingAbility: 1
     startingAbility: 1001
-    baseHP: 10
+    baseHP: 40
     baseDamage: 1
   - name: Mage
     cost: 15000
@@ -29,7 +29,7 @@ MonoBehaviour:
       type: 3}
     hasStartingAbility: 1
     startingAbility: 6
-    baseHP: 7
+    baseHP: 30
     baseDamage: 1.2
   - name: EMAX
     cost: 100000
