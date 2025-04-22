@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Ice Shard Data
   m_EditorClassIdentifier: 
   isCharacterSpecific: 1
-  allowedCharacterName: MAGE
+  allowedCharacterName: Mage
   minCharacterLevel: 1
   type: 4
   title: Ice Shard

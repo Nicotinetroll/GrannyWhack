@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Steel Sword Data
   m_EditorClassIdentifier: 
   isCharacterSpecific: 1
-  allowedCharacterName: NIJNA
+  allowedCharacterName: Ninja
   minCharacterLevel: 1
   type: 1001
   title: Steel Sword
