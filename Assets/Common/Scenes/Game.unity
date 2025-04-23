@@ -1837,6 +1837,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Timeline Debug Text
       objectReference: {fileID: 0}
+    - target: {fileID: 7483542502024276673, guid: ccf79a3d112cb42a59624710392ba476,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
