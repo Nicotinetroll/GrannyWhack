@@ -1,61 +1,50 @@
-using OctoberStudio.Easing;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace OctoberStudio
 {
     public class CharacterBehavior : MonoBehaviour
     {
-        private static readonly int DEFEAT_TRIGGER = Animator.StringToHash("Defeat");
-        private static readonly int REVIVE_TRIGGER = Animator.StringToHash("Revive");
-        private static readonly int SPEED_FLOAT = Animator.StringToHash("Speed");
-
-        protected static readonly int _Overlay = Shader.PropertyToID("_Overlay");
-
-        [SerializeField] SpriteRenderer playerSpriteRenderer;
+        [Header("Animation")]
         [SerializeField] Animator animator;
-        [SerializeField] Color hitColor;
 
-        IEasingCoroutine damageCoroutine;
+        [Tooltip("If enabled, animator gets DirY (-1 down / 0 side / +1 up) " +
+                 "so you can blend 4-way sprites. Leave OFF for enemies.")]
+        [SerializeField] bool useFourWayDirections = false;
 
-        public void SetSpeed(float speed)
+        /* hashed params */
+        static readonly int SPEED_HASH = Animator.StringToHash("Speed");
+        static readonly int DIRY_HASH  = Animator.StringToHash("DirY");
+
+        Vector3 lastPos;
+        float   smoothSpeed;
+
+        /* called every frame by PlayerBehavior or AI -------------------- */
+        public void SetSpeed(float inputMagnitude)
         {
-            animator.SetFloat(SPEED_FLOAT, speed);
-        }
+            Vector3 delta = transform.parent.position - lastPos;
+            lastPos = transform.parent.position;
 
-        public void SetLocalScale(Vector3 scale)
-        {
-            transform.localScale = scale;
-        }
-
-        public void PlayReviveAnimation()
-        {
-            animator.SetTrigger(REVIVE_TRIGGER);
-        }
-
-        public void PlayDefeatAnimation()
-        {
-            animator.SetTrigger(DEFEAT_TRIGGER);
-        }
-
-        public void SetSortingOrder(int order) 
-        {
-            playerSpriteRenderer.sortingOrder = order;
-        }
-
-        public void FlashHit(UnityAction onFinish = null)
-        {
-            if (damageCoroutine.ExistsAndActive()) return;
-
-            var transparentColor = hitColor;
-            transparentColor.a = 0;
-
-            playerSpriteRenderer.material.SetColor(_Overlay, transparentColor);
-
-            damageCoroutine = playerSpriteRenderer.material.DoColor(_Overlay, hitColor, 0.05f).SetOnFinish(() =>
+            float dirY = 0f;
+            if (useFourWayDirections)
             {
-                damageCoroutine = playerSpriteRenderer.material.DoColor(_Overlay, transparentColor, 0.05f).SetOnFinish(onFinish);
-            });
+                if (delta.sqrMagnitude > 0.0001f)
+                    dirY = Mathf.Clamp(delta.y, -1f, 1f);    // up=+1, down=-1
+            }
+
+            smoothSpeed = Mathf.Lerp(smoothSpeed, inputMagnitude, 15f * Time.deltaTime);
+
+            animator.SetFloat(SPEED_HASH, smoothSpeed);
+
+            if (useFourWayDirections)
+                animator.SetFloat(DIRY_HASH, dirY);
         }
+
+        /* utility helpers kept unchanged -------------------------------- */
+        public void SetSortingOrder(int order)
+            => GetComponent<SpriteRenderer>().sortingOrder = order;
+
+        public void FlashHit()            => animator.SetTrigger("Hit");
+        public void PlayDefeatAnimation() => animator.Play("Ninja Defeat", 0, 0);
+        public void PlayReviveAnimation() => animator.Play("Ninja Revive", 0, 0);
     }
 }
