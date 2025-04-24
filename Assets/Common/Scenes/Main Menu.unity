@@ -734,6 +734,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d03811da5f05704a947e8cb019e6422, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1417137559
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1417137561}
+  - component: {fileID: 1417137560}
+  m_Layer: 0
+  m_Name: Reroll Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1417137560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1417137559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 617933c478b8c7d4e9771539fdbe7a47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inRunPrice: 500
+  menuPrice: 100
+  defaultStackOnFreshSave: 2
+--- !u!4 &1417137561
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1417137559}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1019.9805, y: 2139.3696, z: -5.9884257}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1692006226
 GameObject:
   m_ObjectHideFlags: 0
@@ -2901,7 +2948,7 @@ PrefabInstance:
     - target: {fileID: 3156050307976110429, guid: 7dfbe892154909b41aea43c2840561fd,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 258
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3156050307976110429, guid: 7dfbe892154909b41aea43c2840561fd,
         type: 3}
@@ -3226,7 +3273,7 @@ PrefabInstance:
     - target: {fileID: 4555860656211657286, guid: 7dfbe892154909b41aea43c2840561fd,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 258
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4555860656211657286, guid: 7dfbe892154909b41aea43c2840561fd,
         type: 3}
@@ -3417,7 +3464,7 @@ PrefabInstance:
     - target: {fileID: 7169137386240779640, guid: 7dfbe892154909b41aea43c2840561fd,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 258
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7169137386240779640, guid: 7dfbe892154909b41aea43c2840561fd,
         type: 3}
@@ -3472,7 +3519,7 @@ PrefabInstance:
     - target: {fileID: 7474364538198206584, guid: 7dfbe892154909b41aea43c2840561fd,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 258
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7474364538198206584, guid: 7dfbe892154909b41aea43c2840561fd,
         type: 3}
@@ -4209,3 +4256,4 @@ SceneRoots:
   - {fileID: 2130119866}
   - {fileID: 157599325}
   - {fileID: 1754295058}
+  - {fileID: 1417137561}

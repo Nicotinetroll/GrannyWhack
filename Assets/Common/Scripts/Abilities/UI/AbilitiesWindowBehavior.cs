@@ -1,8 +1,8 @@
-// Assets/Common/Scripts/UI/AbilitiesWindowBehavior.cs
 using OctoberStudio.Easing;
 using OctoberStudio.Extensions;
 using OctoberStudio.Input;
 using OctoberStudio.Pool;
+using OctoberStudio.Systems;              // ← NEW
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -14,137 +14,102 @@ namespace OctoberStudio.Abilities.UI
 {
     public class AbilitiesWindowBehavior : MonoBehaviour
     {
-        /* ───────────────────────── runtime refs ─────────────────────────── */
-        private PlayerBehavior player;
-        private StageSave      stageSave;
-        private AbilitiesSave  abilitiesSave;
+        /* ───────────── runtime refs ───────────── */
+        PlayerBehavior player;
+        AbilitiesSave  abilitiesSave;
 
-        /* ───────────────────────‑‑ inspector refs ───────────────────────── */
+        /* ───────────── inspector refs ─────────── */
         [Header("UI Elements")]
-        [SerializeField] private GameObject rerollButtonPrefab;   // prefab with Button + Text
-        [SerializeField] private GameObject levelUpTextObject;
-        [SerializeField] private GameObject weaponSelectTextObject;
+        [SerializeField] GameObject rerollButtonPrefab;
+        [SerializeField] GameObject levelUpTextObject;
+        [SerializeField] GameObject weaponSelectTextObject;
 
         [Header("Panel")]
-        [SerializeField] private RectTransform panelRect;
-        private Vector2 panelPosition;
-        private Vector2 panelHiddenPosition = Vector2.up * 2000;
-        private IEasingCoroutine panelCoroutine;
+        [SerializeField] RectTransform panelRect;
+        Vector2 panelPosition;
+        readonly Vector2 panelHiddenPosition = Vector2.up * 2000;
+        IEasingCoroutine panelCoroutine;
 
         [Header("Cards")]
-        [SerializeField] private GameObject    abilityCardPrefab;
-        [SerializeField] private RectTransform abilitiesHolder;
+        [SerializeField] GameObject    abilityCardPrefab;
+        [SerializeField] RectTransform abilitiesHolder;
 
-        /* ────────────────────── pooled + dynamic UI ────────────────────── */
-        private PoolComponent<AbilityCardBehavior> cardsPool;
-        private readonly List<AbilityCardBehavior> cards = new();
+        /* ───────── pooled + dynamic UI ───────── */
+        PoolComponent<AbilityCardBehavior> cardsPool;
+        readonly List<AbilityCardBehavior> cards = new();
 
-        private GameObject        rerollButtonInstance;
-        private Button            rerollButton;
-        private TextMeshProUGUI   rerollButtonText;
-        private int               rerollCharges;
+        GameObject      rerollButtonInstance;
+        Button          rerollButton;
+        TextMeshProUGUI rerollButtonText;
 
-        /* ───────────────────────── events out ───────────────────────────── */
+        /* ───────────── events out ─────────────── */
         public UnityAction onPanelClosed;
         public UnityAction onPanelStartedClosing;
 
-        /* ───────────────────── initialisation / teardown ───────────────── */
+        /* ───────── initialisation / teardown ─── */
         public void Init()
         {
-            cardsPool    = new PoolComponent<AbilityCardBehavior>(abilityCardPrefab, 3);
+            cardsPool     = new PoolComponent<AbilityCardBehavior>(abilityCardPrefab, 3);
             abilitiesSave = GameController.SaveManager.GetSave<AbilitiesSave>("Abilities Save");
-            stageSave     = GameController.SaveManager.GetSave<StageSave>("Stage Save");
-
             player        = FindFirstObjectByType<PlayerBehavior>();
 
-            panelPosition        = panelRect.anchoredPosition;
+            panelPosition           = panelRect.anchoredPosition;
             panelRect.anchoredPosition = panelHiddenPosition;
 
-            // validate / clamp reroll charges
-            if (stageSave.RerollCharges <= 0 || stageSave.RerollCharges > player.MaxRerollCharges)
-            {
-                stageSave.RerollCharges = player.MaxRerollCharges;
-                stageSave.Flush();
-            }
-            rerollCharges = stageSave.RerollCharges;
+            RerollManager.OnStackChanged += _ => UpdateRerollButtonUI();
         }
 
-        private void OnDestroy()
+        void OnDestroy()
         {
             cardsPool.Destroy();
-
-            if (rerollButtonInstance != null)
-                Destroy(rerollButtonInstance);
+            if (rerollButtonInstance) Destroy(rerollButtonInstance);
+            RerollManager.OnStackChanged -= _ => UpdateRerollButtonUI();
         }
 
-        /* ─────────────────────── reroll logic ──────────────────────────── */
-        private void OnRerollClicked()
+        /* ───────────── reroll logic ──────────── */
+        void OnRerollClicked()
         {
-            if (rerollCharges > 0)
-            {
-                rerollCharges--;
-                stageSave.RerollCharges = rerollCharges;
-                stageSave.Flush();                   
-                GameController.SaveManager.Save();  
+            var rm = RerollManager.Instance;
+            if (rm == null) return;
 
-                var newAbilities = StageController.AbilityManager.GetRandomAbilities(3);
-                SetData(newAbilities);
-            }
-            else
+            // consume, or buy-and-consume once if empty
+            if (!rm.TryConsume())
             {
-                Debug.Log("Out of rerolls. Show ad maybe?");
+                if (!rm.TryBuyInRun()) { Debug.Log("Not enough gold for reroll"); return; }
+                rm.TryConsume();
             }
 
-            UpdateRerollButtonUI();
+            var newAbilities = StageController.AbilityManager.GetRandomAbilities(3);
+            SetData(newAbilities);
         }
 
-        private void UpdateRerollButtonUI()
+        void UpdateRerollButtonUI()
         {
             if (!rerollButtonText || !rerollButton) return;
 
-            if (rerollCharges > 0)
+            int stack = RerollManager.Instance?.Stack ?? 0;
+            if (stack > 0)
             {
-                rerollButtonText.text  = $"Reroll - {rerollCharges}";
+                rerollButtonText.text   = $"{stack} Reroll{(stack > 1 ? "s" : "")} left";
                 rerollButton.interactable = true;
             }
             else
             {
-                rerollButtonText.text  = "Watch Ad to get reroll";
-                rerollButton.interactable = false;
+                int price = RerollManager.Instance?.InRunPrice ?? 0;
+                rerollButtonText.text   = $"Buy Reroll <sprite name=\"Gold\"> {price}";
+                rerollButton.interactable = true;
             }
         }
 
-        public void ResetRerollCharges()
-        {
-            rerollCharges           = player.MaxRerollCharges;
-            stageSave.RerollCharges = rerollCharges;
-            stageSave.Flush();
-            GameController.SaveManager.Save();       
-
-            UpdateRerollButtonUI();
-        }
-
-        /* ───────────────────── card / button building ──────────────────── */
+        /* ───────── card / button building ────── */
         public void SetData(List<AbilityData> abilities)
         {
-            // recycle old cards
-            foreach (var card in cards)
-            {
-                card.transform.SetParent(null);
-                card.gameObject.SetActive(false);
-            }
+            foreach (var card in cards) { card.transform.SetParent(null); card.gameObject.SetActive(false); }
             cards.Clear();
 
-            // destroy old reroll button
-            if (rerollButtonInstance != null)
-            {
-                Destroy(rerollButtonInstance);
-                rerollButtonInstance = null;
-            }
+            if (rerollButtonInstance) { Destroy(rerollButtonInstance); rerollButtonInstance = null; }
 
-            // create reroll (if unlocked for this character level)
-            if (rerollButtonPrefab != null &&
-                player != null &&
+            if (rerollButtonPrefab && player &&
                 StageController.ExperienceManager.Level >= player.RerollUnlockLevel)
             {
                 rerollButtonInstance = Instantiate(rerollButtonPrefab, abilitiesHolder);
@@ -161,36 +126,23 @@ namespace OctoberStudio.Abilities.UI
                 }
             }
 
-            // ability cards
             foreach (var ability in abilities)
             {
                 var card = cardsPool.GetEntity();
-
                 card.transform.SetParent(abilitiesHolder);
                 card.transform.ResetLocal();
                 card.transform.SetAsLastSibling();
 
                 card.Init(OnAbilitySelected);
-
                 var level = abilitiesSave.GetAbilityLevel(ability.AbilityType);
                 card.SetData(ability, level);
-
                 cards.Add(card);
-                
-                EasingManager.DoNextFrame(() =>
-                {
-                    ConfigureNavigation();
-                    if (cards.Count > 0)
-                        EventSystem.current.SetSelectedGameObject(cards[0].gameObject);
-                });
-                EasingManager.DoNextFrame(() =>
-                {
-                    ConfigureNavigation();
 
-                    // focus REROLL first (if it’s on‑screen), otherwise the top card
-                    GameObject firstFocus = rerollButton ? rerollButton.gameObject
-                        : cards[0].gameObject;
-                    EventSystem.current.SetSelectedGameObject(firstFocus);
+                EasingManager.DoNextFrame(() =>
+                {
+                    ConfigureNavigation();
+                    GameObject first = rerollButton ? rerollButton.gameObject : card.gameObject;
+                    EventSystem.current.SetSelectedGameObject(first);
                 });
             }
         }

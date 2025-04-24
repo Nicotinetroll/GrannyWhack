@@ -19,3 +19,6 @@ MonoBehaviour:
   - id: temp_gold
     name: Gold
     icon: {fileID: 21300000, guid: 05f378ff9ca9db843a4a433d68edd596, type: 3}
+  - id: Reroll
+    name: Reroll
+    icon: {fileID: 21300000, guid: 8c0bdb4b011d0424398a571c2a35861a, type: 3}
