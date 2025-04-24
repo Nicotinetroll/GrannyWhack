@@ -136,4 +136,4 @@ MonoBehaviour:
     type: 3}
   particleDisableDelay: 1
   pickUpSoundName: Coin Pick Up
-  amount: 1000
+  amount: 10
