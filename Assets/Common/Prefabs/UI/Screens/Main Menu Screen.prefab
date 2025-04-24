@@ -1320,11 +1320,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2724654106004732095}
     m_Modifications:
-    - target: {fileID: 5177085512337141958, guid: b6296675fe823014692c8950ebba4d7a,
-        type: 3}
-      propertyPath: aligment
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 2004828323629088831, guid: abbb8c8a277482147a52b59e441a8355,
         type: 3}
       propertyPath: m_Sprite
@@ -1445,6 +1440,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Reroll Indicator
+      objectReference: {fileID: 0}
+    - target: {fileID: 5177085512337141958, guid: b6296675fe823014692c8950ebba4d7a,
+        type: 3}
+      propertyPath: aligment
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1755,12 +1755,12 @@ PrefabInstance:
     - target: {fileID: 451558038765194748, guid: e759716e46678c34fa8bd75fd47d5277,
         type: 3}
       propertyPath: m_Pivot.x
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 451558038765194748, guid: e759716e46678c34fa8bd75fd47d5277,
         type: 3}
       propertyPath: m_Pivot.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 451558038765194748, guid: e759716e46678c34fa8bd75fd47d5277,
         type: 3}
@@ -1791,6 +1791,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 451558038765194748, guid: e759716e46678c34fa8bd75fd47d5277,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 451558038765194748, guid: e759716e46678c34fa8bd75fd47d5277,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 451558038765194748, guid: e759716e46678c34fa8bd75fd47d5277,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 451558038765194748, guid: e759716e46678c34fa8bd75fd47d5277,
         type: 3}
@@ -1857,6 +1872,12 @@ PrefabInstance:
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
       value: 1801810542
       objectReference: {fileID: 0}
+    - target: {fileID: 3308105444124154860, guid: e759716e46678c34fa8bd75fd47d5277,
+        type: 3}
+      propertyPath: rerollItemPrefab
+      value: 
+      objectReference: {fileID: 5326981001587358133, guid: 26999559f10efa047956b7702915949b,
+        type: 3}
     - target: {fileID: 8714439532114961313, guid: e759716e46678c34fa8bd75fd47d5277,
         type: 3}
       propertyPath: m_Name

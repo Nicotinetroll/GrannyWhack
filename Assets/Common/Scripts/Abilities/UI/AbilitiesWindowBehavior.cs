@@ -2,7 +2,8 @@ using OctoberStudio.Easing;
 using OctoberStudio.Extensions;
 using OctoberStudio.Input;
 using OctoberStudio.Pool;
-using OctoberStudio.Systems;              // ← NEW
+using OctoberStudio.Systems;          // RerollManager
+using OctoberStudio.Currency;         // CurrencySave
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -14,13 +15,16 @@ namespace OctoberStudio.Abilities.UI
 {
     public class AbilitiesWindowBehavior : MonoBehaviour
     {
-        /* ───────────── runtime refs ───────────── */
+        /* ────────────────── runtime refs ────────────────── */
         PlayerBehavior player;
         AbilitiesSave  abilitiesSave;
+        CurrencySave   goldSave;                 // NEW
 
-        /* ───────────── inspector refs ─────────── */
+        /* ────────────────── inspector refs ──────────────── */
         [Header("UI Elements")]
         [SerializeField] GameObject rerollButtonPrefab;
+        [SerializeField] Sprite     rerollEnabledSprite;     // green
+        [SerializeField] Sprite     rerollDisabledSprite;    // gray
         [SerializeField] GameObject levelUpTextObject;
         [SerializeField] GameObject weaponSelectTextObject;
 
@@ -46,7 +50,7 @@ namespace OctoberStudio.Abilities.UI
         public UnityAction onPanelClosed;
         public UnityAction onPanelStartedClosing;
 
-        /* ───────── initialisation / teardown ─── */
+        /* ───────────────── init / teardown ───────────────── */
         public void Init()
         {
             cardsPool     = new PoolComponent<AbilityCardBehavior>(abilityCardPrefab, 3);
@@ -56,6 +60,10 @@ namespace OctoberStudio.Abilities.UI
             panelPosition           = panelRect.anchoredPosition;
             panelRect.anchoredPosition = panelHiddenPosition;
 
+            /* gold balance listener */
+            goldSave = GameController.SaveManager.GetSave<CurrencySave>("gold");
+            goldSave.onGoldAmountChanged += _ => UpdateRerollButtonUI();
+
             RerollManager.OnStackChanged += _ => UpdateRerollButtonUI();
         }
 
@@ -63,19 +71,21 @@ namespace OctoberStudio.Abilities.UI
         {
             cardsPool.Destroy();
             if (rerollButtonInstance) Destroy(rerollButtonInstance);
-            RerollManager.OnStackChanged -= _ => UpdateRerollButtonUI();
+
+            goldSave.onGoldAmountChanged   -= _ => UpdateRerollButtonUI();
+            RerollManager.OnStackChanged   -= _ => UpdateRerollButtonUI();
         }
 
-        /* ───────────── reroll logic ──────────── */
+        /* ────────────────── reroll logic ────────────────── */
         void OnRerollClicked()
         {
             var rm = RerollManager.Instance;
             if (rm == null) return;
 
-            // consume, or buy-and-consume once if empty
+            /* consume, or buy-and-consume once if empty */
             if (!rm.TryConsume())
             {
-                if (!rm.TryBuyInRun()) { Debug.Log("Not enough gold for reroll"); return; }
+                if (!rm.TryBuyInRun()) return;   // not enough gold
                 rm.TryConsume();
             }
 
@@ -87,28 +97,47 @@ namespace OctoberStudio.Abilities.UI
         {
             if (!rerollButtonText || !rerollButton) return;
 
-            int stack = RerollManager.Instance?.Stack ?? 0;
+            var rm      = RerollManager.Instance;
+            int stack   = rm?.Stack      ?? 0;
+            int inPrice = rm?.InRunPrice ?? 0;
+            bool canPay = goldSave.CanAfford(inPrice);
+
             if (stack > 0)
             {
-                rerollButtonText.text   = $"{stack} Reroll{(stack > 1 ? "s" : "")} left";
+                rerollButtonText.text   = $"Rerolls left {stack}x";
                 rerollButton.interactable = true;
+                rerollButton.image.sprite = rerollEnabledSprite;
             }
             else
             {
-                int price = RerollManager.Instance?.InRunPrice ?? 0;
-                rerollButtonText.text   = $"Buy Reroll <sprite name=\"Gold\"> {price}";
-                rerollButton.interactable = true;
+                if (canPay)
+                {
+                    rerollButtonText.text   = $"Buy Reroll for {inPrice} golds";
+                    rerollButton.interactable = true;
+                    rerollButton.image.sprite = rerollEnabledSprite;
+                }
+                else
+                {
+                    rerollButtonText.text   = "No gold to buy Reroll";
+                    rerollButton.interactable = false;
+                    rerollButton.image.sprite = rerollDisabledSprite;
+                }
             }
         }
 
-        /* ───────── card / button building ────── */
+        /* ─────────── card / button building ─────────── */
         public void SetData(List<AbilityData> abilities)
         {
-            foreach (var card in cards) { card.transform.SetParent(null); card.gameObject.SetActive(false); }
+            foreach (var card in cards)
+            {
+                card.transform.SetParent(null);
+                card.gameObject.SetActive(false);
+            }
             cards.Clear();
 
             if (rerollButtonInstance) { Destroy(rerollButtonInstance); rerollButtonInstance = null; }
 
+            /* build reroll button if unlocked */
             if (rerollButtonPrefab && player &&
                 StageController.ExperienceManager.Level >= player.RerollUnlockLevel)
             {
@@ -126,6 +155,7 @@ namespace OctoberStudio.Abilities.UI
                 }
             }
 
+            /* ability cards */
             foreach (var ability in abilities)
             {
                 var card = cardsPool.GetEntity();
@@ -134,7 +164,7 @@ namespace OctoberStudio.Abilities.UI
                 card.transform.SetAsLastSibling();
 
                 card.Init(OnAbilitySelected);
-                var level = abilitiesSave.GetAbilityLevel(ability.AbilityType);
+                int level = abilitiesSave.GetAbilityLevel(ability.AbilityType);
                 card.SetData(ability, level);
                 cards.Add(card);
 
@@ -147,7 +177,7 @@ namespace OctoberStudio.Abilities.UI
             }
         }
 
-        /* ───────────────────────── panel show / hide ───────────────────── */
+        /* ─────────── panel show / hide ─────────── */
         public void Show(bool isLevelUp)
         {
             Time.timeScale = 0f;
@@ -164,9 +194,7 @@ namespace OctoberStudio.Abilities.UI
             for (int i = 0; i < cards.Count; i++)
                 cards[i].Show(i * 0.1f + 0.15f);
 
-            /* build navigation on next frame (ensures Selectables exist) */
             EasingManager.DoNextFrame(ConfigureNavigation);
-
             GameController.InputManager.onInputChanged += OnInputChanged;
         }
 
@@ -181,20 +209,9 @@ namespace OctoberStudio.Abilities.UI
                                      .SetOnFinish(() =>
                                      {
                                          Time.timeScale = 1;
-
-                                         foreach (var card in cards)
-                                         {
-                                             card.transform.SetParent(null);
-                                             card.gameObject.SetActive(false);
-                                         }
+                                         foreach (var card in cards) { card.transform.SetParent(null); card.gameObject.SetActive(false); }
                                          cards.Clear();
-
-                                         if (rerollButtonInstance != null)
-                                         {
-                                             Destroy(rerollButtonInstance);
-                                             rerollButtonInstance = null;
-                                         }
-
+                                         if (rerollButtonInstance) Destroy(rerollButtonInstance);
                                          gameObject.SetActive(false);
                                          onPanelClosed?.Invoke();
                                      });
@@ -202,55 +219,49 @@ namespace OctoberStudio.Abilities.UI
             GameController.InputManager.onInputChanged -= OnInputChanged;
         }
 
-        /* ─────────────────────── navigation wiring ─────────────────────── */
-        private void ConfigureNavigation()
+        /* ─────────── navigation wiring ─────────── */
+        void ConfigureNavigation()
         {
             if (cards.Count == 0) return;
 
-            // build basic vertical nav among cards
             for (int i = 0; i < cards.Count; i++)
             {
                 var nav = new Navigation { mode = Navigation.Mode.Explicit };
-                if (i > 0)                nav.selectOnUp   = cards[i - 1].Selectable;
-                if (i < cards.Count - 1)  nav.selectOnDown = cards[i + 1].Selectable;
+                if (i > 0)               nav.selectOnUp   = cards[i - 1].Selectable;
+                if (i < cards.Count - 1) nav.selectOnDown = cards[i + 1].Selectable;
                 cards[i].Selectable.navigation = nav;
             }
 
-            // patch the reroll button into the graph
-            if (rerollButton != null)
+            if (rerollButton)
             {
-                // top card → up to reroll
                 var topNav = cards[0].Selectable.navigation;
                 topNav.selectOnUp = rerollButton;
                 cards[0].Selectable.navigation = topNav;
 
-                // reroll → down to top card
-                var rerollNav = new Navigation
+                var btnNav = new Navigation
                 {
                     mode         = Navigation.Mode.Explicit,
                     selectOnDown = cards[0].Selectable
                 };
-                rerollButton.navigation = rerollNav;
+                rerollButton.navigation = btnNav;
             }
 
-            // initial focus
             EventSystem.current.SetSelectedGameObject(cards[0].gameObject);
         }
 
-        /* ─────────────────────── input callbacks ───────────────────────── */
-        private void OnInputChanged(InputType prev, InputType type)
+        /* ─────────── input callbacks ─────────── */
+        void OnInputChanged(InputType prev, InputType type)
         {
-            // when returning from mouse to gamepad, focus first card again
             if (prev == InputType.UIJoystick)
                 EventSystem.current.SetSelectedGameObject(cards[0].gameObject);
         }
 
-        /* ───────────────────── ability selection ───────────────────────── */
-        private void OnAbilitySelected(AbilityData ability)
+        /* ─────────── ability selection ─────────── */
+        void OnAbilitySelected(AbilityData ability)
         {
             if (StageController.AbilityManager.IsAbilityAquired(ability.AbilityType))
             {
-                var level = abilitiesSave.GetAbilityLevel(ability.AbilityType);
+                int level = abilitiesSave.GetAbilityLevel(ability.AbilityType);
                 if (!ability.IsEndgameAbility) level++;
                 if (level < 0) level = 0;
 
@@ -261,7 +272,6 @@ namespace OctoberStudio.Abilities.UI
             {
                 StageController.AbilityManager.AddAbility(ability);
             }
-
             Hide();
         }
     }

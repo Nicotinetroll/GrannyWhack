@@ -8,13 +8,15 @@ using UnityEngine.UI;
 
 namespace OctoberStudio.Upgrades.UI
 {
-    /// <summary>Slot inside *Upgrades Window* that lets player buy unlimited re-rolls.</summary>
     public class RerollShopTileBehavior : MonoBehaviour
     {
+        static readonly int CLICK_OK_HASH   = AudioManager.BUTTON_CLICK_HASH;
+        static readonly int CLICK_DENY_HASH = "BuyDeny".GetHashCode();
+
         [Header("UI")]
         [SerializeField] Image    iconImage;
         [SerializeField] TMP_Text titleLabel;
-        [SerializeField] TMP_Text amountLabel;          // shows xN
+        [SerializeField] TMP_Text amountLabel;
         [SerializeField] Button   buyButton;
         [SerializeField] TMP_Text priceLabel;
         [SerializeField] Sprite   enabledBtnSprite;
@@ -22,57 +24,57 @@ namespace OctoberStudio.Upgrades.UI
 
         CurrencySave goldSave;
 
-        /* ---------- init ---------- */
         void Start()
         {
             goldSave = GameController.SaveManager.GetSave<CurrencySave>("gold");
-            goldSave.onGoldAmountChanged += OnGoldChanged;
+            goldSave.onGoldAmountChanged += _ => RefreshButton();
 
             iconImage.sprite = GameController.CurrenciesManager.GetIcon("Reroll");
             titleLabel.text  = "REROLL";
 
-            buyButton.onClick.AddListener(OnBuy);
+            buyButton.onClick.AddListener(OnBuyClicked);
 
-            RerollManager.OnStackChanged += UpdateVisuals;
-            UpdateVisuals(RerollManager.Instance.Stack);
+            RefreshAll();
         }
 
         void OnDestroy()
         {
-            goldSave.onGoldAmountChanged   -= OnGoldChanged;
-            RerollManager.OnStackChanged   -= UpdateVisuals;
-            buyButton.onClick.RemoveListener(OnBuy);
+            if (goldSave != null)
+                goldSave.onGoldAmountChanged -= _ => RefreshButton();
+            buyButton.onClick.RemoveListener(OnBuyClicked);
+            RerollManager.OnStackChanged -= OnStackChanged;
         }
 
-        /* ---------- callbacks ---------- */
-        void OnBuy()
+        /* ─── UI refresh ─── */
+        void RefreshAll()
+        {
+            RerollManager.OnStackChanged -= OnStackChanged;
+            RerollManager.OnStackChanged += OnStackChanged;
+            OnStackChanged(RerollManager.Instance.Stack);
+        }
+
+        void OnStackChanged(int stack)
+        {
+            amountLabel.text = $"Owned {stack}x";               // ← wording update
+            priceLabel.text  = RerollManager.Instance.MenuPrice.ToString();
+            RefreshButton();
+        }
+
+        void RefreshButton()
+        {
+            bool canBuy = goldSave.CanAfford(RerollManager.Instance.MenuPrice);
+            buyButton.interactable = canBuy;
+            buyButton.image.sprite = canBuy ? enabledBtnSprite : disabledBtnSprite;
+        }
+
+        void OnBuyClicked()
         {
             bool ok = RerollManager.Instance.TryBuyInMenu();
+            GameController.AudioManager.PlaySound(ok ? CLICK_OK_HASH : CLICK_DENY_HASH);
 
-            GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
-
-            /* keep focus on the button for game-pad navigation */
             EventSystem.current.SetSelectedGameObject(buyButton.gameObject);
 
-            if (ok) UpdateVisuals(RerollManager.Instance.Stack);
-        }
-
-        void OnGoldChanged(int _) => RedrawButton();
-
-        /* ---------- UI refresh ---------- */
-        void UpdateVisuals(int stack)
-        {
-            amountLabel.text = $"x{stack}";
-            priceLabel.text  = $"<sprite name=\"Gold\"> {RerollManager.Instance.MenuPrice}";
-            RedrawButton();
-        }
-
-        void RedrawButton()
-        {
-            bool canAfford = goldSave.CanAfford(RerollManager.Instance.MenuPrice);
-
-            buyButton.interactable  = canAfford;
-            buyButton.image.sprite  = canAfford ? enabledBtnSprite : disabledBtnSprite;
+            if (ok) OnStackChanged(RerollManager.Instance.Stack);
         }
     }
 }

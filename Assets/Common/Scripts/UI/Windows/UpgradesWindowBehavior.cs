@@ -1,7 +1,7 @@
 using OctoberStudio.Easing;
 using OctoberStudio.Extensions;
 using OctoberStudio.Input;
-using OctoberStudio.UI;
+using OctoberStudio.Systems;            // RerollManager
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -13,185 +13,134 @@ namespace OctoberStudio.Upgrades.UI
 {
     public class UpgradesWindowBehavior : MonoBehaviour
     {
+        [Header("Data")]
         [SerializeField] UpgradesDatabase database;
 
-        [Space]
-        [SerializeField] GameObject itemPrefab;
-        [SerializeField] RectTransform itemsParent;
+        [Header("Prefabs")]
+        [SerializeField] GameObject itemPrefab;         // default upgrade card
+        [SerializeField] GameObject rerollItemPrefab;   // prefab with RerollShopTileBehavior
 
-        [Space]
-        [SerializeField] ScrollRect scrollView;
-        [SerializeField] Button backButton;
+        [Header("Layout")]
+        [SerializeField] RectTransform itemsParent;     // ScrollView/Viewport/Content
+        [SerializeField] ScrollRect    scrollView;
+        [SerializeField] Button        backButton;
 
-        private List<UpgradeItemBehavior> items = new List<UpgradeItemBehavior>();
+        readonly List<UpgradeItemBehavior> items = new();
+        Button rerollButton;                            // cached for navigation
 
-        public void Init(UnityAction onBackButtonClicked)
+        /* ─────────────────── initialisation ─────────────────── */
+        public void Init(UnityAction onBackClick)
         {
-            backButton.onClick.AddListener(onBackButtonClicked);
+            backButton.onClick.AddListener(onBackClick);
 
-            for(int i = 0; i < database.UpgradesCount; i++)
+            /* 1. normal upgrades */
+            for (int i = 0; i < database.UpgradesCount; ++i)
             {
-                var upgrade = database.GetUpgrade(i);
+                var data   = database.GetUpgrade(i);
+                var go     = Instantiate(itemPrefab, itemsParent);
+                go.transform.ResetLocal();
 
-                var item = Instantiate(itemPrefab, itemsParent).GetComponent<UpgradeItemBehavior>();
-                item.transform.ResetLocal();
-
-                var level = GameController.UpgradesManager.GetUpgradeLevel(upgrade.UpgradeType);
-
-                item.Init(upgrade, level + 1);
-                item.onNavigationSelected += OnItemSelected;
-
-                items.Add(item);
+                var card   = go.GetComponent<UpgradeItemBehavior>();
+                int lvl    = GameController.UpgradesManager.GetUpgradeLevel(data.UpgradeType);
+                card.Init(data, lvl + 1);
+                card.onNavigationSelected += OnItemSelected;
+                items.Add(card);
             }
 
-            ResetNavigation();
+            /* 2. reroll tile */
+            if (rerollItemPrefab != null)
+            {
+                var obj = Instantiate(rerollItemPrefab, itemsParent);
+                obj.transform.ResetLocal();
+                rerollButton = obj.GetComponentInChildren<Button>();
+            }
+
+            /* force layout update */
+            Canvas.ForceUpdateCanvases();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(itemsParent);
+            scrollView.content.anchoredPosition = Vector2.zero;
+
+            BuildNavigation();
         }
 
+        /* ─────────────────── opening / closing ─────────────────── */
         public void Open()
         {
             gameObject.SetActive(true);
+
+            ((RectTransform)transform).anchoredPosition = Vector2.zero; // safety
+
             EasingManager.DoNextFrame(() =>
             {
-                if (items.Count > 0)
-                {
-                    items[0].Select();
-                }
-                else
-                {
-                    EventSystem.current.SetSelectedGameObject(backButton.gameObject);
-                }
+                if (items.Count > 0) items[0].Select();
+                else if (rerollButton) EventSystem.current.SetSelectedGameObject(rerollButton.gameObject);
+                else EventSystem.current.SetSelectedGameObject(backButton.gameObject);
             });
 
-            GameController.InputManager.InputAsset.UI.Back.performed += OnBackInputClicked;
-            GameController.InputManager.onInputChanged += OnInputChanged;
-        }
-
-        public void ResetNavigation()
-        {
-            for (int i = 0; i < items.Count; i++)
-            {
-                var item = items[i];
-                var navigation = new Navigation();
-                navigation.mode = Navigation.Mode.Explicit;
-
-                int upIndex = i - 2;
-                if (upIndex >= 0) navigation.selectOnUp = items[upIndex].Selectable;
-
-                int leftIndex = i - 1;
-                if (leftIndex >= 0) navigation.selectOnLeft = items[leftIndex].Selectable;
-
-                int rightIndex = i + 1;
-                if (rightIndex < items.Count)
-                {
-                    navigation.selectOnRight = items[rightIndex].Selectable;
-                }
-                else
-                {
-                    navigation.selectOnRight = backButton;
-                }
-
-                int downIndex = i + 2;
-                if (downIndex < items.Count)
-                {
-                    navigation.selectOnDown = items[downIndex].Selectable;
-                }
-                else
-                {
-                    navigation.selectOnDown = backButton;
-                }
-
-                item.Selectable.navigation = navigation;
-            }
-
-            if (items.Count > 0)
-            {
-                var navigation = new Navigation();
-                navigation.mode = Navigation.Mode.Explicit;
-
-                navigation.selectOnUp = items[^1].Selectable;
-
-                backButton.navigation = navigation;
-            }
-        }
-
-        public void OnItemSelected(UpgradeItemBehavior selectedItem)
-        {
-            var objPosition = (Vector2)scrollView.transform.InverseTransformPoint(selectedItem.Rect.position);
-            var scrollHeight = scrollView.GetComponent<RectTransform>().rect.height;
-            var objHeight = selectedItem.Rect.rect.height;
-
-            if (objPosition.y > scrollHeight / 2)
-            {
-                scrollView.content.localPosition = new Vector2(scrollView.content.localPosition.x,
-                    scrollView.content.localPosition.y - objHeight - 37);
-            }
-
-            if (objPosition.y < -scrollHeight / 2)
-            {
-                scrollView.content.localPosition = new Vector2(scrollView.content.localPosition.x,
-                    scrollView.content.localPosition.y + objHeight + 37);
-            }
-        }
-
-        private bool IsItemOnScreen(UpgradeItemBehavior item)
-        {
-            var objPosition = (Vector2)scrollView.transform.InverseTransformPoint(item.Rect.position);
-            var scrollHeight = scrollView.GetComponent<RectTransform>().rect.height;
-
-            return objPosition.y < scrollHeight / 2 && objPosition.y < -scrollHeight / 2;
-
-        }
-
-        private void OnBackInputClicked(InputAction.CallbackContext context)
-        {
-            backButton.onClick?.Invoke();
-        }
-
-        private void OnInputChanged(InputType prevInput, InputType inputType)
-        {
-            if (prevInput == InputType.UIJoystick)
-            {
-                var selected = false;
-
-                for (int i = 0; i < items.Count; i++)
-                {
-                    if (IsItemOnScreen(items[i]))
-                    {
-                        items[i].Select();
-
-                        selected = true;
-                        break;
-                    }
-                }
-
-                if (!selected)
-                {
-                    if (items.Count > 0)
-                    {
-                        items[0].Select();
-                    }
-                    else
-                    {
-                        EventSystem.current.SetSelectedGameObject(backButton.gameObject);
-                    }
-                }
-            }
+            GameController.InputManager.InputAsset.UI.Back.performed += OnBack;
+            GameController.InputManager.onInputChanged               += OnInputChanged;
         }
 
         public void Close()
         {
-            GameController.InputManager.InputAsset.UI.Back.performed -= OnBackInputClicked;
-            GameController.InputManager.onInputChanged -= OnInputChanged;
-
+            GameController.InputManager.InputAsset.UI.Back.performed -= OnBack;
+            GameController.InputManager.onInputChanged               -= OnInputChanged;
             gameObject.SetActive(false);
         }
 
+        /* ─────────────────── navigation ─────────────────── */
+        void BuildNavigation()
+        {
+            var buttons = new List<Selectable>();
+            foreach (var it in items) buttons.Add(it.Selectable);
+            if (rerollButton) buttons.Add(rerollButton);
+
+            for (int i = 0; i < buttons.Count; ++i)
+            {
+                var nav = new Navigation { mode = Navigation.Mode.Explicit };
+
+                int col = i % 2;
+                if (col == 0 && i + 1 < buttons.Count) nav.selectOnRight = buttons[i + 1];
+                if (col == 1)                          nav.selectOnLeft  = buttons[i - 1];
+                if (i - 2 >= 0)                        nav.selectOnUp    = buttons[i - 2];
+                nav.selectOnDown = (i + 2 < buttons.Count) ? buttons[i + 2] : backButton;
+
+                buttons[i].navigation = nav;
+            }
+
+            var backNav = new Navigation { mode = Navigation.Mode.Explicit };
+            if (buttons.Count > 0) backNav.selectOnUp = buttons[^1];
+            backButton.navigation = backNav;
+        }
+
+        /* ─────────────────── scrolling helper ─────────────────── */
+        public void OnItemSelected(UpgradeItemBehavior card)
+        {
+            var pos    = (Vector2)scrollView.transform.InverseTransformPoint(card.Rect.position);
+            float view = scrollView.GetComponent<RectTransform>().rect.height;
+            float h    = card.Rect.rect.height + 37f;
+
+            if (pos.y >  view / 2) scrollView.content.localPosition += Vector3.up   * h;
+            if (pos.y < -view / 2) scrollView.content.localPosition += Vector3.down * h;
+        }
+
+        /* ─────────────────── input ─────────────────── */
+        void OnBack(InputAction.CallbackContext _) => backButton.onClick?.Invoke();
+
+        void OnInputChanged(InputType prev, InputType cur)
+        {
+            if (prev != InputType.UIJoystick) return;
+            if (EventSystem.current.currentSelectedGameObject) return;
+
+            if (items.Count > 0) items[0].Select();
+            else if (rerollButton) EventSystem.current.SetSelectedGameObject(rerollButton.gameObject);
+            else EventSystem.current.SetSelectedGameObject(backButton.gameObject);
+        }
+
+        /* ─────────────────── cleanup ─────────────────── */
         public void Clear()
         {
-            for(int i = 0; i < items.Count; i++)
-            {
-                items[i].Clear();
-            }
+            foreach (var it in items) it.Clear();
         }
     }
 }
