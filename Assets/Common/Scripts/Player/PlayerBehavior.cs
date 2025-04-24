@@ -168,7 +168,10 @@ namespace OctoberStudio
                     transform.position += Vector3.up * move.y;
 
                 collisionHelper.transform.localPosition = Vector3.zero;
-                Character.SetLocalScale(new Vector3(input.x > 0 ? 1 : -1, 1, 1));
+                var magX = Mathf.Abs(transform.localScale.x);
+                transform.localScale = new Vector3(input.x > 0 ? magX : -magX,
+                    transform.localScale.y,
+                    transform.localScale.z);
                 LookDirection = input.normalized;
             }
         }

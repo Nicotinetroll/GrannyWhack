@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: CharacterLevelingConfig
   m_EditorClassIdentifier: 
   maxLevel: 25
-  firstLevelXP: 1
-  lastLevelXP: 60
+  firstLevelXP: 3
+  lastLevelXP: 40
   xpPerKill: 0
   xpPerDamage: 0
   xpPerPlayerLevel: 1
