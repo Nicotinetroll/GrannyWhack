@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 8915722065560290065}
+  spriteRenderer: {fileID: 2433682844974101221}
   useFourWayDirections: 1
 --- !u!1 &4231945505182651353
 GameObject:
