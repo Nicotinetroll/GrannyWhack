@@ -141,72 +141,69 @@ namespace OctoberStudio
         /* ─────────────────── Update ─────────────────── */
         float lastDirY = 0f;    // remembers last vertical heading (+1 / 0 / -1)
 
-        void Update()
-{
-    if (healthbar.IsZero) return;
-
-    // periodic damage from enemies inside player
-    for (int i = enemiesInside.Count - 1; i >= 0; i--)
-    {
-        EnemyBehavior enemy = enemiesInside[i];
-        if (Time.time - enemy.LastTimeDamagedPlayer > enemyInsideDamageInterval)
+        private void Update()
         {
-            TakeDamage(enemy.GetDamage());
-            enemy.LastTimeDamagedPlayer = Time.time;
+            if (healthbar.IsZero) return;
+
+            for (int i = enemiesInside.Count - 1; i >= 0; i--)
+            {
+                var enemy = enemiesInside[i];
+                if (Time.time - enemy.LastTimeDamagedPlayer > enemyInsideDamageInterval)
+                {
+                    TakeDamage(enemy.GetDamage());
+                    enemy.LastTimeDamagedPlayer = Time.time;
+                }
+            }
+
+            if (!IsMovingAlowed) return;
+
+            var input = GameController.InputManager.MovementValue;
+            float power = input.magnitude;
+            Character.SetSpeed(power);
+
+            // Determine animator direction (based on sketch logic)
+            if (power > 0.01f)
+            {
+                if (Mathf.Abs(input.y) >= 0.90f)
+                    Character.SetDirection(Mathf.Sign(input.y)); // Up or Down
+                else
+                    Character.SetDirection(0f); // Side
+            }
+
+            if (power > 0.01f && Time.timeScale > 0f)
+            {
+                Vector3 move = (Vector3)input * Time.deltaTime * Speed;
+
+                if (StageController.FieldManager.ValidatePosition(transform.position + Vector3.right * move.x, fenceOffset))
+                    transform.position += Vector3.right * move.x;
+
+                if (StageController.FieldManager.ValidatePosition(transform.position + Vector3.up * move.y, fenceOffset))
+                    transform.position += Vector3.up * move.y;
+
+                collisionHelper.transform.localPosition = Vector3.zero;
+
+                float scaleX = Mathf.Abs(baseCharacterScale.x) * SizeMultiplier;
+                Character.transform.localScale = new Vector3(
+                    input.x >= 0 ? scaleX : -scaleX,
+                    baseCharacterScale.y * SizeMultiplier,
+                    baseCharacterScale.z);
+
+                LookDirection = input.normalized;
+            }
+            else if (power <= 0.01f && LookDirection == Vector2.zero)
+            {
+                LookDirection = Vector2.right;
+            }
+
+            // ✅ Ensure healthbar is always upright and scaled correctly
+            if (healthbar != null)
+            {
+                healthbar.transform.localScale = Vector3.one;
+                healthbar.transform.rotation = Quaternion.identity;
+            }
         }
-    }
 
-    if (!IsMovingAlowed) return;
 
-    Vector2 input = GameController.InputManager.MovementValue;
-    float power = input.magnitude;
-
-    // Set direction for animator (clamped like your sketch)
-    if (power > 0.01f)
-    {
-        if (Mathf.Abs(input.y) >= 0.90f)
-            lastDirY = Mathf.Sign(input.y); // Up or Down
-        else
-            lastDirY = 0f; // SIDE
-    }
-
-    Character.SetDirection(lastDirY);
-    Character.SetSpeed(power);
-
-    if (power > 0.01f && Time.timeScale > 0f)
-    {
-        Vector3 move = (Vector3)input * Time.deltaTime * Speed;
-
-        if (StageController.FieldManager.ValidatePosition(transform.position + Vector3.right * move.x, fenceOffset))
-            transform.position += Vector3.right * move.x;
-
-        if (StageController.FieldManager.ValidatePosition(transform.position + Vector3.up * move.y, fenceOffset))
-            transform.position += Vector3.up * move.y;
-
-        collisionHelper.transform.localPosition = Vector3.zero;
-
-        float magX = Mathf.Abs(transform.localScale.x);
-        bool facingRight = input.x >= 0;
-        transform.localScale = new Vector3(facingRight ? magX : -magX,
-                                           transform.localScale.y,
-                                           transform.localScale.z);
-
-        // Update LookDirection for abilities
-        LookDirection = input.normalized;
-    }
-    else if (power <= 0.01f && LookDirection == Vector2.zero)
-    {
-        // Set default direction if idle at start
-        LookDirection = Vector2.right;
-    }
-
-    // ✅ Keep healthbar upright and unflipped
-    if (healthbar != null)
-    {
-        healthbar.transform.localScale = Vector3.one;
-        healthbar.transform.rotation = Quaternion.identity;
-    }
-}
 
 
 
