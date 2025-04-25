@@ -107,6 +107,9 @@ namespace OctoberStudio
         private void OnPlayerLevelUp(int newPlayerLevel)
         {
             Debug.Log($"Player leveled up to {newPlayerLevel}.");
+            PlayerBehavior.Player.StartInvincibility(1.5f); // or whatever duration you want
+
+            
 
             // Award **character** XP each time the **player** levels
             if (cachedCharacter == null && PlayerBehavior.Player != null)
