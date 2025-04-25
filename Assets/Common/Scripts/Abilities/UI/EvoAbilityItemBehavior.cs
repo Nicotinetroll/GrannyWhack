@@ -28,8 +28,16 @@ namespace OctoberStudio.UI
             // 1) icon
             if (iconImage != null)
             {
-                iconImage.sprite = iconSprite;
-                iconImage.enabled = unlocked; // 👈 Hide icon if not unlocked
+                if (iconSprite != null)
+                {
+                    iconImage.sprite = iconSprite;
+                    iconImage.enabled = unlocked;
+                }
+                else
+                {
+                    iconImage.enabled = false;
+                    Debug.LogWarning($"[EvoAbilityItem] '{name}' received null sprite!");
+                }
             }
 
             // 2) interactability
@@ -39,11 +47,12 @@ namespace OctoberStudio.UI
             // 3) overlay
             if (disabledOverlay != null)
             {
-                disabledOverlay.alpha          = unlocked ? 0f : 1f;
+                disabledOverlay.alpha = unlocked ? 0f : 1f;
                 disabledOverlay.blocksRaycasts = !unlocked;
             }
 
             Debug.Log($"[EvoAbilityItem] '{name}' unlocked={unlocked}");
         }
+
     }
 }
