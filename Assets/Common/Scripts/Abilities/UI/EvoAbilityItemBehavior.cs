@@ -1,4 +1,3 @@
-// Assets/Common/Scripts/UI/EvoAbilityItemBehavior.cs
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,7 +27,10 @@ namespace OctoberStudio.UI
         {
             // 1) icon
             if (iconImage != null)
+            {
                 iconImage.sprite = iconSprite;
+                iconImage.enabled = unlocked; // 👈 Hide icon if not unlocked
+            }
 
             // 2) interactability
             if (_button != null)
