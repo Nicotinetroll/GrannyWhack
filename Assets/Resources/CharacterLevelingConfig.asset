@@ -18,4 +18,4 @@ MonoBehaviour:
   xpPerKill: 0
   xpPerDamage: 0
   xpPerPlayerLevel: 1
-  damagePerLevel: 0.05
+  damagePerLevel: 0.07
