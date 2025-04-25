@@ -165,10 +165,11 @@ namespace OctoberStudio
             /* remember last significant vertical direction */
             if (power > 0.01f)
             {
-                if (Mathf.Abs(input.y) > 0.1f)                    // moving up / down
-                    lastDirY = Mathf.Sign(input.y);
-                else if (Mathf.Abs(input.x) > 0.1f)               // moving sideways
-                    lastDirY = 0f;                                // ← keeps Idle-side
+                // Only change direction if clearly moving vertically
+                if (Mathf.Abs(input.y) >= 0.90f)
+                    lastDirY = Mathf.Sign(input.y); // Up or Down
+                else
+                    lastDirY = 0f; // Stay in SIDE direction
             }
 
             /* feed animator every frame (moving OR idle) */
