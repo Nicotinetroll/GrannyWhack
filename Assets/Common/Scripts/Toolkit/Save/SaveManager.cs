@@ -169,20 +169,25 @@ namespace OctoberStudio.Save
         private void ForceSave()
         {
             if (SaveDatabase == null) return;
+
+            // 🧠 Make sure CharacterKillSystem pushes its state before flushing DB
+            OctoberStudio.CharacterKillSystem.SaveNow();
+
             SaveDatabase.Flush();
 
 #if UNITY_WEBGL && !UNITY_EDITOR
-            WebGLSave(SaveDatabase, SAVE_FILE_NAME);
-            Debug.Log("Save file is updated");
+    WebGLSave(SaveDatabase, SAVE_FILE_NAME);
+    Debug.Log("Save file is updated");
 #else
             if (!SerializationHelper.IsFileLocked(SAVE_FILE_NAME))
             {
                 SerializationHelper.SerializePersistent(SaveDatabase, SAVE_FILE_NAME);
-
                 Debug.Log("Save file is updated");
             }
 #endif
         }
+        
+
 
         /// <summary>
         /// Saves the current state of the game to the file system

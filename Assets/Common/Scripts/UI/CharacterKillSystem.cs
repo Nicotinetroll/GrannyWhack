@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using OctoberStudio.Save;
+using System;
 
 namespace OctoberStudio
 {
@@ -11,14 +12,13 @@ namespace OctoberStudio
 
         public static void Init(ISaveManager manager)
         {
-            if (saveManager != null)
-                return;
+            if (saveManager != null) return;
 
             saveManager = manager;
             killSave = saveManager.GetSave<CharacterKillSave>("CharacterKillSave");
             killSave.Init();
 
-            kills = killSave.LoadKills();
+            kills = killSave.ToDictionary();
         }
 
         public static int GetKills(CharacterData data)
@@ -39,35 +39,62 @@ namespace OctoberStudio
             else
                 kills[data.Name] = 1;
 
-            killSave.SaveKills(kills);
-            saveManager.Save(true); // Corrected to match actual signature
+            killSave.FromDictionary(kills);
+        }
+
+        public static void SaveNow()
+        {
+            if (killSave == null) return;
+            killSave.FromDictionary(kills); // Just make sure it's updated
         }
     }
 
     [System.Serializable]
     public class CharacterKillSave : ISave
     {
-        public Dictionary<string, int> savedKills = new Dictionary<string, int>();
+        [Serializable]
+        public class Entry
+        {
+            public string name;
+            public int totalKills;
+        }
+
+        [UnityEngine.SerializeField]
+        private List<Entry> entries = new();
 
         public void Init()
         {
-            if (savedKills == null)
-                savedKills = new Dictionary<string, int>();
+            if (entries == null)
+                entries = new List<Entry>();
         }
 
-        public Dictionary<string, int> LoadKills()
+        public Dictionary<string, int> ToDictionary()
         {
-            return savedKills ?? new Dictionary<string, int>();
+            var result = new Dictionary<string, int>();
+            foreach (var e in entries)
+            {
+                if (!string.IsNullOrEmpty(e.name))
+                    result[e.name] = e.totalKills;
+            }
+            return result;
         }
 
-        public void SaveKills(Dictionary<string, int> killsToSave)
+        public void FromDictionary(Dictionary<string, int> dict)
         {
-            savedKills = new Dictionary<string, int>(killsToSave);
+            entries.Clear();
+            foreach (var kvp in dict)
+            {
+                entries.Add(new Entry
+                {
+                    name = kvp.Key,
+                    totalKills = kvp.Value
+                });
+            }
         }
 
         public void Flush()
         {
-            savedKills.Clear();
+            // Nothing needed, Unity will auto serialize `entries`
         }
     }
 }
