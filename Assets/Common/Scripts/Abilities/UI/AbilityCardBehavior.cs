@@ -1,6 +1,7 @@
 using OctoberStudio.Audio;
 using OctoberStudio.Easing;
-using System;
+using OctoberStudio.Save;
+using OctoberStudio.Abilities;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,6 +10,9 @@ namespace OctoberStudio.Abilities.UI
 {
     public class AbilityCardBehavior : MonoBehaviour
     {
+        [Header("Databases")]
+        [SerializeField] private CharactersDatabase charactersDatabase;
+
         [SerializeField] Image abilityIcon;
 
         [Space]
@@ -42,16 +46,15 @@ namespace OctoberStudio.Abilities.UI
 
         public AbilityData Data { get; private set; }
 
-        private Action<AbilityData> onAbilitySelected;
+        private System.Action<AbilityData> onAbilitySelected;
 
         private void Awake()
         {
             button.onClick.AddListener(OnAbilitySelected);
-
             shineStartPosition = shineRect.anchoredPosition;
         }
 
-        public void Init(Action<AbilityData> onAbilitySelected)
+        public void Init(System.Action<AbilityData> onAbilitySelected)
         {
             this.onAbilitySelected = onAbilitySelected;
         }
@@ -61,7 +64,6 @@ namespace OctoberStudio.Abilities.UI
             Data = abilityData;
 
             abilityIcon.sprite = abilityData.Icon;
-
             titleText.text = abilityData.Title;
             descriptionText.text = abilityData.Description;
 
@@ -70,7 +72,7 @@ namespace OctoberStudio.Abilities.UI
                 levelBackgroundImage.color = levelBackgroundEvoColor;
                 levelText.text = $"EVO";
             }
-            else if(level == -1 || abilityData.IsEndgameAbility)
+            else if (level == -1 || abilityData.IsEndgameAbility)
             {
                 levelBackgroundImage.color = levelBackgroundNewColor;
                 levelText.text = $"NEW!";
@@ -81,22 +83,36 @@ namespace OctoberStudio.Abilities.UI
                 levelText.text = $"LVL {level + 2}";
             }
 
-            if (abilityData.IsEvolution)
-            {
-                iconBackgroundImage.color = iconBackgroundEvoColor;
-            } else 
-            {
-                iconBackgroundImage.color = iconBackgroundColor;
-            }
+            iconBackgroundImage.color = abilityData.IsEvolution
+                ? iconBackgroundEvoColor
+                : iconBackgroundColor;
 
-            if(StageController.AbilityManager.HasEvolution(Data.AbilityType, out var otherType))
+            // ✅ Filter EVOs based on selected character
+            if (StageController.AbilityManager.HasEvolution(Data.AbilityType, out var otherType))
             {
                 var otherData = StageController.AbilityManager.GetAbilityData(otherType);
-                var otherIcon = otherData.Icon;
 
-                evolutionBlock.SetActive(true);
-                evolutionIcon.sprite = otherIcon;
-            } else
+                var characterSave = GameController.SaveManager.GetSave<CharactersSave>("Characters");
+                var selectedCharacterId = characterSave.SelectedCharacterId;
+                var characterData = charactersDatabase.GetCharacterData(selectedCharacterId);
+
+                bool isForThisCharacter =
+                    !otherData.IsCharacterSpecific ||
+                    string.Equals(otherData.AllowedCharacterName,
+                                  characterData.Name,
+                                  System.StringComparison.OrdinalIgnoreCase);
+
+                if (isForThisCharacter)
+                {
+                    evolutionBlock.SetActive(true);
+                    evolutionIcon.sprite = otherData.Icon;
+                }
+                else
+                {
+                    evolutionBlock.SetActive(false);
+                }
+            }
+            else
             {
                 evolutionBlock.SetActive(false);
             }
