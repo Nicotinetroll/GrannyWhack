@@ -142,80 +142,73 @@ namespace OctoberStudio
         float lastDirY = 0f;    // remembers last vertical heading (+1 / 0 / -1)
 
         void Update()
+{
+    if (healthbar.IsZero) return;
+
+    // periodic damage from enemies inside player
+    for (int i = enemiesInside.Count - 1; i >= 0; i--)
+    {
+        EnemyBehavior enemy = enemiesInside[i];
+        if (Time.time - enemy.LastTimeDamagedPlayer > enemyInsideDamageInterval)
         {
-            if (healthbar.IsZero) return;
-
-            /* periodic damage from enemies standing inside player */
-            for (int i = enemiesInside.Count - 1; i >= 0; i--)
-            {
-                EnemyBehavior enemy = enemiesInside[i];
-                if (Time.time - enemy.LastTimeDamagedPlayer > enemyInsideDamageInterval)
-                {
-                    TakeDamage(enemy.GetDamage());
-                    enemy.LastTimeDamagedPlayer = Time.time;
-                }
-            }
-
-            if (!IsMovingAlowed) return;
-
-            /* -------- movement & direction -------- */
-            Vector2 input = GameController.InputManager.MovementValue;
-            float   power = input.magnitude;
-
-            /* remember last significant vertical direction */
-            if (power > 0.01f)
-            {
-                // Only change direction if clearly moving vertically
-                if (Mathf.Abs(input.y) >= 0.90f)
-                    lastDirY = Mathf.Sign(input.y); // Up or Down
-                else
-                    lastDirY = 0f; // Stay in SIDE direction
-            }
-
-            /* feed animator every frame (moving OR idle) */
-            Character.SetDirection(lastDirY);
-
-            Character.SetSpeed(power);             // actual “Speed” param
-
-            if (power > 0.01f && Time.timeScale > 0f)
-            {
-                Vector3 move = (Vector3)input * Time.deltaTime * Speed;
-
-                if (StageController.FieldManager
-                    .ValidatePosition(transform.position + Vector3.right * move.x, fenceOffset))
-                    transform.position += Vector3.right * move.x;
-
-                if (StageController.FieldManager
-                    .ValidatePosition(transform.position + Vector3.up * move.y, fenceOffset))
-                    transform.position += Vector3.up * move.y;
-
-                collisionHelper.transform.localPosition = Vector3.zero;
-
-                float magX = Mathf.Abs(transform.localScale.x);
-                bool facingRight = input.x >= 0;
-
-                transform.localScale = new Vector3(facingRight ? magX : -magX,
-                    transform.localScale.y,
-                    transform.localScale.z);
-
-// Fix: cancel horizontal flip on healthbar
-                var hbScale = healthbar.transform.localScale;
-                hbScale.x = Mathf.Abs(hbScale.x); // always keep positive
-                healthbar.transform.localScale = hbScale;
-                
-                if (healthbar != null)
-                {
-                    var scale = healthbar.transform.localScale;
-                    scale.x = Mathf.Abs(scale.x); // always positive
-                    healthbar.transform.localScale = scale;
-
-                    var angles = healthbar.transform.localEulerAngles;
-                    angles.y = 0f;
-                    healthbar.transform.localEulerAngles = angles;
-                }
-                healthbar.transform.SetParent(null); // unparent completely
-            }
+            TakeDamage(enemy.GetDamage());
+            enemy.LastTimeDamagedPlayer = Time.time;
         }
+    }
+
+    if (!IsMovingAlowed) return;
+
+    Vector2 input = GameController.InputManager.MovementValue;
+    float power = input.magnitude;
+
+    // Set direction for animator (clamped like your sketch)
+    if (power > 0.01f)
+    {
+        if (Mathf.Abs(input.y) >= 0.90f)
+            lastDirY = Mathf.Sign(input.y); // Up or Down
+        else
+            lastDirY = 0f; // SIDE
+    }
+
+    Character.SetDirection(lastDirY);
+    Character.SetSpeed(power);
+
+    if (power > 0.01f && Time.timeScale > 0f)
+    {
+        Vector3 move = (Vector3)input * Time.deltaTime * Speed;
+
+        if (StageController.FieldManager.ValidatePosition(transform.position + Vector3.right * move.x, fenceOffset))
+            transform.position += Vector3.right * move.x;
+
+        if (StageController.FieldManager.ValidatePosition(transform.position + Vector3.up * move.y, fenceOffset))
+            transform.position += Vector3.up * move.y;
+
+        collisionHelper.transform.localPosition = Vector3.zero;
+
+        float magX = Mathf.Abs(transform.localScale.x);
+        bool facingRight = input.x >= 0;
+        transform.localScale = new Vector3(facingRight ? magX : -magX,
+                                           transform.localScale.y,
+                                           transform.localScale.z);
+
+        // Update LookDirection for abilities
+        LookDirection = input.normalized;
+    }
+    else if (power <= 0.01f && LookDirection == Vector2.zero)
+    {
+        // Set default direction if idle at start
+        LookDirection = Vector2.right;
+    }
+
+    // ✅ Keep healthbar upright and unflipped
+    if (healthbar != null)
+    {
+        healthbar.transform.localScale = Vector3.one;
+        healthbar.transform.rotation = Quaternion.identity;
+    }
+}
+
+
 
 
         /* ─────────── recalculation helpers ─────────── */
