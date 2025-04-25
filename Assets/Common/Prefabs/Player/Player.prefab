@@ -62,6 +62,8 @@ MonoBehaviour:
   initialSizeMultiplier: 1
   initialDurationMultiplier: 1
   initialGoldMultiplier: 1
+  rerollUnlockLevel: 2
+  maxRerollCharges: 3
   healthbar: {fileID: 601655729154501331}
   centerPoint: {fileID: 7295751139161919634}
   collisionHelper: {fileID: 2855798897686961221}
@@ -151,6 +153,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4858679587971030659}
   - component: {fileID: 601655729154501331}
+  - component: {fileID: 3258359381648790241}
   m_Layer: 0
   m_Name: Healthbar
   m_TagString: Untagged
@@ -193,6 +196,19 @@ MonoBehaviour:
   maskTransform: {fileID: 8545156887044460136}
   maskMaxPosition: 0.34
   maskMaxScale: 0.132
+--- !u!114 &3258359381648790241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2440361492150374506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4a30ceb24ca9c34e8abd861e2dfb4f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: {x: 0, y: 1, z: 0}
 --- !u!1 &2913863587517105165
 GameObject:
   m_ObjectHideFlags: 0

@@ -191,11 +191,28 @@ namespace OctoberStudio
                 collisionHelper.transform.localPosition = Vector3.zero;
 
                 float magX = Mathf.Abs(transform.localScale.x);
-                transform.localScale = new Vector3(input.x > 0 ? magX : -magX,
-                                                   transform.localScale.y,
-                                                   transform.localScale.z);
+                bool facingRight = input.x >= 0;
 
-                LookDirection = input.normalized;
+                transform.localScale = new Vector3(facingRight ? magX : -magX,
+                    transform.localScale.y,
+                    transform.localScale.z);
+
+// Fix: cancel horizontal flip on healthbar
+                var hbScale = healthbar.transform.localScale;
+                hbScale.x = Mathf.Abs(hbScale.x); // always keep positive
+                healthbar.transform.localScale = hbScale;
+                
+                if (healthbar != null)
+                {
+                    var scale = healthbar.transform.localScale;
+                    scale.x = Mathf.Abs(scale.x); // always positive
+                    healthbar.transform.localScale = scale;
+
+                    var angles = healthbar.transform.localEulerAngles;
+                    angles.y = 0f;
+                    healthbar.transform.localEulerAngles = angles;
+                }
+                healthbar.transform.SetParent(null); // unparent completely
             }
         }
 

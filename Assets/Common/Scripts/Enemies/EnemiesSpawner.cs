@@ -385,7 +385,14 @@ namespace OctoberStudio
             enemiesDiedCounter++;
             stageSave.EnemiesKilled = enemiesDiedCounter;
             enemiesDiedLabel.SetAmount(enemiesDiedCounter);
+
+            // Corrected integration:
+            if (PlayerBehavior.Player != null && PlayerBehavior.Player.Data != null)
+            {
+                CharacterKillSystem.AddKill(PlayerBehavior.Player.Data);
+            }
         }
+
 
         private void OnBossDied(EnemyBehavior boss)
         {

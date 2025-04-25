@@ -1518,6 +1518,7 @@ MonoBehaviour:
   xpBar: {fileID: 2634949761869195628}
   nextUnlockLabel: {fileID: 6749805650730711232}
   playtimeText: {fileID: 4033830873888224810}
+  killsText: {fileID: 6490899498411126759}
   upgradesDatabase: {fileID: 11400000, guid: f249c53865e711542a3df804b8db1786, type: 2}
 --- !u!1 &6645987692859028357
 GameObject:

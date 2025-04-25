@@ -30,8 +30,9 @@ namespace OctoberStudio.UI
         [Header("Next Unlock")]
         [SerializeField] private TMP_Text nextUnlockLabel;
 
-        [Header("Total Play Time")]
+        [Header("Total Play Time and Kills")]
         [SerializeField] private TMP_Text playtimeText;
+        [SerializeField] private TMP_Text killsText;
 
         [Header("Upgrades (optional)")]
         [SerializeField] private UpgradesDatabase upgradesDatabase;
@@ -39,6 +40,7 @@ namespace OctoberStudio.UI
         private UpgradesSave      upgradesSave;
         private CharacterData     currentData;
         private AbilitiesDatabase currentDb;
+        
 
         /// <summary>
         /// Call once to populate; will auto‐refresh on damage‐upgrade changes.
@@ -62,6 +64,8 @@ namespace OctoberStudio.UI
 
             // Ensure the playtime tracker is initialized
             CharacterPlaytimeSystem.Init(GameController.SaveManager);
+            CharacterKillSystem.Init(GameController.SaveManager);
+
 
             RedrawAll();
         }
@@ -88,6 +92,12 @@ namespace OctoberStudio.UI
                     multiplier = upgDef.GetLevel(idx).Value;
                 }
             }
+            if (killsText != null)
+            {
+                int kills = CharacterKillSystem.GetKills(currentData);
+                killsText.text = kills.ToString();
+            }
+
 
             damageText.text = (basePlusLevel * multiplier).ToString("F1");
 
