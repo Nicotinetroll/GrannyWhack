@@ -278,7 +278,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: defd5000544285c42b4e1ae97fedaa5d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 431ac61b5b998674188a75bac9df9b5d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -438,7 +438,7 @@ GameObject:
   - component: {fileID: 6169924931588241674}
   - component: {fileID: -5341622157622050466}
   m_Layer: 5
-  m_Name: Upgrade reroll
+  m_Name: Upgrade Reroll
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

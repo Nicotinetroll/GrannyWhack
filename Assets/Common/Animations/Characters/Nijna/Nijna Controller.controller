@@ -6,12 +6,12 @@ BlendTree:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Blend Tree
+  m_Name: Walk Tree
   m_Childs:
   - serializedVersion: 2
     m_Motion: {fileID: 7400000, guid: 35f52868071c46439457781f167bf0ae, type: 2}
     m_Threshold: 0
-    m_Position: {x: 1, y: 0}
+    m_Position: {x: 0, y: 0}
     m_TimeScale: 2.2
     m_CycleOffset: 0
     m_DirectBlendParameter: Speed
@@ -19,7 +19,7 @@ BlendTree:
   - serializedVersion: 2
     m_Motion: {fileID: 7400000, guid: b4d4abf0c3d14a57a9ac16eb6ce71643, type: 2}
     m_Threshold: 0
-    m_Position: {x: 1, y: 1}
+    m_Position: {x: 0, y: 1}
     m_TimeScale: 2.2
     m_CycleOffset: 0
     m_DirectBlendParameter: Speed
@@ -27,7 +27,7 @@ BlendTree:
   - serializedVersion: 2
     m_Motion: {fileID: 7400000, guid: acbdf7836aa0400f87bfd27e98adf491, type: 2}
     m_Threshold: 0
-    m_Position: {x: 1, y: -1}
+    m_Position: {x: 0, y: -1}
     m_TimeScale: 2.2
     m_CycleOffset: 0
     m_DirectBlendParameter: Speed
@@ -117,7 +117,7 @@ BlendTree:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Blend Tree
+  m_Name: Idle Tree
   m_Childs:
   - serializedVersion: 2
     m_Motion: {fileID: 7400000, guid: 567273effd7e44b69f9eb74c329ffce2, type: 2}

@@ -765,7 +765,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inRunPrice: 500
   menuPrice: 100
-  defaultStackOnFreshSave: 2
+  defaultStackOnFreshSave: 3
 --- !u!4 &1417137561
 Transform:
   m_ObjectHideFlags: 0

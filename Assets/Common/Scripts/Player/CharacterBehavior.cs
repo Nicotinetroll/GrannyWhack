@@ -3,83 +3,86 @@ using UnityEngine;
 namespace OctoberStudio
 {
     /// <summary>
-    /// Handles animation + sprite-flip for both player and enemy characters.
-    /// Put this script on the root of the prefab, drag the child
-    /// “Renderer” (Animator + SpriteRenderer) into the fields.
-    /// • Tick <b>Use Four-Way Directions</b> for the PLAYER only
-    ///   (adds DirY support for up / down).
-    /// • Leave the box unchecked for enemies — they stay left / right.
+    /// Drives the Animator of a character (player or enemy).
+    /// • Tick <b>Use Four-Way Directions</b> for the player prefab
+    ///   to enable “DirY” (up / down); leave unticked for enemies.
     /// </summary>
     public class CharacterBehavior : MonoBehaviour
     {
-        /* ───────────────────────── inspector ───────────────────────── */
+        /* ───────── inspector ───────── */
         [Header("Animation References")]
         [SerializeField] Animator       animator;        // child Animator
         [SerializeField] SpriteRenderer spriteRenderer;  // child SpriteRenderer
 
         [Header("Behaviour Flags")]
-        [Tooltip("Tick only on the player prefab to play up / down clips " +
-                 "(parameter DirY).  Leave OFF for enemies.")]
-        [SerializeField] bool useFourWayDirections = true;
+        [SerializeField] bool useFourWayDirections = true;   // player only
 
-        [Header("State Names (per-prefab)")]
+        [Header("State Names")]
         [SerializeField] string idleStateName   = "Idle";
         [SerializeField] string runStateName    = "Run";
         [SerializeField] string defeatStateName = "Defeat";
         [SerializeField] string reviveStateName = "Revive";
 
-        /* ───────────────────── hashed parameters ───────────────────── */
+        /* ───────── hashes ───────── */
         static readonly int SPEED_HASH = Animator.StringToHash("Speed");
         static readonly int DIRY_HASH  = Animator.StringToHash("DirY");
 
         int defeatHash;
         int reviveHash;
 
-        /* ───────────────────── internal caches ─────────────────────── */
+        /* ───────── caches ───────── */
         Vector3 lastPos;
         float   smoothSpeed;
 
-        /* ──────────────────────── Awake ─────────────────────────────── */
+        public  float LastDirY { get; private set; }   // cached for other systems
+
+        /* ─────────────────────── Awake ─────────────────────── */
         void Awake()
         {
-            /* auto-discover refs if not wired */
-            if (!animator)
-                animator = GetComponentInChildren<Animator>(true);
-            if (!spriteRenderer)
-                spriteRenderer = GetComponentInChildren<SpriteRenderer>(true);
+            if (!animator)        animator        = GetComponentInChildren<Animator>(true);
+            if (!spriteRenderer)  spriteRenderer  = GetComponentInChildren<SpriteRenderer>(true);
 
             defeatHash = Animator.StringToHash(defeatStateName);
             reviveHash = Animator.StringToHash(reviveStateName);
         }
 
-        /* ───────────────────── SetSpeed (called each frame) ─────────── */
+        /* ────────────────── runtime API ────────────────── */
+
+        /// <summary>Called each frame by <c>PlayerBehavior</c> / enemy AI.</summary>
         public void SetSpeed(float inputMagnitude)
         {
-            float dirY = 0f;
-
-            if (useFourWayDirections)             /* PLAYER */
-            {
-                /* read raw input directly so DirY is instant and stable */
-                Vector2 mv = GameController.InputManager.MovementValue;
-                if      (mv.y >  0.3f) dirY =  1f;
-                else if (mv.y < -0.3f) dirY = -1f;
-            }
-            else                                   /* ENEMY */
+            /* Only enemies derive DirY from movement here.
+               For the player, DirY comes from <b>SetDirection()</b>. */
+            if (!useFourWayDirections)
             {
                 Vector3 delta = transform.position - lastPos;
                 lastPos = transform.position;
 
                 if (delta.sqrMagnitude > 0.0001f)
-                    dirY = Mathf.Clamp(delta.y, -1f, 1f);
+                {
+                    float dirY = Mathf.Clamp(delta.y, -1f, 1f);
+                    animator.SetFloat(DIRY_HASH, dirY);
+                }
             }
 
-            smoothSpeed = Mathf.Lerp(smoothSpeed, inputMagnitude, 20f * Time.deltaTime);
-
+            /* smooth the Speed parameter so blend-trees look nicer */
+            smoothSpeed = Mathf.Lerp(smoothSpeed,
+                                     inputMagnitude,
+                                     20f * Time.deltaTime);
             animator.SetFloat(SPEED_HASH, smoothSpeed);
-            if (useFourWayDirections) animator.SetFloat(DIRY_HASH, dirY);
         }
 
-        /* ───────────────────── helper wrappers ─────────────────────── */
+        /// <summary>
+        /// Sets vertical direction (+1 up, 0 side, -1 down) – used by the player.
+        /// Call every frame (moving or idle) to keep correct pose.
+        /// </summary>
+        public void SetDirection(float dirY)
+        {
+            LastDirY = dirY;
+            animator.SetFloat(DIRY_HASH, dirY);
+        }
+
+        /* ───────── helpers ───────── */
         public void SetSortingOrder(int order)
         {
             if (spriteRenderer) spriteRenderer.sortingOrder = order;

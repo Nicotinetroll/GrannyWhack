@@ -1463,7 +1463,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1498677662716047037}
-  - component: {fileID: 3427087131988198816}
   - component: {fileID: 919516092085232466}
   m_Layer: 0
   m_Name: SelectedCharacterUI
@@ -1497,29 +1496,6 @@ RectTransform:
   m_AnchoredPosition: {x: -2.2999878, y: 19.550049}
   m_SizeDelta: {x: -51.400024, y: -1141.1}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &3427087131988198816
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6622984362169528689}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30da5c4a8648b91499e1a6ed1b90f810, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  iconImage: {fileID: 7585513405448222390}
-  titleLabel: {fileID: 7585513405680503017}
-  hpText: {fileID: 1092739883081420017}
-  damageText: {fileID: 6451718844924619339}
-  levelLabel: {fileID: 7585513406972163593}
-  abilityIconContainer: {fileID: 2096202083958066311}
-  abilityIconImage: {fileID: 2096202082393758761}
-  xpBar: {fileID: 2634949761869195628}
-  nextUnlockLabel: {fileID: 6749805650730711232}
-  playtimeText: {fileID: 4033830873888224810}
-  upgradesDatabase: {fileID: 11400000, guid: f249c53865e711542a3df804b8db1786, type: 2}
 --- !u!114 &919516092085232466
 MonoBehaviour:
   m_ObjectHideFlags: 0

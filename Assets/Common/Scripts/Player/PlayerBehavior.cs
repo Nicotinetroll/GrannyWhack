@@ -7,81 +7,82 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.TextCore.Text;
 
 namespace OctoberStudio
 {
+    /// <summary>
+    /// Handles movement, stats, damage, buffs, death & revive logic.
+    /// </summary>
     public class PlayerBehavior : MonoBehaviour
     {
-        /* ─────────── static & const ─────────── */
-        private static readonly int DEATH_HASH            = "Death".GetHashCode();
-        private static readonly int REVIVE_HASH           = "Revive".GetHashCode();
-        private static readonly int RECEIVING_DAMAGE_HASH = "Receiving Damage".GetHashCode();
+        /* ───────── constants & singletons ───────── */
+        static readonly int DEATH_HASH            = "Death".GetHashCode();
+        static readonly int REVIVE_HASH           = "Revive".GetHashCode();
+        static readonly int RECEIVING_DAMAGE_HASH = "Receiving Damage".GetHashCode();
 
-        private static PlayerBehavior instance;
+        static PlayerBehavior instance;
         public  static PlayerBehavior Player => instance;
 
-        /* ─────────── inspector ─────────── */
-        [SerializeField] private CharactersDatabase charactersDatabase;
+        /* ───────── inspector fields ───────── */
+        [Header("Databases")]
+        [SerializeField] CharactersDatabase charactersDatabase;
 
-        [Header("Stats")]
-        [SerializeField, Min(0.01f)] float speed                   = 2f;
-        [SerializeField, Min(0.1f )] float defaultMagnetRadius    = 0.75f;
-        [SerializeField, Min(1f   )] float xpMultiplier           = 1f;
-        [SerializeField, Range(0.1f,1f)] float cooldownMultiplier = 1f;
-        [SerializeField, Range(0,100  )] int   initialDamageReductionPercent = 0;
-        [SerializeField, Min(1f    )] float initialProjectileSpeedMultiplier = 1f;
-        [SerializeField, Min(1f    )] float initialSizeMultiplier            = 1f;
-        [SerializeField, Min(1f    )] float initialDurationMultiplier        = 1f;
-        [SerializeField, Min(1f    )] float initialGoldMultiplier            = 1f;
+        [Header("Base stats")]
+        [SerializeField, Min(0.01f)] float speed = 2f;
+        [SerializeField, Min(0.10f)] float defaultMagnetRadius = 0.75f;
+        [SerializeField, Min(1f)] float xpMultiplier = 1f;
+        [SerializeField, Range(0.1f, 1f)] float cooldownMultiplier = 1f;
+        [SerializeField, Range(0, 100)] int   initialDamageReductionPercent = 0;
+        [SerializeField, Min(1f)] float initialProjectileSpeedMultiplier = 1f;
+        [SerializeField, Min(1f)] float initialSizeMultiplier = 1f;
+        [SerializeField, Min(1f)] float initialDurationMultiplier = 1f;
+        [SerializeField, Min(1f)] float initialGoldMultiplier = 1f;
 
-        [Header("Reroll Settings")]
-        [SerializeField] private int rerollUnlockLevel   = 2;
-        [SerializeField] private int maxRerollCharges    = 3;
-        public  int RerollUnlockLevel => rerollUnlockLevel;
-        public  int MaxRerollCharges  => maxRerollCharges;
+        [Header("Rerolls")]
+        [SerializeField] int rerollUnlockLevel = 2;
+        [SerializeField] int maxRerollCharges  = 3;
+        public int RerollUnlockLevel => rerollUnlockLevel;
+        public int MaxRerollCharges  => maxRerollCharges;
 
-        [Header("References")]
-        [SerializeField] private HealthbarBehavior healthbar;
-        [SerializeField] private Transform centerPoint;
-        [SerializeField] private PlayerEnemyCollisionHelper collisionHelper;
+        [Header("Scene references")]
+        [SerializeField] HealthbarBehavior          healthbar;
+        [SerializeField] Transform                  centerPoint;
+        [SerializeField] PlayerEnemyCollisionHelper collisionHelper;
 
         public static Transform CenterTransform => instance.centerPoint;
-        public static Vector2  CenterPosition  => instance.centerPoint.position;
-        public HealthbarBehavior Healthbar => healthbar;
+        public static Vector2   CenterPosition  => instance.centerPoint.position;
+        public  HealthbarBehavior Healthbar     => healthbar;
 
-        [Header("Death and Revive")]
-        [SerializeField] private ParticleSystem reviveParticle;
+        [Header("Death & revive FX")]
+        [SerializeField] ParticleSystem reviveParticle;
+        [Header("Immune FX")]
+        [SerializeField] ParticleSystem immuneVFX;
 
-        [Header("Visual Effects")]
-        [SerializeField] private ParticleSystem immuneVFX;
+        [Header("Revive tint sprites")]
+        [SerializeField] SpriteRenderer reviveBackgroundSpriteRenderer;
+        [SerializeField, Range(0, 1)] float reviveBackgroundAlpha     = .7f;
+        [SerializeField, Range(0, 1)] float reviveBackgroundSpawnDelay = .0f;
+        [SerializeField, Range(0, 1)] float reviveBackgroundHideDelay  = .4f;
 
-        [Space]
-        [SerializeField] private SpriteRenderer reviveBackgroundSpriteRenderer;
-        [SerializeField, Range(0,1)] float reviveBackgroundAlpha;
-        [SerializeField, Range(0,1)] float reviveBackgroundSpawnDelay;
-        [SerializeField, Range(0,1)] float reviveBackgroundHideDelay;
+        [SerializeField] SpriteRenderer reviveBottomSpriteRenderer;
+        [SerializeField, Range(0, 1)] float reviveBottomAlpha     = .7f;
+        [SerializeField, Range(0, 1)] float reviveBottomSpawnDelay = .0f;
+        [SerializeField, Range(0, 1)] float reviveBottomHideDelay  = .4f;
 
-        [Space]
-        [SerializeField] private SpriteRenderer reviveBottomSpriteRenderer;
-        [SerializeField, Range(0,1)] float reviveBottomAlpha;
-        [SerializeField, Range(0,1)] float reviveBottomSpawnDelay;
-        [SerializeField, Range(0,1)] float reviveBottomHideDelay;
+        [Header("Misc")]
+        [SerializeField] Vector2 fenceOffset;
+        [SerializeField] Color   hitColor = Color.white;
+        [SerializeField] float   enemyInsideDamageInterval = 2f;
 
-        [Header("Other")]
-        [SerializeField] private Vector2 fenceOffset;
-        [SerializeField] private Color   hitColor;
-        [SerializeField] private float   enemyInsideDamageInterval = 2f;
+        /* ───────── private fields ───────── */
+        float permanentCooldownMultiplier = 1f;
+        float permanentDamageMultiplier   = 1f;
+        float buffCooldownMultiplier      = 1f;
+        float buffDamageMultiplier        = 1f;
 
-        /* ─────────── internal state ─────────── */
-        private float permanentCooldownMultiplier = 1f;
-        private float permanentDamageMultiplier   = 1f;
-        private float buffCooldownMultiplier      = 1f;
-        private float buffDamageMultiplier        = 1f;
+        Vector3 baseCharacterScale;
 
-        Vector3 baseCharacterScale;                       // prefab scale snapshot
-
-        public event UnityAction onPlayerDied;
+        public  event UnityAction onPlayerDied;
 
         public float Damage                    { get; private set; }
         public float MagnetRadiusSqr           { get; private set; }
@@ -96,15 +97,15 @@ namespace OctoberStudio
         public Vector2 LookDirection           { get; private set; }
         public bool    IsMovingAlowed          { get; set; }
 
-        private bool invincible = false;
-        private readonly List<EnemyBehavior> enemiesInside = new();
+        bool invincible = false;
+        readonly List<EnemyBehavior> enemiesInside = new();
 
-        private CharactersSave    charactersSave;
-        public  CharacterData     Data { get; set; }
-        private CharacterBehavior Character { get; set; }
+        CharactersSave    charactersSave;
+        public  CharacterData     Data { get; private set; }
+        CharacterBehavior Character { get; set; }
 
         /* ─────────────────── Awake ─────────────────── */
-        private void Awake()
+        void Awake()
         {
             instance = this;
 
@@ -129,7 +130,7 @@ namespace OctoberStudio
             RecalculateCooldownMuliplier(1f);
             RecalculateDamageReduction(0f);
             RecalculateProjectileSpeedMultiplier(1f);
-            RecalculateSizeMultiplier(1f);      // sets correct sprite scale
+            RecalculateSizeMultiplier(1f);
             RecalculateDurationMultiplier(1f);
             RecalculateGoldMultiplier(1f);
 
@@ -138,13 +139,16 @@ namespace OctoberStudio
         }
 
         /* ─────────────────── Update ─────────────────── */
-        private void Update()
+        float lastDirY = 0f;    // remembers last vertical heading (+1 / 0 / -1)
+
+        void Update()
         {
             if (healthbar.IsZero) return;
 
+            /* periodic damage from enemies standing inside player */
             for (int i = enemiesInside.Count - 1; i >= 0; i--)
             {
-                var enemy = enemiesInside[i];
+                EnemyBehavior enemy = enemiesInside[i];
                 if (Time.time - enemy.LastTimeDamagedPlayer > enemyInsideDamageInterval)
                 {
                     TakeDamage(enemy.GetDamage());
@@ -154,29 +158,47 @@ namespace OctoberStudio
 
             if (!IsMovingAlowed) return;
 
-            var input = GameController.InputManager.MovementValue;
-            float power = input.magnitude;
-            Character.SetSpeed(power);
+            /* -------- movement & direction -------- */
+            Vector2 input = GameController.InputManager.MovementValue;
+            float   power = input.magnitude;
 
-            if (!Mathf.Approximately(power, 0f) && Time.timeScale > 0f)
+            /* remember last significant vertical direction */
+            if (power > 0.01f)
+            {
+                if (Mathf.Abs(input.y) > 0.1f)                    // moving up / down
+                    lastDirY = Mathf.Sign(input.y);
+                else if (Mathf.Abs(input.x) > 0.1f)               // moving sideways
+                    lastDirY = 0f;                                // ← keeps Idle-side
+            }
+
+            /* feed animator every frame (moving OR idle) */
+            Character.SetDirection(lastDirY);
+
+            Character.SetSpeed(power);             // actual “Speed” param
+
+            if (power > 0.01f && Time.timeScale > 0f)
             {
                 Vector3 move = (Vector3)input * Time.deltaTime * Speed;
-                if (StageController.FieldManager.ValidatePosition(transform.position + Vector3.right * move.x, fenceOffset))
+
+                if (StageController.FieldManager
+                    .ValidatePosition(transform.position + Vector3.right * move.x, fenceOffset))
                     transform.position += Vector3.right * move.x;
-                if (StageController.FieldManager.ValidatePosition(transform.position + Vector3.up * move.y, fenceOffset))
+
+                if (StageController.FieldManager
+                    .ValidatePosition(transform.position + Vector3.up * move.y, fenceOffset))
                     transform.position += Vector3.up * move.y;
 
                 collisionHelper.transform.localPosition = Vector3.zero;
 
-                float scaleX = Mathf.Abs(baseCharacterScale.x) * SizeMultiplier;
-                Character.transform.localScale = new Vector3(
-                    input.x >= 0 ? scaleX : -scaleX,
-                    baseCharacterScale.y * SizeMultiplier,
-                    baseCharacterScale.z);
+                float magX = Mathf.Abs(transform.localScale.x);
+                transform.localScale = new Vector3(input.x > 0 ? magX : -magX,
+                                                   transform.localScale.y,
+                                                   transform.localScale.z);
 
                 LookDirection = input.normalized;
             }
         }
+
 
         /* ─────────── recalculation helpers ─────────── */
         public void RecalculateMagnetRadius(float magMul)

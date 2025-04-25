@@ -16,7 +16,7 @@ namespace OctoberStudio.UI
     public class LobbyWindowBehavior : MonoBehaviour
     {
         [Header("Header Display")]
-        [SerializeField] private SelectedCharacterItemBehavior selectedDisplay;
+        [SerializeField] private SelectedCharacterUIBehavior selectedDisplay;
         [SerializeField] private CharactersDatabase           charactersDatabase;
         [SerializeField] private AbilitiesDatabase            abilitiesDatabase;
 
