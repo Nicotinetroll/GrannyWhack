@@ -10,8 +10,8 @@ public class WandProjectileBehavior : SimplePlayerProjectileBehavior
     private float baseMultiplier;
     private List<GameObject> alreadyHit = new();
 
-    private float waveAmplitude = 1f;   // ← how far left/right
-    private float waveFrequency = 12f;  // ← how fast oscillates
+    [SerializeField] private float waveAmplitude = 1f;   // ← how far left/right
+    [SerializeField] private float waveFrequency = 12f;  // ← how fast oscillates
     private float waveTimer;
 
     private const float DamageFalloffPerBounce = 0.8f;

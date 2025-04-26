@@ -5,12 +5,33 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7974111782712662366, guid: eb5353e19e917fd498b3ef1638c9a729,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8086034454425767674, guid: eb5353e19e917fd498b3ef1638c9a729,
+        type: 3}
+      propertyPath: m_Range
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8086034454425767674, guid: eb5353e19e917fd498b3ef1638c9a729,
+        type: 3}
+      propertyPath: m_Intensity
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8086034454790436210, guid: eb5353e19e917fd498b3ef1638c9a729,
         type: 3}
       propertyPath: m_Name
       value: CFXR3 Fireball B + Fire Trail (No Smoke)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8086034454790436222, guid: eb5353e19e917fd498b3ef1638c9a729,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8086034454790436222, guid: eb5353e19e917fd498b3ef1638c9a729,
         type: 3}
@@ -29,6 +50,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8086034454790436222, guid: eb5353e19e917fd498b3ef1638c9a729,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8086034454790436222, guid: eb5353e19e917fd498b3ef1638c9a729,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
@@ -40,16 +66,6 @@ PrefabInstance:
     - target: {fileID: 8086034454790436222, guid: eb5353e19e917fd498b3ef1638c9a729,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8086034454790436222, guid: eb5353e19e917fd498b3ef1638c9a729,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8086034454790436222, guid: eb5353e19e917fd498b3ef1638c9a729,
-        type: 3}
-      propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8086034454790436222, guid: eb5353e19e917fd498b3ef1638c9a729,
@@ -67,20 +83,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8086034454425767674, guid: eb5353e19e917fd498b3ef1638c9a729,
+    - target: {fileID: 8604110218900884668, guid: eb5353e19e917fd498b3ef1638c9a729,
         type: 3}
-      propertyPath: m_Range
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 8086034454425767674, guid: eb5353e19e917fd498b3ef1638c9a729,
-        type: 3}
-      propertyPath: m_Intensity
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7974111782712662366, guid: eb5353e19e917fd498b3ef1638c9a729,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
+      propertyPath: m_Materials.Array.size
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb5353e19e917fd498b3ef1638c9a729, type: 3}

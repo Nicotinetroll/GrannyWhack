@@ -49,9 +49,10 @@ MonoBehaviour:
   fireballCollider: {fileID: 5435862335019065818}
   visuals: {fileID: 7261048089433104841}
   flashEffect: {fileID: 5728043551366478197}
-  hitEffect: {fileID: 0}
+  hitEffectPoolName: FireballHit
   projectileVFX: {fileID: 6941013715111736392}
   hitEffectOffset: 0.1
+  disableDelay: 0.5
 --- !u!58 &5435862335019065818
 CircleCollider2D:
   m_ObjectHideFlags: 0

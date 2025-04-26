@@ -16,9 +16,8 @@ MonoBehaviour:
   allowedCharacterName: Wizard
   minCharacterLevel: 1
   type: 0
-  title: "Buzz Cuttin\u2019"
-  description: "This ain't your barber\u2019s buzzcut. Unless your barber is really
-    intense"
+  title: Fire Orbs
+  description: Some creativity needed...
   icon: {fileID: 21300000, guid: 732686cc2e8a5a442b22f0a390857309, type: 3}
   prefab: {fileID: 8808691205632778037, guid: 84c63e5479c7eae46bf3db3b9662f6ca, type: 3}
   isActiveAbility: 1
@@ -27,33 +26,45 @@ MonoBehaviour:
   isEvolution: 0
   evolutionRequirements: []
   levels:
-  - damage: 0.5
-    abilityCooldown: 6
+  - damage: 1
+    abilityCooldown: 5
+    projectileLifetime: 3
+    projectilesCount: 1
+    radius: 1.4
+    angularSpeed: -450
+  - damage: 1
+    abilityCooldown: 5
     projectileLifetime: 3
     projectilesCount: 2
-    radius: 1.2
-    angularSpeed: -200
-  - damage: 1
+    radius: 1.4
+    angularSpeed: -400
+  - damage: 2
+    abilityCooldown: 5
+    projectileLifetime: 3
+    projectilesCount: 2
+    radius: 1.4
+    angularSpeed: -400
+  - damage: 3
     abilityCooldown: 6
     projectileLifetime: 3
     projectilesCount: 3
-    radius: 1.3
-    angularSpeed: -200
-  - damage: 1.5
+    radius: 1.5
+    angularSpeed: -300
+  - damage: 4
+    abilityCooldown: 6
+    projectileLifetime: 3
+    projectilesCount: 3
+    radius: 1.5
+    angularSpeed: -300
+  - damage: 4
     abilityCooldown: 6
     projectileLifetime: 3
     projectilesCount: 4
-    radius: 1.4
-    angularSpeed: -200
-  - damage: 1.8
-    abilityCooldown: 6
-    projectileLifetime: 3
-    projectilesCount: 5
     radius: 1.5
     angularSpeed: -250
-  - damage: 2.5
+  - damage: 5
     abilityCooldown: 6
     projectileLifetime: 3
-    projectilesCount: 6
+    projectilesCount: 4
     radius: 1.5
-    angularSpeed: -300
+    angularSpeed: -250
