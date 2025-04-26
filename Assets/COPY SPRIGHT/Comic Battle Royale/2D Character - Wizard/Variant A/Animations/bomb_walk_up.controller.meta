@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: e05387152d4d4cc284b3982bc111217b
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 182809
+  packageName: 2D Character - Wizard
+  packageVersion: 2.0
+  assetPath: Assets/COPY SPRIGHT/Comic Battle Royale/2D Character - Wizard/Variant
+    A/Animations/bomb_walk_up.controller
+  uploadId: 624307

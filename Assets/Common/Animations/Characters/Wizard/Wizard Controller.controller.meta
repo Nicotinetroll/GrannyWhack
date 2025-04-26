@@ -1,15 +1,8 @@
 fileFormatVersion: 2
-guid: 58a5de292215c984abd290eb52f58e48
+guid: e4f51b849f2000e44b635e9599513586
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 9100000
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 304936
-  packageName: Monster Survivors - Full Game
-  packageVersion: 1.1.2
-  assetPath: Assets/Common/Animations/Characters/Wizard/Wizard Controller.controller
-  uploadId: 748816

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: fdf013596a684a7a926bde4a8bef2904
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 182809
+  packageName: 2D Character - Wizard
+  packageVersion: 2.0
+  assetPath: Assets/COPY SPRIGHT/Comic Battle Royale/2D Character - Wizard/Variant
+    A/Animations/weapon_scythe_down.controller
+  uploadId: 624307

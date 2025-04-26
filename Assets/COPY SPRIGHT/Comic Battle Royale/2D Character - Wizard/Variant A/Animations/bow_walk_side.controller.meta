@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 801ee03009fc4b97ace0661cec08e50a
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 182809
+  packageName: 2D Character - Wizard
+  packageVersion: 2.0
+  assetPath: Assets/COPY SPRIGHT/Comic Battle Royale/2D Character - Wizard/Variant
+    A/Animations/bow_walk_side.controller
+  uploadId: 624307

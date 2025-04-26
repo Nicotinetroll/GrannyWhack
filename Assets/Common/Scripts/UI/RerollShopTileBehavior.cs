@@ -14,25 +14,35 @@ namespace OctoberStudio.Upgrades.UI
         static readonly int CLICK_DENY_HASH = "BuyDeny".GetHashCode();
 
         [Header("UI")]
-        [SerializeField] Image    iconImage;
-        [SerializeField] TMP_Text titleLabel;
-        [SerializeField] TMP_Text amountLabel;
-        [SerializeField] Button   buyButton;
-        [SerializeField] TMP_Text priceLabel;
-        [SerializeField] Sprite   enabledBtnSprite;
-        [SerializeField] Sprite   disabledBtnSprite;
+        [SerializeField] private Image    iconImage;
+        [SerializeField] private TMP_Text titleLabel;
+        [SerializeField] private TMP_Text amountLabel;
+        [SerializeField] private Button   buyButton;
+        [SerializeField] private TMP_Text priceLabel;
+        [SerializeField] private Sprite   enabledBtnSprite;
+        [SerializeField] private Sprite   disabledBtnSprite;
 
-        CurrencySave goldSave;
+        private CurrencySave goldSave;
+        private RerollManager rerollManager;
 
         void Start()
         {
             goldSave = GameController.SaveManager.GetSave<CurrencySave>("gold");
-            goldSave.onGoldAmountChanged += _ => RefreshButton();
+            if (goldSave != null)
+                goldSave.onGoldAmountChanged += OnGoldChanged;
 
-            iconImage.sprite = GameController.CurrenciesManager.GetIcon("Reroll");
-            titleLabel.text  = "REROLL";
+            rerollManager = RerollManager.Instance;
 
-            buyButton.onClick.AddListener(OnBuyClicked);
+            RerollManager.OnStackChanged += OnStackChanged; // 🔥 (STATIC event!)
+
+            if (iconImage != null)
+                iconImage.sprite = GameController.CurrenciesManager.GetIcon("Reroll");
+
+            if (titleLabel != null)
+                titleLabel.text = "REROLL";
+
+            if (buyButton != null)
+                buyButton.onClick.AddListener(OnBuyClicked);
 
             RefreshAll();
         }
@@ -40,41 +50,62 @@ namespace OctoberStudio.Upgrades.UI
         void OnDestroy()
         {
             if (goldSave != null)
-                goldSave.onGoldAmountChanged -= _ => RefreshButton();
-            buyButton.onClick.RemoveListener(OnBuyClicked);
-            RerollManager.OnStackChanged -= OnStackChanged;
+                goldSave.onGoldAmountChanged -= OnGoldChanged;
+
+            if (buyButton != null)
+                buyButton.onClick.RemoveListener(OnBuyClicked);
+
+            RerollManager.OnStackChanged -= OnStackChanged; // 🔥 (STATIC event!)
         }
 
-        /* ─── UI refresh ─── */
         void RefreshAll()
         {
-            RerollManager.OnStackChanged -= OnStackChanged;
-            RerollManager.OnStackChanged += OnStackChanged;
-            OnStackChanged(RerollManager.Instance.Stack);
+            if (rerollManager != null)
+                OnStackChanged(rerollManager.Stack);
         }
 
         void OnStackChanged(int stack)
         {
-            amountLabel.text = $"Owned {stack}x";               // ← wording update
-            priceLabel.text  = RerollManager.Instance.MenuPrice.ToString();
+            if (amountLabel != null)
+                amountLabel.text = $"Owned {stack} rerolls";
+
+            if (priceLabel != null && rerollManager != null)
+                priceLabel.text = rerollManager.MenuPrice.ToString();
+
             RefreshButton();
         }
 
         void RefreshButton()
         {
-            bool canBuy = goldSave.CanAfford(RerollManager.Instance.MenuPrice);
+            if (buyButton == null || rerollManager == null)
+                return;
+
+            bool canBuy = goldSave != null && goldSave.CanAfford(rerollManager.MenuPrice);
+
             buyButton.interactable = canBuy;
-            buyButton.image.sprite = canBuy ? enabledBtnSprite : disabledBtnSprite;
+
+            if (buyButton.image != null)
+                buyButton.image.sprite = canBuy ? enabledBtnSprite : disabledBtnSprite;
+        }
+
+        void OnGoldChanged(int _)
+        {
+            RefreshButton();
         }
 
         void OnBuyClicked()
         {
-            bool ok = RerollManager.Instance.TryBuyInMenu();
+            if (rerollManager == null || buyButton == null)
+                return;
+
+            bool ok = rerollManager.TryBuyInMenu();
             GameController.AudioManager.PlaySound(ok ? CLICK_OK_HASH : CLICK_DENY_HASH);
 
-            EventSystem.current.SetSelectedGameObject(buyButton.gameObject);
+            if (EventSystem.current != null)
+                EventSystem.current.SetSelectedGameObject(buyButton.gameObject);
 
-            if (ok) OnStackChanged(RerollManager.Instance.Stack);
+            if (ok)
+                OnStackChanged(rerollManager.Stack);
         }
     }
 }

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 340fd0f9b2e64626aeee52f89b47b8d6
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 182809
+  packageName: 2D Character - Wizard
+  packageVersion: 2.0
+  assetPath: Assets/COPY SPRIGHT/Comic Battle Royale/2D Character - Wizard/Variant
+    B/Animations/bomb_throw_down.controller
+  uploadId: 624307

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: eec60a890faf472c97d5cf4eb0b8b655
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 182809
+  packageName: 2D Character - Wizard
+  packageVersion: 2.0
+  assetPath: Assets/COPY SPRIGHT/Comic Battle Royale/2D Character - Wizard/Variant
+    D/Animations/weapon_bow_down.controller
+  uploadId: 624307

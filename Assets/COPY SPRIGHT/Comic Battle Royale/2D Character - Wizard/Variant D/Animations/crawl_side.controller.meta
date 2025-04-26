@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: ce66418c3d194d19b380062a67b5dbb8
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 182809
+  packageName: 2D Character - Wizard
+  packageVersion: 2.0
+  assetPath: Assets/COPY SPRIGHT/Comic Battle Royale/2D Character - Wizard/Variant
+    D/Animations/crawl_side.controller
+  uploadId: 624307

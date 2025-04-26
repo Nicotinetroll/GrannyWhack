@@ -1,14 +1,7 @@
 fileFormatVersion: 2
-guid: e46276dd75482da438f1ed5734db6950
+guid: ffcd89a91673a964199e285f254df4fe
 PrefabImporter:
   externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 304936
-  packageName: Monster Survivors - Full Game
-  packageVersion: 1.1.2
-  assetPath: Assets/Common/Prefabs/Characters/Wizard.prefab
-  uploadId: 748816

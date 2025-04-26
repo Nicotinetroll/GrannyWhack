@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: f5b11749094a4c4391ebba46479923f3
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 182809
+  packageName: 2D Character - Wizard
+  packageVersion: 2.0
+  assetPath: Assets/COPY SPRIGHT/Comic Battle Royale/2D Character - Wizard/Variant
+    A/Animations/hammer_attack_down.controller
+  uploadId: 624307

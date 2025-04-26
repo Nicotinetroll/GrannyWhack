@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 2dd200eeab0c4b1397432750eadc0ea5
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 182809
+  packageName: 2D Character - Wizard
+  packageVersion: 2.0
+  assetPath: Assets/COPY SPRIGHT/Comic Battle Royale/2D Character - Wizard/Variant
+    A/Animations/hit_A_up.controller
+  uploadId: 624307

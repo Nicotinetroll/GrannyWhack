@@ -22,15 +22,15 @@ MonoBehaviour:
     startingAbility: 1001
     baseHP: 55
     baseDamage: 1.1
-  - name: Mage
-    cost: 0
-    icon: {fileID: 1344277449, guid: 7018a5ac9d5c24c76811607ec142ab96, type: 3}
-    prefab: {fileID: 2921880940271959218, guid: 7de6d3d2b639a40b0bc2422c27685f24,
+  - name: Wizard
+    cost: 2000
+    icon: {fileID: 21300000, guid: aa25a7de96c148a094539442f3c8ee64, type: 3}
+    prefab: {fileID: 2921880940271959218, guid: ffcd89a91673a964199e285f254df4fe,
       type: 3}
     hasStartingAbility: 1
     startingAbility: 6
-    baseHP: 50
-    baseDamage: 1.2
+    baseHP: 40
+    baseDamage: 1.3
   - name: EMAX
     cost: 100000
     icon: {fileID: 21300000, guid: 519dafacd208bb64c83d5124be03b09d, type: 3}

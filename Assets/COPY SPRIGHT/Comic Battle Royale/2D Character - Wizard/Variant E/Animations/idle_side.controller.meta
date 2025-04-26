@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 910ecb221438441ca0bb058f4cb1dbd9
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 182809
+  packageName: 2D Character - Wizard
+  packageVersion: 2.0
+  assetPath: Assets/COPY SPRIGHT/Comic Battle Royale/2D Character - Wizard/Variant
+    E/Animations/idle_side.controller
+  uploadId: 624307

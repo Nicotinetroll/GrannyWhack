@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: d2e81a2f48e647cd96d6547a041ef4c4
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 182809
+  packageName: 2D Character - Wizard
+  packageVersion: 2.0
+  assetPath: Assets/COPY SPRIGHT/Comic Battle Royale/2D Character - Wizard/Variant
+    D/Animations/walk_up.controller
+  uploadId: 624307
