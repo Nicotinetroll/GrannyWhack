@@ -95,5 +95,13 @@ namespace OctoberStudio
                 onFinished?.Invoke(this);
             }
         }
+        protected virtual void OnHitEnemy(Collider2D collision)
+        {
+            if (selfDestructOnHit)
+            {
+                Clear();
+                onFinished?.Invoke(this);
+            }
+        }
     }
 }

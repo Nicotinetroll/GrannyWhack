@@ -1,22 +1,16 @@
 using UnityEngine;
-using OctoberStudio;
 using System.Collections.Generic;
+using OctoberStudio;
 
 public class WandProjectileBehavior : SimplePlayerProjectileBehavior
 {
     private int remainingBounces;
     private float bounceRadius;
-    private int bouncesDone = 0;
+    private int bouncesDone;
     private float baseMultiplier;
     private List<GameObject> alreadyHit = new List<GameObject>();
 
-    private const float damageFalloffPerBounce = 0.8f;
-
-    [Header("VFX")]
-    [SerializeField] private GameObject flashEffect;
-    [SerializeField] private GameObject hitEffect;
-    [SerializeField] private ParticleSystem projectileEffect;
-    [SerializeField] private float hitOffset = 0.1f;
+    private const float DamageFalloffPerBounce = 0.8f;
 
     public void InitBounce(
         Vector2 position,
@@ -25,153 +19,87 @@ public class WandProjectileBehavior : SimplePlayerProjectileBehavior
         float lifeTime,
         float damageMultiplier,
         int? bounceCount,
-        float radius
-    )
+        float radius)
     {
-        transform.position = position;
+        base.Init(position, direction);
+
         transform.localScale = Vector3.one * PlayerBehavior.Player.SizeMultiplier;
+        Speed = speed;
+        LifeTime = lifeTime;
+        baseMultiplier = damageMultiplier;
+        bounceRadius = radius;
 
-        this.direction = direction.normalized;
-        this.Speed = speed;
-        this.LifeTime = lifeTime;
-        this.bounceRadius = radius;
-
-        if (bounceCount.HasValue)
-        {
-            this.remainingBounces = bounceCount.Value;
-            this.bouncesDone = 0;
-            this.baseMultiplier = damageMultiplier;
-        }
-
-        spawnTime = Time.time;
+        remainingBounces = bounceCount ?? 0;
+        bouncesDone = 0;
         alreadyHit.Clear();
-        selfDestructOnHit = false;
 
-        if (rotatingPart != null)
-            rotatingPart.rotation = Quaternion.FromToRotation(Vector2.up, direction);
-
-        if (trail != null)
-            trail.Clear();
-
-        foreach (var p in particles)
-        {
-            p.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-            p.Clear();
-            p.Play();
-        }
-
-        // 🔥 Flash effect (play once and detach)
-        if (flashEffect != null)
-        {
-            flashEffect.transform.SetParent(null);
-            flashEffect.SetActive(true);
-
-            if (flashEffect.TryGetComponent(out ParticleSystem flashPS))
-            {
-                flashPS.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-                flashPS.Play();
-            }
-        }
-
-        // 🔁 Reset projectile effect
-        if (projectileEffect != null)
-        {
-            projectileEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-            projectileEffect.Clear();
-            projectileEffect.Play();
-        }
-
-        gameObject.SetActive(true);
+        selfDestructOnHit = false; // disable auto-destroy on hit
     }
 
     private void Update()
     {
+        if (spriteRenderer != null && !spriteRenderer.isVisible)
+            Clear();
+
         transform.position += direction * Time.deltaTime * Speed;
 
-        if (LifeTime > 0 && Time.time - spawnTime > LifeTime)
+        if (LifeTime > 0f && Time.time - spawnTime > LifeTime)
         {
-            FinishProjectile();
+            Clear();
+            onFinished?.Invoke(this);
         }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!collision.CompareTag("Enemy")) return;
-        if (alreadyHit.Contains(collision.gameObject)) return;
+        if (!collision.CompareTag("Enemy"))
+            return;
+
+        if (alreadyHit.Contains(collision.gameObject))
+            return;
 
         alreadyHit.Add(collision.gameObject);
 
         if (collision.TryGetComponent(out EnemyBehavior enemy))
         {
-            float finalMultiplier = baseMultiplier * Mathf.Pow(damageFalloffPerBounce, bouncesDone);
-            float finalDamage = PlayerBehavior.Player.Damage * finalMultiplier;
-
+            float finalDamage = PlayerBehavior.Player.Damage * baseMultiplier * Mathf.Pow(DamageFalloffPerBounce, bouncesDone);
             enemy.TakeDamage(finalDamage);
-
-            // 💥 Hit effect (play and stay detached)
-            if (hitEffect != null)
-            {
-                hitEffect.transform.position = transform.position + (Vector3)(direction * hitOffset);
-                hitEffect.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
-                hitEffect.SetActive(true);
-
-                if (hitEffect.TryGetComponent(out ParticleSystem hitPS))
-                {
-                    hitPS.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-                    hitPS.Play();
-                }
-            }
         }
 
         if (remainingBounces > 0)
         {
-            EnemyBehavior nextEnemy = FindNextTarget();
+            var nextEnemy = FindNextTarget();
             if (nextEnemy != null)
             {
                 remainingBounces--;
                 bouncesDone++;
-
                 direction = (nextEnemy.Center - (Vector2)transform.position).normalized;
-
-                InitBounce(transform.position, direction, Speed, LifeTime, baseMultiplier, null, bounceRadius);
                 return;
             }
         }
 
-        FinishProjectile();
+        Clear();
+        onFinished?.Invoke(this);
     }
 
     private EnemyBehavior FindNextTarget()
     {
-        float closestDistance = float.MaxValue;
-        EnemyBehavior nextEnemy = null;
+        var enemies = StageController.EnemiesSpawner.GetEnemiesInRadius(transform.position, bounceRadius);
+        EnemyBehavior closest = null;
+        float closestDist = float.MaxValue;
 
-        var allEnemies = StageController.EnemiesSpawner.GetEnemiesInRadius(transform.position, bounceRadius);
-
-        foreach (var enemy in allEnemies)
+        foreach (var enemy in enemies)
         {
             if (enemy == null || alreadyHit.Contains(enemy.gameObject)) continue;
 
             float dist = (enemy.Center - (Vector2)transform.position).sqrMagnitude;
-            if (dist < closestDistance)
+            if (dist < closestDist)
             {
-                closestDistance = dist;
-                nextEnemy = enemy;
+                closestDist = dist;
+                closest = enemy;
             }
         }
 
-        return nextEnemy;
-    }
-
-    private void FinishProjectile()
-    {
-        // 💨 Stop projectile effect
-        if (projectileEffect != null)
-        {
-            projectileEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-        }
-
-        Clear();
-        onFinished?.Invoke(this);
+        return closest;
     }
 }

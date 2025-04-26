@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7949363720881038527}
-  - component: {fileID: 9210714476556348707}
+  - component: {fileID: -2342710295591618003}
   - component: {fileID: 3670532759502821244}
   m_Layer: 8
   m_Name: Wand Projectile
@@ -34,7 +34,7 @@ Transform:
   - {fileID: 6747616982747270121}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &9210714476556348707
+--- !u!114 &-2342710295591618003
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -43,16 +43,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 330944705125390381}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad779c037e598e44cbce32fbcd01580c, type: 3}
+  m_Script: {fileID: 11500000, guid: d63b93f67ba4043ad98fd9558fe61141, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 0
   spriteRenderer: {fileID: 0}
   trail: {fileID: 3559201277519434799}
   lifetime: -1
   rotatingPart: {fileID: 0}
   selfDestructOnHit: 1
   particles: []
+  projectileEffect: {fileID: 0}
+  hitEffect: {fileID: 0}
+  hitOffset: 0.1
 --- !u!58 &3670532759502821244
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -61,6 +64,7 @@ CircleCollider2D:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330944705125390381}
   m_Enabled: 1
+  serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -84,9 +88,9 @@ CircleCollider2D:
     m_Bits: 4294967295
   m_IsTrigger: 1
   m_UsedByEffector: 0
-  m_UsedByComposite: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
   m_Radius: 0.1
 --- !u!1001 &1857665783088907258
 PrefabInstance:

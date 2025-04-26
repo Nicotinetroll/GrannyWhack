@@ -1,6 +1,3 @@
-// ----------------------------
-// WoodenWandWeaponAbilityData.cs
-// ----------------------------
 using UnityEngine;
 
 namespace OctoberStudio.Abilities
@@ -24,32 +21,35 @@ namespace OctoberStudio.Abilities
     [System.Serializable]
     public class WoodenWandWeaponAbilityLevel : AbilityLevel
     {
-        [Tooltip("Amount of time between attacks")]
-        [SerializeField] float abilityCooldown;
+        [Header("Cooldown Settings")]
+        [Tooltip("Seconds between attacks")]
+        [SerializeField] private float abilityCooldown;
         public float AbilityCooldown => abilityCooldown;
 
-        [Tooltip("Speed of the projectile")]
-        [SerializeField] float projectileSpeed;
+        [Header("Projectile Settings")]
+        [Tooltip("Projectile flying speed")]
+        [SerializeField] private float projectileSpeed;
         public float ProjectileSpeed => projectileSpeed;
 
-        [Tooltip("Damage of projectiles calculates like this: Player.Damage * Damage")]
-        [SerializeField] float damage;
-        public float Damage => damage;
-
-        [Tooltip("Size of projectiles")]
-        [SerializeField] float projectileSize;
-        public float ProjectileSize => projectileSize;
-
-        [Tooltip("Time projectiles stay alive")]
-        [SerializeField] float projectileLifetime;
+        [Tooltip("Projectile lifetime in seconds")]
+        [SerializeField] private float projectileLifetime;
         public float ProjectileLifetime => projectileLifetime;
 
-        [Tooltip("How many enemies can the projectile bounce through")]
-        [SerializeField] int bounceCount;
+        [Tooltip("Projectile damage multiplier (Player.Damage * Damage)")]
+        [SerializeField] private float damage;
+        public float Damage => damage;
+
+        [Tooltip("Projectile size multiplier")]
+        [SerializeField] private float projectileSize;
+        public float ProjectileSize => projectileSize;
+
+        [Header("Bouncing Settings")]
+        [Tooltip("How many bounces the projectile can do")]
+        [SerializeField] private int bounceCount;
         public int BounceCount => bounceCount;
 
-        [Tooltip("Max radius to search for next bounce target")]
-        [SerializeField] float bounceRadius = 5f;
+        [Tooltip("Radius to search for next enemy to bounce")]
+        [SerializeField] private float bounceRadius = 5f;
         public float BounceRadius => bounceRadius;
     }
 }

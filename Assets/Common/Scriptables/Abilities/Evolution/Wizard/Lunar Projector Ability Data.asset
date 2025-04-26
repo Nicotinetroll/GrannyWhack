@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Lunar Projector Ability Data
   m_EditorClassIdentifier: 
   isCharacterSpecific: 1
-  allowedCharacterName: Wizard
+  allowedCharacterName: EMAX
   minCharacterLevel: 15
   type: 209
   title: Lunar Projector
