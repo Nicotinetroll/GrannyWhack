@@ -8,7 +8,11 @@ public class WandProjectileBehavior : SimplePlayerProjectileBehavior
     private float bounceRadius;
     private int bouncesDone;
     private float baseMultiplier;
-    private List<GameObject> alreadyHit = new List<GameObject>();
+    private List<GameObject> alreadyHit = new();
+
+    private float waveAmplitude = 1f;   // ← how far left/right
+    private float waveFrequency = 12f;  // ← how fast oscillates
+    private float waveTimer;
 
     private const float DamageFalloffPerBounce = 0.8f;
 
@@ -24,6 +28,7 @@ public class WandProjectileBehavior : SimplePlayerProjectileBehavior
         base.Init(position, direction);
 
         transform.localScale = Vector3.one * PlayerBehavior.Player.SizeMultiplier;
+
         Speed = speed;
         LifeTime = lifeTime;
         baseMultiplier = damageMultiplier;
@@ -32,18 +37,19 @@ public class WandProjectileBehavior : SimplePlayerProjectileBehavior
         remainingBounces = bounceCount ?? 0;
         bouncesDone = 0;
         alreadyHit.Clear();
+        selfDestructOnHit = false;
 
-        selfDestructOnHit = false; // disable auto-destroy on hit
+        waveTimer = 0f; // reset wave
     }
 
     private void Update()
     {
-        if (spriteRenderer != null && !spriteRenderer.isVisible)
-            Clear();
+        waveTimer += Time.deltaTime * waveFrequency;
 
-        transform.position += direction * Time.deltaTime * Speed;
+        Vector3 waveOffset = transform.right * Mathf.Sin(waveTimer) * waveAmplitude;
+        transform.position += (direction * Speed * Time.deltaTime) + (waveOffset * Time.deltaTime);
 
-        if (LifeTime > 0f && Time.time - spawnTime > LifeTime)
+        if (LifeTime > 0 && Time.time - spawnTime > LifeTime)
         {
             Clear();
             onFinished?.Invoke(this);
@@ -52,19 +58,13 @@ public class WandProjectileBehavior : SimplePlayerProjectileBehavior
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!collision.CompareTag("Enemy"))
-            return;
+        if (!collision.TryGetComponent<EnemyBehavior>(out var enemy)) return;
+        if (alreadyHit.Contains(enemy.gameObject)) return;
 
-        if (alreadyHit.Contains(collision.gameObject))
-            return;
+        alreadyHit.Add(enemy.gameObject);
 
-        alreadyHit.Add(collision.gameObject);
-
-        if (collision.TryGetComponent(out EnemyBehavior enemy))
-        {
-            float finalDamage = PlayerBehavior.Player.Damage * baseMultiplier * Mathf.Pow(DamageFalloffPerBounce, bouncesDone);
-            enemy.TakeDamage(finalDamage);
-        }
+        float finalDamage = PlayerBehavior.Player.Damage * baseMultiplier * Mathf.Pow(DamageFalloffPerBounce, bouncesDone);
+        enemy.TakeDamage(finalDamage);
 
         if (remainingBounces > 0)
         {

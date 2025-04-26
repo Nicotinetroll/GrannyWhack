@@ -28,7 +28,7 @@ MonoBehaviour:
     prefab: {fileID: 2921880940271959218, guid: ffcd89a91673a964199e285f254df4fe,
       type: 3}
     hasStartingAbility: 1
-    startingAbility: 6
+    startingAbility: 1000
     baseHP: 40
     baseDamage: 1.3
   - name: EMAX

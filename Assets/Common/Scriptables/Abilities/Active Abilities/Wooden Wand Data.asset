@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Wooden Wand Data
   m_EditorClassIdentifier: 
   isCharacterSpecific: 1
-  allowedCharacterName: EMAX
+  allowedCharacterName: Wizard
   minCharacterLevel: 1
   type: 1000
   title: Rifle
@@ -28,36 +28,36 @@ MonoBehaviour:
   levels:
   - abilityCooldown: 1
     projectileSpeed: 3
+    projectileLifetime: 5
     damage: 12
     projectileSize: 1
-    projectileLifetime: 5
     bounceCount: 4
     bounceRadius: 1.2
   - abilityCooldown: 1
     projectileSpeed: 30
+    projectileLifetime: 5
     damage: 20
     projectileSize: 1
-    projectileLifetime: 5
     bounceCount: 6
     bounceRadius: 1.2
   - abilityCooldown: 1
     projectileSpeed: 30
+    projectileLifetime: 5
     damage: 31
     projectileSize: 1
-    projectileLifetime: 5
     bounceCount: 8
     bounceRadius: 1.3
   - abilityCooldown: 1
     projectileSpeed: 30
+    projectileLifetime: 5
     damage: 50
     projectileSize: 1
-    projectileLifetime: 5
     bounceCount: 8
     bounceRadius: 1.4
   - abilityCooldown: 1
     projectileSpeed: 30
+    projectileLifetime: 5
     damage: 60
     projectileSize: 1
-    projectileLifetime: 5
     bounceCount: 10
     bounceRadius: 1.4
