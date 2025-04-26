@@ -23,7 +23,7 @@ MonoBehaviour:
     baseHP: 55
     baseDamage: 1.1
   - name: Wizard
-    cost: 2000
+    cost: 1000
     icon: {fileID: 21300000, guid: aa25a7de96c148a094539442f3c8ee64, type: 3}
     prefab: {fileID: 2921880940271959218, guid: ffcd89a91673a964199e285f254df4fe,
       type: 3}

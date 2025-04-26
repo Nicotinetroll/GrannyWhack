@@ -16,7 +16,7 @@ MonoBehaviour:
   allowedCharacterName: Wizard
   minCharacterLevel: 1
   type: 1000
-  title: Rifle
+  title: Wooden Wand
   description: Some creative needed...
   icon: {fileID: 21300000, guid: 93e9dd16346d3b449977187799b746e6, type: 3}
   prefab: {fileID: 8295970409944387311, guid: fef53c88fbaf9b74d8f8b7ace6957279, type: 3}
@@ -29,7 +29,7 @@ MonoBehaviour:
   - abilityCooldown: 1.5
     projectileSpeed: 7
     projectileLifetime: 5
-    damage: 1.2
+    damage: 1.3
     projectileSize: 1
     bounceCount: 3
     bounceRadius: 1.2
