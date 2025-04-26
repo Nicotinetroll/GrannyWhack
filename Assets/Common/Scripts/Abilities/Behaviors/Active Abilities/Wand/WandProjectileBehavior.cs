@@ -12,6 +12,13 @@ public class WandProjectileBehavior : SimplePlayerProjectileBehavior
 
     private const float DamageFalloffPerBounce = 0.8f;
 
+    private float waveAmplitude = 1f;
+    private float waveFrequency = 12f;
+
+    private Vector2 waveAxisA;   // perpendicular axis
+    private Vector2 waveAxisB;   // random second axis
+    private float randomPhase;
+
     public void InitBounce(
         Vector2 position,
         Vector2 direction,
@@ -33,7 +40,12 @@ public class WandProjectileBehavior : SimplePlayerProjectileBehavior
         bouncesDone = 0;
         alreadyHit.Clear();
 
-        selfDestructOnHit = false; // disable auto-destroy on hit
+        selfDestructOnHit = false;
+
+        // 🌊 Setup double wave axes
+        waveAxisA = new Vector2(-direction.y, direction.x).normalized;        // normal perpendicular
+        waveAxisB = new Vector2(direction.y, direction.x).normalized;          // slanted offset
+        randomPhase = Random.Range(0f, Mathf.PI * 2f);                         // random phase offset
     }
 
     private void Update()
@@ -41,9 +53,19 @@ public class WandProjectileBehavior : SimplePlayerProjectileBehavior
         if (spriteRenderer != null && !spriteRenderer.isVisible)
             Clear();
 
+        float time = (Time.time - spawnTime);
+
+        // basic forward movement
         transform.position += direction * Time.deltaTime * Speed;
 
-        if (LifeTime > 0f && Time.time - spawnTime > LifeTime)
+        // 🎯 Add double wave offset
+        Vector3 waveOffset =
+            waveAxisA * Mathf.Sin(time * waveFrequency + randomPhase) * waveAmplitude * Time.deltaTime +
+            waveAxisB * Mathf.Cos(time * waveFrequency * 0.7f + randomPhase) * waveAmplitude * 0.5f * Time.deltaTime;
+
+        transform.position += waveOffset;
+
+        if (LifeTime > 0f && time > LifeTime)
         {
             Clear();
             onFinished?.Invoke(this);
@@ -74,6 +96,12 @@ public class WandProjectileBehavior : SimplePlayerProjectileBehavior
                 remainingBounces--;
                 bouncesDone++;
                 direction = (nextEnemy.Center - (Vector2)transform.position).normalized;
+
+                // 🔥 Recalculate wave directions after bounce
+                waveAxisA = new Vector2(-direction.y, direction.x).normalized;
+                waveAxisB = new Vector2(direction.y, direction.x).normalized;
+                randomPhase = Random.Range(0f, Mathf.PI * 2f);
+
                 return;
             }
         }
