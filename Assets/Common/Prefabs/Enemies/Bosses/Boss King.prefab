@@ -302,7 +302,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 0.85
   damage: 200
-  hp: 10000
+  hp: 30000
   canBeKickedBack: 0
   shouldFadeIn: 0
   rb: {fileID: 2700873241517360941}

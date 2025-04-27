@@ -178,7 +178,7 @@ MonoBehaviour:
   - name: Shooting Stars Launch
     cooldown: 0
     audioClip:
-      audioClip: {fileID: 8300000, guid: 15225c3587e3744f8ad94514895ac2ed, type: 3}
+      audioClip: {fileID: 8300000, guid: 28ae60cab6f764510b9e460b4f0ef4f5, type: 3}
       volume: {x: 0.5, y: 0.5}
       pitch: {x: 0.95, y: 1.05}
   - name: Solar Magnifier Launch
