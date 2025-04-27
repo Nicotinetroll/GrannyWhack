@@ -26,45 +26,45 @@ MonoBehaviour:
   isEvolution: 0
   evolutionRequirements: []
   levels:
-  - damage: 1
+  - damage: 2
     abilityCooldown: 5
     projectileLifetime: 3
     projectilesCount: 1
     radius: 1.4
     angularSpeed: -450
-  - damage: 1
+  - damage: 4
     abilityCooldown: 5
     projectileLifetime: 3
-    projectilesCount: 2
+    projectilesCount: 1
     radius: 1.4
-    angularSpeed: -400
-  - damage: 2
+    angularSpeed: -450
+  - damage: 6
     abilityCooldown: 5
     projectileLifetime: 3
-    projectilesCount: 2
-    radius: 1.4
-    angularSpeed: -400
-  - damage: 3
+    projectilesCount: 1
+    radius: 1.9
+    angularSpeed: -450
+  - damage: 8
     abilityCooldown: 6
     projectileLifetime: 3
-    projectilesCount: 3
-    radius: 1.5
-    angularSpeed: -300
-  - damage: 4
+    projectilesCount: 1
+    radius: 2
+    angularSpeed: -450
+  - damage: 10
     abilityCooldown: 6
     projectileLifetime: 3
-    projectilesCount: 3
-    radius: 1.5
-    angularSpeed: -300
-  - damage: 4
+    projectilesCount: 1
+    radius: 2.1
+    angularSpeed: -450
+  - damage: 12
     abilityCooldown: 6
     projectileLifetime: 3
-    projectilesCount: 4
-    radius: 1.5
-    angularSpeed: -250
-  - damage: 5
+    projectilesCount: 1
+    radius: 2.2
+    angularSpeed: -500
+  - damage: 14
     abilityCooldown: 6
     projectileLifetime: 3
-    projectilesCount: 4
-    radius: 1.5
-    angularSpeed: -250
+    projectilesCount: 1
+    radius: 2.3
+    angularSpeed: -550
