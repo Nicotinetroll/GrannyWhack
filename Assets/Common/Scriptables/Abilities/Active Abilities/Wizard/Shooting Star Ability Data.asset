@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5c5b94e0f62c8c4aa563be6b3ce9c7b, type: 3}
   m_Name: Shooting Star Ability Data
   m_EditorClassIdentifier: 
-  isCharacterSpecific: 1
+  isCharacterSpecific: 0
   allowedCharacterName: Wizard
   minCharacterLevel: 1
   type: 0
@@ -54,17 +54,11 @@ MonoBehaviour:
     abilityCooldown: 6
     projectileLifetime: 3
     projectilesCount: 1
-    radius: 2.1
+    radius: 2
     angularSpeed: -450
   - damage: 12
     abilityCooldown: 6
     projectileLifetime: 3
     projectilesCount: 1
-    radius: 2.2
-    angularSpeed: -500
-  - damage: 14
-    abilityCooldown: 6
-    projectileLifetime: 3
-    projectilesCount: 1
-    radius: 2.3
-    angularSpeed: -550
+    radius: 2
+    angularSpeed: -450

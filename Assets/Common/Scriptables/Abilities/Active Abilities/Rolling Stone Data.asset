@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44ab41556cf462c409841060a869521f, type: 3}
   m_Name: Rolling Stone Data
   m_EditorClassIdentifier: 
-  isCharacterSpecific: 1
+  isCharacterSpecific: 0
   allowedCharacterName: EMAX
   minCharacterLevel: 1
   type: 3

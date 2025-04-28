@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1586f7d6c44294444ad7f5dcc23f4e22, type: 3}
   m_Name: Fireball Ability Data
   m_EditorClassIdentifier: 
-  isCharacterSpecific: 1
+  isCharacterSpecific: 0
   allowedCharacterName: Wizard
   minCharacterLevel: 1
   type: 6
@@ -64,5 +64,13 @@ MonoBehaviour:
     fireballLifetime: 5
     speed: 5
     damage: 10.5
+    projectileSize: 1.25
+    explosionRadius: 2
+  - projectilesCount: 4
+    timeBetweenFireballs: 0.2
+    abilityCooldown: 3
+    fireballLifetime: 5
+    speed: 5
+    damage: 12
     projectileSize: 1.25
     explosionRadius: 2

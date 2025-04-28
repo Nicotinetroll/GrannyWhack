@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6efdef0c11be664597b6b3c59fb6057, type: 3}
   m_Name: Ice Shard Data
   m_EditorClassIdentifier: 
-  isCharacterSpecific: 1
+  isCharacterSpecific: 0
   allowedCharacterName: Wizard
   minCharacterLevel: 1
   type: 4
@@ -26,33 +26,39 @@ MonoBehaviour:
   isEvolution: 0
   evolutionRequirements: []
   levels:
-  - abilityCooldown: 8
+  - abilityCooldown: 12
     projectileSpeed: 7
     damage: 3.5
     projectileSize: 1
-    projectilesCount: 2
+    projectilesCount: 1
     projectileLifetime: 7
-  - abilityCooldown: 8
+  - abilityCooldown: 12
     projectileSpeed: 8
     damage: 4
     projectileSize: 1
-    projectilesCount: 3
+    projectilesCount: 2
     projectileLifetime: 7
-  - abilityCooldown: 8
+  - abilityCooldown: 12
     projectileSpeed: 9
     damage: 4.5
-    projectileSize: 1.25
+    projectileSize: 1
     projectilesCount: 3
     projectileLifetime: 7
-  - abilityCooldown: 8
+  - abilityCooldown: 12
     projectileSpeed: 9
     damage: 5.5
-    projectileSize: 1.25
+    projectileSize: 1
     projectilesCount: 3
     projectileLifetime: 7
-  - abilityCooldown: 8
+  - abilityCooldown: 12
     projectileSpeed: 9
     damage: 7
-    projectileSize: 1.25
-    projectilesCount: 5
+    projectileSize: 1
+    projectilesCount: 4
+    projectileLifetime: 7
+  - abilityCooldown: 12
+    projectileSpeed: 9
+    damage: 10
+    projectileSize: 1
+    projectilesCount: 4
     projectileLifetime: 7

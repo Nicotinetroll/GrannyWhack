@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42aa83e6078ee1941b2f913d17e7c367, type: 3}
   m_Name: Lightning Amulet Ability Data
   m_EditorClassIdentifier: 
-  isCharacterSpecific: 1
+  isCharacterSpecific: 0
   allowedCharacterName: Wizard
   minCharacterLevel: 1
   type: 2
@@ -52,6 +52,12 @@ MonoBehaviour:
     durationBetweenHits: 0.4
   - damage: 12.3
     additionalDamage: 9.6
+    additionalDamageRadius: 1
+    lightningsCount: 4
+    abilityCooldown: 5
+    durationBetweenHits: 0.3
+  - damage: 14
+    additionalDamage: 11
     additionalDamageRadius: 1
     lightningsCount: 4
     abilityCooldown: 5

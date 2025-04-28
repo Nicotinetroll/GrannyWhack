@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8740bb68838ccbe46ac569ac22b6786b, type: 3}
   m_Name: PoisonCloudAbilityData
   m_EditorClassIdentifier: 
-  isCharacterSpecific: 1
+  isCharacterSpecific: 0
   allowedCharacterName: Ninja
   minCharacterLevel: 1
   type: 12
