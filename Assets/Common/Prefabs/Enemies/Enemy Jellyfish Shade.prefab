@@ -103,7 +103,7 @@ MonoBehaviour:
     type: 3}
   rangedAttackCooldown: 3
   useAttackAnimation: 1
-  minDistanceToPlayerForAttacking: 1
+  minDistanceToPlayerForAttacking: 100
   changeSpeedDuringAttackAnimation: 1
   speedDuringAttackAnimation: 0
 --- !u!58 &1982295306974641257
