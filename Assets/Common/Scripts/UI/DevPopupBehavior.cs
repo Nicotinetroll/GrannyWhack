@@ -1,12 +1,6 @@
 /************************************************************
- *  DevPopupBehavior.cs – DEV panel in Lobby   (2025‑05‑04)
- *  • Add / delete gold
- *  • Live‑tweak Level, Damage, HP (sliders)
- *  • Hard‑reset (wipes *all* progress: currency, upgrades,
- *    rerolls, play‑time, kills, characters, PlayerPrefs,
- *    persistent save‑files) and reloads the scene
- *  • Broadcasts UI refresh to SelectedCharacterUIBehavior
- *    & EvoAbilitiesDisplayBehavior after every change
+ *  DevPopupBehavior.cs – DEV panel in Lobby   (2025‑05‑05)
+ *  ▸ fixes opening‑value & level‑change bugs
  ************************************************************/
 
 using System;
@@ -20,205 +14,179 @@ using UnityEngine.UI;
 using OctoberStudio.Audio;
 using OctoberStudio.Abilities;
 using OctoberStudio.Save;
-using OctoberStudio.Systems;
-using OctoberStudio.UI;
 using OctoberStudio.Upgrades;
 
 namespace OctoberStudio.UI
 {
     public sealed class DevPopupBehavior : MonoBehaviour
     {
-    /*───────────────  Inspector  ───────────────*/
+    /*───────── Inspector ─────────*/
         [Header("Databases")]
         [SerializeField] CharactersDatabase charactersDb;
         [SerializeField] AbilitiesDatabase  abilitiesDb;
+        [SerializeField] UpgradesDatabase   upgradesDb;
 
-        [Header("Currency ID (must match DB)")]
+        [Header("Currency key")]
         [SerializeField] string currencyID = "gold";
 
         [Header("Buttons")]
-        [SerializeField] Button  closeBtn;
-        [SerializeField] Button  addGoldBtn;
-        [SerializeField] Button  deleteBtn;
-        [SerializeField] Button  resetBtn;
+        [SerializeField] Button closeBtn, addGoldBtn, deleteBtn, resetBtn;
 
         [Header("Sliders")]
-        [SerializeField] Slider  levelSlider;  // int  1–25
-        [SerializeField] Slider  dmgSlider;    // float 1–15.0
-        [SerializeField] Slider  hpSlider;     // float 20–500
+        [SerializeField] Slider levelSlider, dmgSlider, hpSlider;
 
         [Header("Value labels")]
-        [SerializeField] TMP_Text levelValLbl;
-        [SerializeField] TMP_Text dmgValLbl;
-        [SerializeField] TMP_Text hpValLbl;
+        [SerializeField] TMP_Text levelValLbl, dmgValLbl, hpValLbl;
 
         [Header("Original labels")]
-        [SerializeField] TMP_Text origLevelLbl;
-        [SerializeField] TMP_Text origDmgLbl;
-        [SerializeField] TMP_Text origHpLbl;
+        [SerializeField] TMP_Text origLevelLbl, origDmgLbl, origHpLbl;
 
         [Header("Gold label")]
         [SerializeField] TMP_Text goldLbl;
 
-    /*───────────────  runtime  ───────────────*/
-        CharactersSave charsSave;
-        CurrencySave   curSave;
+    /*───────── runtime ─────────*/
+        CharactersSave chars;
+        CurrencySave   gold;
         UpgradesSave   upgSave;
-
-        CharacterData charData;
+        CharacterData  cData;
 
         int   baseLvl;
-        float baseDmg;
-        float baseHP;
+        float baseDmg, baseHP;
 
-        bool popupOpen;
+        bool  open;
+        InputAction escA, setA;
 
-        InputAction escAction;
-        InputAction settingsAction;
-
-    /*──────────────────────  Awake  ─────────────────────*/
+    /*────────────────── Awake ──────────────────*/
         void Awake()
         {
-            charsSave = GameController.SaveManager.GetSave<CharactersSave>("Characters");
-            curSave   = GameController.SaveManager.GetSave<CurrencySave>(currencyID);
-            upgSave   = GameController.SaveManager.GetSave<UpgradesSave>("Upgrades Save");
+            chars   = GameController.SaveManager.GetSave<CharactersSave>("Characters");
+            gold    = GameController.SaveManager.GetSave<CurrencySave>(currencyID);
+            upgSave = GameController.SaveManager.GetSave<UpgradesSave>("Upgrades Save");
 
-            /* UI hooks */
-            addGoldBtn .onClick.AddListener(AddGold);
-            deleteBtn  .onClick.AddListener(DeleteEverything);
-            resetBtn   .onClick.AddListener(ResetStats);
-            closeBtn   .onClick.AddListener(Close);
+            addGoldBtn.onClick.AddListener(AddGold);
+            deleteBtn .onClick.AddListener(DeleteEverything);
+            resetBtn  .onClick.AddListener(ResetStats);
+            closeBtn  .onClick.AddListener(Close);
 
             levelSlider.onValueChanged.AddListener(OnLevel);
             dmgSlider  .onValueChanged.AddListener(OnDmg);
             hpSlider   .onValueChanged.AddListener(OnHp);
 
-            curSave.onGoldAmountChanged += UpdateGoldLabel;
+            gold.onGoldAmountChanged += a => goldLbl.text = $"Current Golds: {a}";
         }
 
-    /*──────────────────────  Open / Close  ─────────────────────*/
+    /*────────────────── helpers ──────────────────*/
+        int   GlobalDmgLvl  => GameController.UpgradesManager.GetUpgradeLevel(UpgradeType.Damage);
+        float GlobalDmgMult => GameController.UpgradesManager.GetUpgadeValue(UpgradeType.Damage);
+
+        float CalcDamage(int lvl)
+        {
+            float raw = cData.BaseDamage + CharacterLevelSystem.GetDamageBonus(cData);
+            return raw * (GlobalDmgLvl > 0 ? GlobalDmgMult : 1f);
+        }
+        float CalcHP(int lvl) => cData.BaseHP; // extend if you add HP upgrades
+
+    /*────────────────── Open / Close ──────────────────*/
         public void Open()
         {
-            if (popupOpen) return;
-            popupOpen = true;
+            if (open) return;
+            open = true;
             gameObject.SetActive(true);
 
-            /* Current character & true base stats */
-            charData  = charactersDb.GetCharacterData(charsSave.SelectedCharacterId);
-            baseLvl   = 1;
-            baseDmg   = charData.BaseDamage;
-            baseHP    = charData.BaseHP;
+            cData   = charactersDb.GetCharacterData(chars.SelectedCharacterId);
+            baseLvl = 1;
+            baseDmg = CalcDamage(baseLvl);
+            baseHP  = CalcHP(baseLvl);
 
-            /* Saved overrides (use only if within legal slider range) */
-            int   savedLvl = CharacterLevelSystem.GetLevel(charData);
+            int   savedLvl = CharacterLevelSystem.GetLevel(cData);
+            float savedDmg = chars.CharacterDamage >= 1f ? chars.CharacterDamage : CalcDamage(savedLvl);
+            float savedHP  = chars.CharacterHealth >= 20f ? chars.CharacterHealth : CalcHP(savedLvl);
 
-            float savedDmg = (charsSave.CharacterDamage >= 1f)
-                            ? charsSave.CharacterDamage
-                            : baseDmg + CharacterLevelSystem.GetDamageBonus(charData);
+            levelSlider.Configure(1, 25,  savedLvl, true);
+            dmgSlider  .Configure(1f,15f, savedDmg,false);
+            hpSlider   .Configure(20f,500f,savedHP,false);
 
-            float savedHP  = (charsSave.CharacterHealth >= 20f)
-                            ? charsSave.CharacterHealth
-                            : baseHP;
-
-            /* Configure sliders */
-            levelSlider.Configure( 1, 25,   savedLvl, true );
-            dmgSlider  .Configure( 1f, 15f, savedDmg, false);
-            hpSlider   .Configure(20f, 500f,savedHP , false);
-
-            /* Labels */
-            RefreshValLabels();
+            RefreshValueLabels();
             origLevelLbl.text = $"Original Character Level:   {baseLvl}";
             origDmgLbl  .text = $"Original Character Damage: {baseDmg:0.0}";
             origHpLbl   .text = $"Original Character Health: {baseHP:0}";
-            UpdateGoldLabel(curSave.Amount);
+            goldLbl.text      = $"Current Golds: {gold.Amount}";
 
-            /* ESC / Settings hooks */
-            var asset = GameController.InputManager.InputAsset.asset;
-            escAction      = asset.FindAction("Back");
-            settingsAction = asset.FindAction("Settings");
-
-            if (escAction      != null) escAction     .performed += Esc;
-            if (settingsAction != null) settingsAction.performed += Esc;
+            var map = GameController.InputManager.InputAsset.asset;
+            escA = map.FindAction("Back");
+            setA = map.FindAction("Settings");
+            if (escA != null) escA.performed += OnEsc;
+            if (setA != null) setA.performed += OnEsc;
 
             EventSystem.current.SetSelectedGameObject(closeBtn.gameObject);
         }
 
         void Close()
         {
-            if (!popupOpen) return;
-            popupOpen = false;
+            if (!open) return;
+            open = false;
 
-            if (escAction      != null) escAction     .performed -= Esc;
-            if (settingsAction != null) settingsAction.performed -= Esc;
+            if (escA != null) escA.performed -= OnEsc;
+            if (setA != null) setA.performed -= OnEsc;
 
-            /* Flush all modified saves */
             GameController.SaveManager.Save(true);
-
             gameObject.SetActive(false);
         }
-        void Esc(InputAction.CallbackContext _) => Close();
+        void OnEsc(InputAction.CallbackContext _) => Close();
 
-    /*──────────────────────  Slider callbacks  ─────────────────────*/
+    /*────────────────── slider callbacks ──────────────────*/
         void OnLevel(float v)
         {
             int lvl = Mathf.Clamp(Mathf.RoundToInt(v), 1, 25);
             levelSlider.SetValueWithoutNotify(lvl);
-            CharacterLevelSystem.SetLevel(charData, lvl);
+            CharacterLevelSystem.SetLevel(cData, lvl);
+
+            if (chars.CharacterDamage < 1f) dmgSlider.SetValueWithoutNotify(CalcDamage(lvl));
+            if (chars.CharacterHealth < 20f) hpSlider.SetValueWithoutNotify(CalcHP(lvl));
 
             BroadcastUI();
-            RefreshValLabels();
+            RefreshValueLabels();
         }
 
         void OnDmg(float v)
         {
             float dmg = Mathf.Clamp(Mathf.Round(v * 10f) * 0.1f, 1f, 15f);
             dmgSlider.SetValueWithoutNotify(dmg);
-            charsSave.CharacterDamage = dmg;
-
+            chars.CharacterDamage = dmg;
             BroadcastUI();
-            RefreshValLabels();
+            RefreshValueLabels();
         }
 
         void OnHp(float v)
         {
             float hp = Mathf.Clamp(Mathf.Round(v / 5f) * 5f, 20f, 500f);
             hpSlider.SetValueWithoutNotify(hp);
-            charsSave.CharacterHealth = hp;
-
+            chars.CharacterHealth = hp;
             BroadcastUI();
-            RefreshValLabels();
+            RefreshValueLabels();
         }
 
-        void RefreshValLabels()
+        void RefreshValueLabels()
         {
             levelValLbl.text = $"Character Level:   {levelSlider.value:0}";
             dmgValLbl  .text = $"Character Damage: {dmgSlider.value:0.0}";
             hpValLbl   .text = $"Character Health: {hpSlider.value:0}";
         }
 
-    /*──────────────────────  Buttons  ─────────────────────*/
-        void AddGold()
-        {
-            GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
-            curSave.Deposit(1_000);                       // event updates label
-        }
+    /*────────────────── Buttons ──────────────────*/
+        void AddGold() => gold.Deposit(1000);
 
-        /// <summary>Hard‑reset: wipes *everything* and reloads scene.</summary>
         void DeleteEverything()
         {
             GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
-            Debug.LogWarning("[DevPopup] FULL RESET initiated…");
 
-            /* 1 ── wipe every in‑memory save ------------------------------ */
-            charsSave.ResetAll();
-            curSave  .ResetAll();
-            upgSave ?.ResetAll();
-
+            chars.ResetAll();
+            gold.ResetAll();
+            upgSave?.ResetAll();
             GameController.SaveManager.GetSave<CharacterLevelSave>("CharacterLevels")?.ResetAll();
-            GameController.SaveManager.GetSave<StageSave>("Stage")                   ?.ResetAll();
-            GameController.SaveManager.GetSave<CurrencySave>("Reroll")               ?.ResetAll();
+            GameController.SaveManager.GetSave<StageSave>("Stage")?.ResetAll();
+            GameController.SaveManager.GetSave<CurrencySave>("Reroll")?.ResetAll();
 
-            /* 2 ── nuke disk & PlayerPrefs -------------------------------- */
             PlayerPrefs.DeleteAll();
             PlayerPrefs.Save();
 
@@ -226,44 +194,36 @@ namespace OctoberStudio.UI
             if (Directory.Exists(dir))
                 foreach (var f in Directory.GetFiles(dir)) File.Delete(f);
 
-            /* 3 ── write a fresh blank save file -------------------------- */
             GameController.SaveManager.Save(true);
-
-            /* 4 ── reload current scene ----------------------------------- */
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 
         void ResetStats()
         {
-            GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
-
-            CharacterLevelSystem.SetLevel(charData, baseLvl);
-            charsSave.CharacterDamage = baseDmg;
-            charsSave.CharacterHealth = baseHP;
+            CharacterLevelSystem.SetLevel(cData, baseLvl);
+            chars.CharacterDamage = 0f;
+            chars.CharacterHealth = 0f;
 
             levelSlider.SetValueWithoutNotify(baseLvl);
             dmgSlider  .SetValueWithoutNotify(baseDmg);
             hpSlider   .SetValueWithoutNotify(baseHP);
 
             BroadcastUI();
-            RefreshValLabels();
+            RefreshValueLabels();
         }
 
-    /*──────────────────────  Helpers  ─────────────────────*/
-        void UpdateGoldLabel(int amt) => goldLbl.text = $"Current Golds: {amt}";
-
-        /// <summary>Notify all onscreen UI panels to redraw.</summary>
+    /*────────────────── helpers ──────────────────*/
         void BroadcastUI()
         {
             foreach (var ui in FindObjectsOfType<SelectedCharacterUIBehavior>())
-                ui.Setup(charData, abilitiesDb);
+                ui.Setup(cData, abilitiesDb);
 
             foreach (var evo in FindObjectsOfType<EvoAbilitiesDisplayBehavior>())
                 evo.RefreshDisplay();
         }
     }
 
-    /*────────── Slider extension ──────────*/
+    /*──── slider helper ────*/
     static class SliderExt
     {
         public static void Configure(this Slider s, float min, float max, float val, bool whole)

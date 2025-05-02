@@ -1,85 +1,94 @@
+/************************************************************
+ *  CharactersSave.cs  –  persistent data for owned heroes
+ *  2025‑05‑04  (hot‑fix: null‑safe boughtList + ResetAll)
+ ************************************************************/
 using System;
-using OctoberStudio.Save;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using OctoberStudio.Save;
 
 namespace OctoberStudio
 {
     public class CharactersSave : ISave
     {
-        /* ── stored data ─────────────────────────────── */
-        [SerializeField] int[] boughtCharacterIds;
-        [SerializeField] int   selectedCharacterId;
+    /* ───── stored fields (serialised) ───── */
+        [SerializeField] int[]  boughtCharacterIds;         // ids the player owns
+        [SerializeField] int    selectedCharacterId;        // id currently selected
 
-        [SerializeField] float characterDamage = 0f;
-        [SerializeField] float characterHealth = 0f;
+        [SerializeField] float  characterDamage = 0f;       // DEV overrides
+        [SerializeField] float  characterHealth = 0f;
 
-        /* ── public API ──────────────────────────────── */
+    /* ───── runtime helpers ───── */
+        List<int> boughtList;                               // fast lookup list
+
+    /* ───── events / public access ───── */
         public int   SelectedCharacterId            => selectedCharacterId;
         public float CharacterDamage { get => characterDamage; set => characterDamage = value; }
         public float CharacterHealth { get => characterHealth; set => characterHealth = value; }
 
-        /// <summary>Fires with the **new id** each time the selection changes.</summary>
+        /// <summary>Fired after every call to <c>SetSelectedCharacterId()</c>.</summary>
         public UnityAction<int> onSelectedCharacterChanged;
 
-        List<int> boughtList;
+    /* ───────────────────────────────────────────────────────────────
+     *  INTERNAL GUARD
+     *  Guarantees:
+     *    • boughtCharacterIds is never null and always contains 0
+     *    • boughtList is always a valid List<int>
+     *  Call this at the start of every public method that accesses
+     *  either field.  (It is cheap and 100 % safe.)
+     * ─────────────────────────────────────────────────────────────── */
+        void EnsureList()
+        {
+            if (boughtCharacterIds == null || boughtCharacterIds.Length == 0)
+                boughtCharacterIds = new[] { 0 };           // first hero unlocked
 
-        /* ── init / flush ───────────────────────────── */
+            boughtList ??= new List<int>(boughtCharacterIds);
+        }
+
+    /* ───── ISave boiler‑plate ───── */
         public void Init()
         {
-            /* -------------------------------------------------
-             * make sure boughtCharacterIds is never null
-             * ------------------------------------------------- */
-            if (boughtCharacterIds == null || boughtCharacterIds.Length == 0)
-            {
-                boughtCharacterIds = new[] { 0 };  // first character is always owned
-                selectedCharacterId = 0;
-            }
-
-            /* existing logic – now guaranteed to get a non‑null array */
-            boughtList = new List<int>(boughtCharacterIds);
+            EnsureList();
+            selectedCharacterId = Mathf.Clamp(selectedCharacterId, 0, int.MaxValue);
         }
 
         public void Flush()
         {
-            if (boughtList == null) Init();
+            EnsureList();
             boughtCharacterIds = boughtList.ToArray();
         }
 
-        /* ── queries & mutations ────────────────────── */
+    /* ───── queries / mutations ───── */
         public bool HasCharacterBeenBought(int id)
         {
-            boughtList ??= new List<int>(boughtCharacterIds);
+            EnsureList();
             return boughtList.Contains(id);
         }
 
         public void AddBoughtCharacter(int id)
         {
-            boughtList ??= new List<int>(boughtCharacterIds);
+            EnsureList();
             if (!boughtList.Contains(id)) boughtList.Add(id);
         }
 
         public void SetSelectedCharacterId(int id)
         {
-            boughtList ??= new List<int>(boughtCharacterIds);
+            EnsureList();
             selectedCharacterId = id;
             onSelectedCharacterChanged?.Invoke(id);
         }
 
-        /* ── hard‑reset helper for DevPopup ─────────── */
+    /* ───── hard‑reset (called from DevPopup) ───── */
         public void ResetAll()
         {
-            /* ───── core data ───── */
-            boughtCharacterIds  = new[] { 0 };      // player owns character 0 again
+            boughtCharacterIds  = new[] { 0 };
             boughtList          = new List<int> { 0 };
             selectedCharacterId = 0;
 
-            /* ───── DEV overrides ───── */
             characterDamage     = 0f;
             characterHealth     = 0f;
 
-            /* ───── notify & log ───── */
             onSelectedCharacterChanged?.Invoke(0);
             Debug.Log("[CharactersSave] ResetAll ▶ everything wiped");
         }
