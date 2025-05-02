@@ -7,54 +7,59 @@ namespace OctoberStudio
 {
     public class CharactersSave : ISave
     {
+        /* ‑‑‑‑ kúpené & výber ‑‑‑‑ */
         [SerializeField] int[] boughtCharacterIds;
-        [SerializeField] int selectedCharacterId;
+        [SerializeField] int   selectedCharacterId;
+
+        /* ‑‑‑‑ DEV nastaviteľné štatistiky ‑‑‑‑ */
+        [SerializeField] float characterDamage = 1f;
+        [SerializeField] float characterHealth = 50f;
+
+        /* public API */
+        public int   SelectedCharacterId  => selectedCharacterId;
+        public float CharacterDamage      { get => characterDamage; set => characterDamage = value; }
+        public float CharacterHealth      { get => characterHealth; set => characterHealth = value; }
 
         public UnityAction onSelectedCharacterChanged;
 
-        public int SelectedCharacterId => selectedCharacterId;
+        List<int> boughtList;
 
-        private List<int> BoughtCharacterIds { get; set; }
-
+        /* ───────────────────── init ───────────────────── */
         public void Init()
         {
-            if (boughtCharacterIds == null)
+            if (boughtCharacterIds == null || boughtCharacterIds.Length == 0)
             {
-                boughtCharacterIds = new int[] { 0 };
-
+                boughtCharacterIds = new[] { 0 };   // prvá postava zdarma
                 selectedCharacterId = 0;
             }
-            BoughtCharacterIds = new List<int>(boughtCharacterIds);
+            boughtList = new List<int>(boughtCharacterIds);
         }
 
+        /* ───────────────────── store / query ───────────────────── */
         public bool HasCharacterBeenBought(int id)
         {
-            if (BoughtCharacterIds == null) Init();
-
-            return BoughtCharacterIds.Contains(id);
+            if (boughtList == null) Init();
+            return boughtList.Contains(id);
         }
 
         public void AddBoughtCharacter(int id)
         {
-            if (BoughtCharacterIds == null) Init();
-
-            BoughtCharacterIds.Add(id);
+            if (boughtList == null) Init();
+            if (!boughtList.Contains(id)) boughtList.Add(id);
         }
 
         public void SetSelectedCharacterId(int id)
         {
-            if (BoughtCharacterIds == null) Init();
-
+            if (boughtList == null) Init();
             selectedCharacterId = id;
-
             onSelectedCharacterChanged?.Invoke();
         }
 
+        /* ───────────────────── save flush ───────────────────── */
         public void Flush()
         {
-            if (BoughtCharacterIds == null) Init();
-
-            boughtCharacterIds = BoughtCharacterIds.ToArray();
+            if (boughtList == null) Init();
+            boughtCharacterIds = boughtList.ToArray();
         }
     }
 }
