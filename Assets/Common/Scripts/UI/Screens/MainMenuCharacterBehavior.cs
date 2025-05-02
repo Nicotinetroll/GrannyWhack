@@ -50,7 +50,7 @@ namespace OctoberStudio.UI
             charactersButton.onClick.RemoveListener(ShowCharacters);
         }
 
-        private void UpdateSelectedDisplay()
+        private void UpdateSelectedDisplay(int _ = 0)
         {
             if (selectedDisplay == null || charactersDatabase == null || abilitiesDatabase == null)
                 return;

@@ -9,8 +9,9 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using OctoberStudio.Abilities;
-using OctoberStudio.Extensions;   // ← kvôli SetAlpha()
+using OctoberStudio.Extensions;
 using OctoberStudio.UI;
+using System.IO;
 
 namespace OctoberStudio.UI
 {
@@ -43,6 +44,11 @@ namespace OctoberStudio.UI
         [SerializeField] private Button leftButton;
         [SerializeField] private Button rightButton;
 
+        /* -------- NOVÉ: DEV -------- */
+        [SerializeField] private Button          devButton;
+        [SerializeField] private DevPopupBehavior devPopup;
+        /* --------------------------- */
+
         [Space]
         [SerializeField] private Sprite playButtonEnabledSprite;
         [SerializeField] private Sprite playButtonDisabledSprite;
@@ -53,27 +59,26 @@ namespace OctoberStudio.UI
         [SerializeField] private Button        confirmButton;
         [SerializeField] private Button        cancelButton;
 
-        /* =========================== NOVÉ HOVNÁ ============================ */
+        /* =========================== STAGE POPUP ============================ */
         [Space, Header("Stage Popup")]
-        [SerializeField] private Button        stagePopupOpenButton;   // Button_Info
-        [SerializeField] private Image         stagePopupBG;           // StagePopupBG
-        [SerializeField] private RectTransform stagePopupRect;         // StagePopup panel
-        [SerializeField] private Button        stagePopupCloseButton;  // CloseButton
+        [SerializeField] private Button        stagePopupOpenButton;
+        [SerializeField] private Image         stagePopupBG;
+        [SerializeField] private RectTransform stagePopupRect;
+        [SerializeField] private Button        stagePopupCloseButton;
         /* =================================================================== */
 
         private StageSave      stageSave;
         private CharactersSave charactersSave;
+
         private bool stagePopupActive;
+        private InputAction backAction;        // Back = Esc/B button
+        private InputAction settingsAction;    // Settings = Esc (v menu)
 
-        /* ========================= ESC  handler ============================ */
-        private void OnBackPopup(InputAction.CallbackContext _)
-        {
-            if (!stagePopupActive) return;    // popup už neexistuje, ignoruj
-            CloseStagePopup();
-        }
-        /* =================================================================== */
+        /* ========================= ESC handler ============================ */
+        private void OnBackPopup(InputAction.CallbackContext _) => CloseStagePopup();
+        /* ================================================================= */
 
-        /* ------------------------------------------------------------------- */
+        /* ------------------------------------------------------------------ */
         private void Awake()
         {
             /* pôvodné listenery */
@@ -83,23 +88,26 @@ namespace OctoberStudio.UI
             confirmButton.onClick.AddListener(ConfirmButtonClicked);
             cancelButton .onClick.AddListener(CancelButtonClicked);
 
-            /* nové listenery – Stage Popup */
-            if (stagePopupOpenButton  != null) stagePopupOpenButton .onClick.AddListener(OpenStagePopup);
-            if (stagePopupCloseButton != null) stagePopupCloseButton.onClick.AddListener(CloseStagePopup);
+            /* StagePopup */
+            if (stagePopupOpenButton)   stagePopupOpenButton .onClick.AddListener(OpenStagePopup);
+            if (stagePopupCloseButton)  stagePopupCloseButton.onClick.AddListener(CloseStagePopup);
+
+            /* DEV button */
+            if (devButton && devPopup) devButton.onClick.AddListener(() => devPopup.Open());
         }
 
         private void Start()
         {
-            // Stage save
+            /* Stage save */
             stageSave = GameController.SaveManager.GetSave<StageSave>("Stage");
             stageSave.onSelectedStageChanged += InitStage;
 
-            // Character save & header display
+            /* Characters save & header */
             charactersSave = GameController.SaveManager.GetSave<CharactersSave>("Characters");
             charactersSave.onSelectedCharacterChanged += UpdateSelectedDisplay;
             UpdateSelectedDisplay();
 
-            // Continue popup or default
+            /* Continue popup or default */
             if (stageSave.IsPlaying && GameController.FirstTimeLoaded)
             {
                 continueBackgroundImage.gameObject.SetActive(true);
@@ -113,20 +121,18 @@ namespace OctoberStudio.UI
                 stageSave.SetSelectedStageId(stageSave.MaxReachedStageId);
             }
 
-            /* Stage Popup default OFF */
-            if (stagePopupBG   != null) stagePopupBG  .gameObject.SetActive(false);
-            if (stagePopupRect != null) stagePopupRect.gameObject.SetActive(false);
+            /* StagePopup OFF */
+            if (stagePopupBG)   stagePopupBG.gameObject  .SetActive(false);
+            if (stagePopupRect) stagePopupRect.gameObject.SetActive(false);
 
-            /* Input hooks */
+            /* Input hook pre zmenu zariadenia */
             GameController.InputManager.onInputChanged += OnInputChanged;
-            GameController.InputManager.InputAsset.UI.Settings.performed += OnSettingsInputClicked;
         }
 
-        /* ===================== METÓDY PRE STAGE POPUP ====================== */
-
+        /* ===================== STAGE POPUP ====================== */
         private void OpenStagePopup()
         {
-            if (stagePopupActive) return;         // už otvorené → vypadni
+            if (stagePopupActive) return;
             stagePopupActive = true;
 
             GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
@@ -134,56 +140,45 @@ namespace OctoberStudio.UI
             stagePopupBG  ?.gameObject.SetActive(true);
             stagePopupRect?.gameObject.SetActive(true);
 
-            if (stagePopupCloseButton != null)
+            if (stagePopupCloseButton)
                 EventSystem.current.SetSelectedGameObject(stagePopupCloseButton.gameObject);
 
-            // zapíš hooky
-            var ui = GameController.InputManager.InputAsset.UI;
-            ui.Back.performed     += OnBackPopup;
-            ui.Settings.performed += OnBackPopup;
-            ui.Settings.performed -= OnSettingsInputClicked;     // vypni pôvodný
+            /* nájdeme akcie z InputActionAsset */
+            var asset = GameController.InputManager.InputAsset.asset;
+            backAction     = asset.FindAction("Back");
+            settingsAction = asset.FindAction("Settings");
+
+            if (backAction != null)     backAction.performed     += OnBackPopup;
+            if (settingsAction != null) settingsAction.performed += OnBackPopup;
         }
 
         private void CloseStagePopup()
         {
-            if (!stagePopupActive) return;            // už zavreté – vypadni
-            stagePopupActive = false;                 // zamkni, aby dvojklik nešiel
+            if (!stagePopupActive) return;
+            stagePopupActive = false;
 
             GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
 
-            /* ------------- BEZPEČNÉ VYPÍNANIE ------------- */
-            if (stagePopupBG)        // ← Unity "fake null" check
-                stagePopupBG.gameObject.SetActive(false);
+            if (stagePopupBG)   stagePopupBG  .gameObject.SetActive(false);
+            if (stagePopupRect) stagePopupRect.gameObject.SetActive(false);
 
-            if (stagePopupRect)
-                stagePopupRect.gameObject.SetActive(false);
+            if (backAction != null)     backAction.performed     -= OnBackPopup;
+            if (settingsAction != null) settingsAction.performed -= OnBackPopup;
 
-            /* ------------- INPUT ODPOJENIE ------------- */
-            var ui = GameController.InputManager.InputAsset.UI;
-            ui.Back.performed     -= OnBackPopup;
-            ui.Settings.performed -= OnBackPopup;
-            ui.Settings.performed += OnSettingsInputClicked;
-
-            /* ------------- FOCUS SPAŤ NA PLAY ------------- */
-            if (playButton) EventSystem.current.SetSelectedGameObject(playButton.gameObject);
+            EventSystem.current.SetSelectedGameObject(playButton.gameObject);
         }
 
+        /* =========================== ZVYŠOK =========================== */
 
-
-
-        /* =========================== ZVYŠOK KÓDU =========================== */
-
-        private void UpdateSelectedDisplay()
+        private void UpdateSelectedDisplay(int _ = 0)
         {
             if (selectedDisplay == null
-             || charactersDatabase == null
-             || abilitiesDatabase == null
-             || charactersSave == null)
+                || charactersDatabase == null
+                || abilitiesDatabase == null
+                || charactersSave == null)
                 return;
 
-            var data = charactersDatabase.GetCharacterData(
-                charactersSave.SelectedCharacterId);
-
+            var data = charactersDatabase.GetCharacterData(charactersSave.SelectedCharacterId);
             selectedDisplay.Setup(data, abilitiesDatabase);
         }
 
@@ -198,28 +193,19 @@ namespace OctoberStudio.UI
         {
             var stage = stagesDatabase.GetStage(stageId);
 
-            stageLabel      .text   = stage.DisplayName;
-            stageNumberLabel.text   = $"Stage {stageId + 1}";
+            stageLabel      .text = stage.DisplayName;
+            stageNumberLabel.text = $"Stage {stageId + 1}";
             stageIcon       .sprite = stage.Icon;
 
-            /* --------- NOVÉ TEXTY --------- */
-            if (stageDescriptionLabel != null)
-                stageDescriptionLabel.text = stage.Description;
-
-            if (stageRecDamageLabel != null)
-                stageRecDamageLabel.text = $"{stage.RecommendedDamage:N0}";
-
-            if (stageRecHealthLabel != null)
-                stageRecHealthLabel.text = $"{stage.RecommendedHealth:N0}";
-            /* -------------------------------- */
+            stageDescriptionLabel?.SetText(stage.Description);
+            stageRecDamageLabel ?.SetText($"{stage.RecommendedDamage:N0}");
+            stageRecHealthLabel ?.SetText($"{stage.RecommendedHealth:N0}");
 
             bool locked = stageId > stageSave.MaxReachedStageId;
             lockImage.gameObject.SetActive(locked);
 
             playButton.interactable = !locked;
-            playButton.image.sprite = locked
-                ? playButtonDisabledSprite
-                : playButtonEnabledSprite;
+            playButton.image.sprite = locked ? playButtonDisabledSprite : playButtonEnabledSprite;
 
             leftButton .gameObject.SetActive(!stageSave.IsFirstStageSelected);
             rightButton.gameObject.SetActive(stageId != stagesDatabase.StagesCount - 1);
@@ -232,18 +218,18 @@ namespace OctoberStudio.UI
                 EventSystem.current.SetSelectedGameObject(playButton.gameObject));
 
             GameController.InputManager.onInputChanged += OnInputChanged;
-            GameController.InputManager.InputAsset.UI.Settings.performed += OnSettingsInputClicked;
         }
 
         public void Close()
         {
             gameObject.SetActive(false);
             GameController.InputManager.onInputChanged -= OnInputChanged;
-            GameController.InputManager.InputAsset.UI.Settings.performed -= OnSettingsInputClicked;
-            /* istota – odpoj Back keby popup zostal visieť */
-            GameController.InputManager.InputAsset.UI.Back.performed -= OnBackPopup;
+
+            if (backAction != null)     backAction.performed     -= OnBackPopup;
+            if (settingsAction != null) settingsAction.performed -= OnBackPopup;
         }
 
+        /* ------------------- Buttons ------------------- */
         private void OnPlayButtonClicked()
         {
             stageSave.IsPlaying      = true;
@@ -272,12 +258,9 @@ namespace OctoberStudio.UI
 
         private void FallbackSelect(GameObject primary, GameObject secondary, GameObject tertiary)
         {
-            if (primary.activeSelf)
-                EventSystem.current.SetSelectedGameObject(primary);
-            else if (secondary.activeSelf)
-                EventSystem.current.SetSelectedGameObject(secondary);
-            else
-                EventSystem.current.SetSelectedGameObject(tertiary);
+            if (primary.activeSelf)      EventSystem.current.SetSelectedGameObject(primary);
+            else if (secondary.activeSelf) EventSystem.current.SetSelectedGameObject(secondary);
+            else                          EventSystem.current.SetSelectedGameObject(tertiary);
         }
 
         private void ConfirmButtonClicked()
@@ -292,14 +275,12 @@ namespace OctoberStudio.UI
             stageSave.IsPlaying = false;
             continueBackgroundImage
                 .DoAlpha(0, 0.3f)
-                .SetOnFinish(() =>
-                    continueBackgroundImage.gameObject.SetActive(false));
+                .SetOnFinish(() => continueBackgroundImage.gameObject.SetActive(false));
 
             continuePopupRect
                 .DoAnchorPosition(Vector2.down * 2500, 0.3f)
                 .SetEasing(EasingType.SineIn)
-                .SetOnFinish(() =>
-                    continuePopupRect.gameObject.SetActive(false));
+                .SetOnFinish(() => continuePopupRect.gameObject.SetActive(false));
 
             EventSystem.current.SetSelectedGameObject(playButton.gameObject);
         }
@@ -311,33 +292,28 @@ namespace OctoberStudio.UI
 
         private void OnInputChanged(InputType prev, InputType current)
         {
-            if (prev == InputType.UIJoystick)
-            {
-                /* ak je otvorený Stage Popup, drž fokus na ňom */
-                if (stagePopupRect != null && stagePopupRect.gameObject.activeSelf)
-                {
-                    EventSystem.current.SetSelectedGameObject(stagePopupCloseButton.gameObject);
-                    return;
-                }
+            if (prev != InputType.UIJoystick) return;
 
-                var toSelect = continueBackgroundImage.gameObject.activeSelf
-                    ? confirmButton.gameObject
-                    : playButton.gameObject;
-                EventSystem.current.SetSelectedGameObject(toSelect);
+            if (stagePopupActive)
+            {
+                EventSystem.current.SetSelectedGameObject(stagePopupCloseButton.gameObject);
+                return;
             }
+
+            var toSelect = continueBackgroundImage.gameObject.activeSelf
+                ? confirmButton.gameObject
+                : playButton.gameObject;
+            EventSystem.current.SetSelectedGameObject(toSelect);
         }
 
         private void OnDestroy()
         {
             stageSave.onSelectedStageChanged -= InitStage;
             GameController.InputManager.onInputChanged -= OnInputChanged;
-            GameController.InputManager.InputAsset.UI.Settings.performed -= OnSettingsInputClicked;
-            GameController.InputManager.InputAsset.UI.Back.performed     -= OnBackPopup;
+            if (backAction != null)     backAction.performed     -= OnBackPopup;
+            if (settingsAction != null) settingsAction.performed -= OnBackPopup;
             if (charactersSave != null)
                 charactersSave.onSelectedCharacterChanged -= UpdateSelectedDisplay;
-            var ui = GameController.InputManager.InputAsset.UI;
-            ui.Back.performed     -= OnBackPopup;
-            ui.Settings.performed -= OnBackPopup;
         }
     }
 }

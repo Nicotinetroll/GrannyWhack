@@ -2,6 +2,7 @@ using OctoberStudio.Easing;
 using OctoberStudio.Extensions;
 using OctoberStudio.UI;
 using OctoberStudio.Upgrades;
+using OctoberStudio.Save;                 // ← NEW
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -10,9 +11,7 @@ using UnityEngine.Events;
 
 namespace OctoberStudio
 {
-    /// <summary>
-    /// Handles movement, stats, damage, buffs, death & revive logic.
-    /// </summary>
+    /// <summary>Handles movement, stats, damage, buffs, death & revive logic.</summary>
     public class PlayerBehavior : MonoBehaviour
     {
         /* ───────── constants & singletons ───────── */
@@ -100,8 +99,11 @@ namespace OctoberStudio
         bool invincible = false;
         readonly List<EnemyBehavior> enemiesInside = new();
 
-        CharactersSave    charactersSave;
-        public  CharacterData     Data { get; private set; }
+        CharactersSave   charactersSave;
+        float baseDamageOverride = -1f;   // ← Dev‑popup overrides
+        int   baseHPOverride     = -1;
+
+        public CharacterData     Data { get; private set; }
         CharacterBehavior Character { get; set; }
 
         /* ─────────────────── Awake ─────────────────── */
@@ -112,20 +114,33 @@ namespace OctoberStudio
             charactersSave = GameController.SaveManager.GetSave<CharactersSave>("Characters");
             Data           = charactersDatabase.GetCharacterData(charactersSave.SelectedCharacterId);
 
+            /* --- prefab --- */
             Character = Instantiate(Data.Prefab).GetComponent<CharacterBehavior>();
             Character.transform.SetParent(transform);
             Character.transform.ResetLocal();
-
             baseCharacterScale = Character.transform.localScale;
 
-            healthbar.Init(Data.BaseHP);
+            // ------- OVERLAY FROM DEV SAVE ------- 
+            if (charactersSave.CharacterDamage > 0f)
+                baseDamageOverride = charactersSave.CharacterDamage;
+
+            if (charactersSave.CharacterHealth > 0f)
+                baseHPOverride = Mathf.RoundToInt(charactersSave.CharacterHealth);
+
+            /* --- Healthbar --- */
+            int initHP = baseHPOverride >= 0
+                ? baseHPOverride
+                : Mathf.RoundToInt(Data.BaseHP);   // <—  explicitný cast z float na int
+            healthbar.Init(initHP);
+            healthbar.Init(initHP);
             healthbar.SetAutoHideWhenMax(true);
             healthbar.SetAutoShowOnChanged(true);
 
+            /* --- recalcs --- */
             RecalculateMagnetRadius(1f);
             RecalculateMoveSpeed(1f);
-            RecalculateDamage(1f);
-            RecalculateMaxHP(1f);
+            UpdateDamage();                 // uses override if present
+            RecalculateMaxHP(1f);           // uses override if present
             RecalculateXPMuliplier(1f);
             RecalculateCooldownMuliplier(1f);
             RecalculateDamageReduction(0f);
@@ -139,19 +154,20 @@ namespace OctoberStudio
         }
 
         /* ─────────────────── Update ─────────────────── */
-        float lastDirY = 0f;    // remembers last vertical heading (+1 / 0 / -1)
+        float lastDirY = 0f;
 
-        private void Update()
+        void Update()
         {
             if (healthbar.IsZero) return;
 
+            /* --- dotka nepriateľa vo vnútri --- */
             for (int i = enemiesInside.Count - 1; i >= 0; i--)
             {
-                var enemy = enemiesInside[i];
-                if (Time.time - enemy.LastTimeDamagedPlayer > enemyInsideDamageInterval)
+                var e = enemiesInside[i];
+                if (Time.time - e.LastTimeDamagedPlayer > enemyInsideDamageInterval)
                 {
-                    TakeDamage(enemy.GetDamage());
-                    enemy.LastTimeDamagedPlayer = Time.time;
+                    TakeDamage(e.GetDamage());
+                    e.LastTimeDamagedPlayer = Time.time;
                 }
             }
 
@@ -161,13 +177,9 @@ namespace OctoberStudio
             float power = input.magnitude;
             Character.SetSpeed(power);
 
-            // Determine animator direction (based on sketch logic)
             if (power > 0.01f)
             {
-                if (Mathf.Abs(input.y) >= 0.90f)
-                    Character.SetDirection(Mathf.Sign(input.y)); // Up or Down
-                else
-                    Character.SetDirection(0f); // Side
+                Character.SetDirection(Mathf.Abs(input.y) >= 0.90f ? Mathf.Sign(input.y) : 0f);
             }
 
             if (power > 0.01f && Time.timeScale > 0f)
@@ -176,17 +188,15 @@ namespace OctoberStudio
 
                 if (StageController.FieldManager.ValidatePosition(transform.position + Vector3.right * move.x, fenceOffset))
                     transform.position += Vector3.right * move.x;
-
                 if (StageController.FieldManager.ValidatePosition(transform.position + Vector3.up * move.y, fenceOffset))
                     transform.position += Vector3.up * move.y;
 
                 collisionHelper.transform.localPosition = Vector3.zero;
 
                 float scaleX = Mathf.Abs(baseCharacterScale.x) * SizeMultiplier;
-                Character.transform.localScale = new Vector3(
-                    input.x >= 0 ? scaleX : -scaleX,
-                    baseCharacterScale.y * SizeMultiplier,
-                    baseCharacterScale.z);
+                Character.transform.localScale = new Vector3(input.x >= 0 ? scaleX : -scaleX,
+                                                             baseCharacterScale.y * SizeMultiplier,
+                                                             baseCharacterScale.z);
 
                 LookDirection = input.normalized;
             }
@@ -195,90 +205,73 @@ namespace OctoberStudio
                 LookDirection = Vector2.right;
             }
 
-            // ✅ Ensure healthbar is always upright and scaled correctly
             if (healthbar != null)
             {
                 healthbar.transform.localScale = Vector3.one;
-                healthbar.transform.rotation = Quaternion.identity;
+                healthbar.transform.rotation   = Quaternion.identity;
             }
         }
 
-
-
-
-
-
         /* ─────────── recalculation helpers ─────────── */
-        public void RecalculateMagnetRadius(float magMul)
-            => MagnetRadiusSqr = Mathf.Pow(defaultMagnetRadius * magMul, 2);
+        public void RecalculateMagnetRadius(float m)
+            => MagnetRadiusSqr = Mathf.Pow(defaultMagnetRadius * m, 2);
 
-        public void RecalculateMoveSpeed(float moveMul)
-            => Speed = speed * moveMul;
+        public void RecalculateMoveSpeed(float m)
+            => Speed = speed * m;
 
-        public void RecalculateDamage(float newPermanentMultiplier)
+        public void RecalculateDamage(float permMul)
         {
-            permanentDamageMultiplier = newPermanentMultiplier;
+            permanentDamageMultiplier = permMul;
             UpdateDamage();
         }
-
-        public void PushDamageBuff(float factor)
-        {
-            buffDamageMultiplier *= factor;
-            UpdateDamage();
-        }
-        public void PopDamageBuff(float factor)
-        {
-            buffDamageMultiplier /= factor;
-            UpdateDamage();
-        }
+        public void PushDamageBuff(float f) { buffDamageMultiplier *= f; UpdateDamage(); }
+        public void PopDamageBuff (float f) { buffDamageMultiplier /= f; UpdateDamage(); }
 
         void UpdateDamage()
         {
-            float raw  = Data.BaseDamage + CharacterLevelSystem.GetDamageBonus(Data);
+            float raw = baseDamageOverride >= 0f
+                ? baseDamageOverride
+                : (Data.BaseDamage + CharacterLevelSystem.GetDamageBonus(Data));
+
             float perm = raw * permanentDamageMultiplier;
             float buff = perm * buffDamageMultiplier;
+
             if (GameController.UpgradesManager.IsUpgradeAquired(UpgradeType.Damage))
                 buff *= GameController.UpgradesManager.GetUpgadeValue(UpgradeType.Damage);
+
             Damage = buff;
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool IsInsideMagnetRadius(Transform target)
-            => (transform.position - target.position).sqrMagnitude <= MagnetRadiusSqr;
+        public bool IsInsideMagnetRadius(Transform t)
+            => (transform.position - t.position).sqrMagnitude <= MagnetRadiusSqr;
 
-        public void RecalculateCooldownMuliplier(float newPermanentMultiplier)
+        public void RecalculateCooldownMuliplier(float permMul)
         {
-            permanentCooldownMultiplier = newPermanentMultiplier;
-            UpdateCooldownMultiplierValue();
-        }
-        public void PushCooldownBuff(float factor)
-        {
-            buffCooldownMultiplier *= factor;
-            UpdateCooldownMultiplierValue();
-        }
-        public void PopCooldownBuff(float factor)
-        {
-            buffCooldownMultiplier /= factor;
-            UpdateCooldownMultiplierValue();
-        }
-        void UpdateCooldownMultiplierValue()
-        {
+            permanentCooldownMultiplier = permMul;
             CooldownMultiplier = cooldownMultiplier
-                                 * permanentCooldownMultiplier
-                                 * buffCooldownMultiplier;
+                               * permanentCooldownMultiplier
+                               * buffCooldownMultiplier;
+        }
+        public void PushCooldownBuff(float f) { buffCooldownMultiplier *= f; RecalculateCooldownMuliplier(permanentCooldownMultiplier); }
+        public void PopCooldownBuff (float f) { buffCooldownMultiplier /= f; RecalculateCooldownMuliplier(permanentCooldownMultiplier); }
+
+        public void RecalculateMaxHP(float mul)
+        {
+            int rawBase = baseHPOverride >= 0
+                ? baseHPOverride
+                : Mathf.RoundToInt(Data.BaseHP);          // explicitný cast
+
+            int upgrade = Mathf.RoundToInt(GameController.UpgradesManager.GetUpgadeValue(UpgradeType.Health));
+
+            healthbar.ChangeMaxHP((rawBase + upgrade) * mul);
         }
 
-        public void RecalculateMaxHP(float maxHPMul)
-        {
-            var upgrade = GameController.UpgradesManager.GetUpgadeValue(UpgradeType.Health);
-            healthbar.ChangeMaxHP((Data.BaseHP + upgrade) * maxHPMul);
-        }
         public void RecalculateXPMuliplier(float m) => XPMultiplier = xpMultiplier * m;
 
         public void RecalculateDamageReduction(float percent)
         {
-            DamageReductionMultiplier =
-                (100f - initialDamageReductionPercent - percent) / 100f;
+            DamageReductionMultiplier = (100f - initialDamageReductionPercent - percent) / 100f;
             if (GameController.UpgradesManager.IsUpgradeAquired(UpgradeType.Armor))
                 DamageReductionMultiplier *= GameController.UpgradesManager.GetUpgadeValue(UpgradeType.Armor);
         }
@@ -286,14 +279,12 @@ namespace OctoberStudio
         public void RecalculateProjectileSpeedMultiplier(float m)
             => ProjectileSpeedMultiplier = initialProjectileSpeedMultiplier * m;
 
-        public void RecalculateSizeMultiplier(float m)      // ← updated
+        public void RecalculateSizeMultiplier(float m)
         {
             SizeMultiplier = initialSizeMultiplier * m;
             var s = baseCharacterScale * SizeMultiplier;
-            Character.transform.localScale = new Vector3(
-                Mathf.Abs(s.x),  // positive; Update() flips X sign as needed
-                s.y,
-                s.z);
+            Character.transform.localScale =
+                new Vector3(Mathf.Abs(s.x), s.y, s.z);   // X sign flips v Update()
         }
 
         public void RecalculateDurationMultiplier(float m)

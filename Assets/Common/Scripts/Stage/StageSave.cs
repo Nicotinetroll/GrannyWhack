@@ -1,3 +1,8 @@
+/************************************************************
+ *  StageSave.cs – persistent run / progress data
+ ************************************************************/
+using System;
+using System.Reflection;                 // ← NEW
 using OctoberStudio.Save;
 using UnityEngine;
 using UnityEngine.Events;
@@ -6,75 +11,89 @@ namespace OctoberStudio
 {
     public class StageSave : ISave
     {
-        [SerializeField] int maxReachedStageId;
-        [SerializeField] int selectedStageId;
+        /*──────────── basic stage progression ───────────*/
+        [SerializeField] int   maxReachedStageId;
+        [SerializeField] int   selectedStageId;
 
-        [SerializeField] bool isPlaying;
+        [SerializeField] bool  isPlaying;
         [SerializeField] float time;
-        [SerializeField] bool resetAbilities;
+        [SerializeField] bool  resetAbilities;          // true => wipe XP etc. on load
 
-        [SerializeField] int rerollCharges; // ✅ Stored reroll charges
+        /*──────────── rerolls ───────────*/
+        [SerializeField] int   rerollCharges;           // ✅ stored within a run
 
-        [SerializeField] int xpLevel;
+        /*──────────── XP / kills / playtime ───────────*/
+        [SerializeField] int   xpLevel;
         [SerializeField] float xp;
-        [SerializeField] int enemiesKilled;
-        
-        [SerializeField] private float timeAlive; // Add this to the top with the other fields
-        
+        [SerializeField] int   enemiesKilled;
+        [SerializeField] float timeAlive;               // added field
 
+        /*──────────── damage stats (overlay window) ───────────*/
+        [SerializeField] private float totalDamage;
+        [SerializeField] private float dps;
 
+        /*──────────── runtime helpers ───────────*/
         public bool loadedBefore = false;
 
         public event UnityAction<int> onSelectedStageChanged;
 
-        // STAGES
-        public int SelectedStageId => selectedStageId;
-        public int MaxReachedStageId => maxReachedStageId;
-        public bool IsFirstStageSelected => selectedStageId == 0;
+        /*──────────── public props ───────────*/
+        // stage selection / progress
+        public int  SelectedStageId           => selectedStageId;
+        public int  MaxReachedStageId         => maxReachedStageId;
+        public bool IsFirstStageSelected      => selectedStageId == 0;
         public bool IsMaxReachedStageSelected => selectedStageId == maxReachedStageId;
-        public bool IsPlaying { get => isPlaying; set => isPlaying = value; }
 
-        public float Time { get => time; set => time = value; }
-        public bool ResetStageData { get => resetAbilities; set => resetAbilities = value; }
-        public int XPLEVEL { get => xpLevel; set => xpLevel = value; }
-        public float XP { get => xp; set => xp = value; }
-        public int EnemiesKilled { get => enemiesKilled; set => enemiesKilled = value; }
-        
-        /// 🔁 Reroll Charges: Stored during a game run (per session).
-        public int RerollCharges
+        // run flags & data
+        public bool  IsPlaying        { get => isPlaying;       set => isPlaying = value; }
+        public float Time             { get => time;            set => time      = value; }
+        public bool  ResetStageData   { get => resetAbilities;  set => resetAbilities = value; }
+
+        // XP
+        public int   XPLEVEL          { get => xpLevel;         set => xpLevel   = value; }
+        public float XP               { get => xp;              set => xp        = value; }
+        public int   EnemiesKilled    { get => enemiesKilled;   set => enemiesKilled = value; }
+
+        // rerolls
+        public int   RerollCharges    { get => rerollCharges;   set => rerollCharges = value; }
+
+        // play‑time overlay
+        public float TimeAlive        { get => timeAlive;       set => timeAlive = value; }
+        public float TotalDamage      { get => totalDamage;     set => totalDamage = value; }
+        public float DPS              { get => dps;             set => dps = value; }
+
+        /*──────────── mutators ───────────*/
+        public void SetSelectedStageId(int id)
         {
-            get => rerollCharges;
-            set => rerollCharges = value;
+            selectedStageId = id;
+            onSelectedStageChanged?.Invoke(id);
         }
-        
-        public float TimeAlive
-        {
-            get => timeAlive;
-            set => timeAlive = value;
-        }
-        
-        // DAMAGE
-        [SerializeField] private float totalDamage;
-        [SerializeField] private float dps;
+        public void SetMaxReachedStageId(int id) => maxReachedStageId = id;
 
-        public float TotalDamage { get => totalDamage; set => totalDamage = value; }
-        public float DPS { get => dps; set => dps = value; }
-
-
-        public void SetSelectedStageId(int selectedStageId)
-        {
-            this.selectedStageId = selectedStageId;
-            onSelectedStageChanged?.Invoke(selectedStageId);
-        }
-
-        public void SetMaxReachedStageId(int maxReachedStageId)
-        {
-            this.maxReachedStageId = maxReachedStageId;
-        }
-
+        /*──────────── ISave impl. ───────────*/
         public void Flush()
         {
-            // Optional: implement custom flushing if needed
+            /* no custom binary flush – SaveManager serialises us */
+        }
+
+        /// <summary>Hard reset used by Dev‑popup: zeroes every field.</summary>
+        public void ResetAll()
+        {
+            maxReachedStageId = 0;
+            selectedStageId   = 0;
+            isPlaying         = false;
+            time              = 0f;
+            resetAbilities    = false;
+            rerollCharges     = 0;
+            xpLevel           = 0;
+            xp                = 0f;
+            enemiesKilled     = 0;
+            totalDamage       = 0f;
+            dps               = 0f;
+            timeAlive         = 0f;
+
+            onSelectedStageChanged?.Invoke(0);
+            Debug.Log("[StageSave] ResetAll ▶ stage progress wiped");
         }
     }
 }
