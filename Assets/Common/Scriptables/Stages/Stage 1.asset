@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   icon: {fileID: 21300000, guid: bff1caf6224894e58b24f5acae1fc4c2, type: 3}
   displayName: Blast Throne
-  description: 
+  description: 'Bonbon pie tiramisu muffin bonbon ice cream. Lollipop sweet roll
+    chupa chups chupa chups lollipop lemon drops marshmallow muffin. '
   recommendedDamage: 1 ~ 2
   recommendedHealth: 40 ~ 50
   timeline: {fileID: 11400000, guid: fa599a9bdd46a7b4886ff5ecbdfbe895, type: 2}
