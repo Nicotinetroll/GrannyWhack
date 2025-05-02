@@ -10,110 +10,69 @@ namespace OctoberStudio.Upgrades
     {
         [SerializeField] UpgradeSave[] savedUpgrades;
 
-        private Dictionary<UpgradeType, int> upgradesLevels;
+        Dictionary<UpgradeType, int> upgradesLevels;
 
-        /// <summary>
-        /// Fired whenever an upgrade’s level is set or changed.
-        /// </summary>
         public event UnityAction<UpgradeType, int> onUpgradeLevelChanged;
 
+        /*────────────────────── Init / API ─────────────────────*/
         public void Init()
         {
             upgradesLevels = new Dictionary<UpgradeType, int>();
-
             if (savedUpgrades == null) savedUpgrades = new UpgradeSave[0];
 
-            for (int i = 0; i < savedUpgrades.Length; i++)
+            foreach (var s in savedUpgrades)
             {
-                var save = savedUpgrades[i];
-
-                if (upgradesLevels.ContainsKey(save.UpgradeType))
-                {
-                    var savedLevel = upgradesLevels[save.UpgradeType];
-
-                    if (save.Level > savedLevel)
-                    {
-                        upgradesLevels[save.UpgradeType] = save.Level;
-                    }
-                }
+                if (upgradesLevels.TryGetValue(s.UpgradeType, out int old))
+                    upgradesLevels[s.UpgradeType] = Mathf.Max(old, s.Level);
                 else
-                {
-                    upgradesLevels.Add(save.UpgradeType, save.Level);
-                }
+                    upgradesLevels.Add(s.UpgradeType, s.Level);
             }
         }
 
-        public int GetUpgradeLevel(UpgradeType upgrade)
+        public int GetUpgradeLevel(UpgradeType upg) =>
+            upgradesLevels.TryGetValue(upg, out int lvl) ? lvl : -1;
+
+        public void SetUpgradeLevel(UpgradeType upg, int lvl)
         {
-            if (upgradesLevels.ContainsKey(upgrade))
-            {
-                return upgradesLevels[upgrade];
-            }
-            else
-            {
-                return -1;
-            }
+            upgradesLevels ??= new Dictionary<UpgradeType, int>();
+            upgradesLevels[upg] = lvl;
+            onUpgradeLevelChanged?.Invoke(upg, lvl);
         }
 
-        public void SetUpgradeLevel(UpgradeType upgrade, int level)
-        {
-            if (upgradesLevels.ContainsKey(upgrade))
-            {
-                upgradesLevels[upgrade] = level;
-            }
-            else
-            {
-                upgradesLevels.Add(upgrade, level);
-            }
-
-            // Notify listeners that the level has changed
-            onUpgradeLevelChanged?.Invoke(upgrade, level);
-        }
-
-        public void RemoveUpgrade(UpgradeType upgrade)
-        {
-            if (upgradesLevels.ContainsKey(upgrade))
-            {
-                upgradesLevels.Remove(upgrade);
-            }
-        }
+        public void RemoveUpgrade(UpgradeType upg) => upgradesLevels?.Remove(upg);
 
         public void Flush()
         {
-            // if someone calls Flush() before Init(), make sure our dict exists
-            if (upgradesLevels == null)
-                Init();
+            upgradesLevels ??= new Dictionary<UpgradeType, int>();
 
             savedUpgrades = new UpgradeSave[upgradesLevels.Count];
-
             int i = 0;
-            foreach (var upgrade in upgradesLevels.Keys)
-            {
-                var upgradeSave = new UpgradeSave(upgrade, upgradesLevels[upgrade]);
-                savedUpgrades[i++] = upgradeSave;
-            }
+            foreach (var kv in upgradesLevels)
+                savedUpgrades[i++] = new UpgradeSave(kv.Key, kv.Value);
         }
 
-
-        public void Clear()
+        /*────────── NEW – hard‑reset helper ─────────*/
+        public void ResetAll()
         {
-            upgradesLevels.Clear();
+            upgradesLevels?.Clear();
+            savedUpgrades = System.Array.Empty<UpgradeSave>();
+
+            // broadcast a generic “changed” so UI knows to redraw
+            onUpgradeLevelChanged?.Invoke(UpgradeType.Damage, 0);
+            Debug.Log("[UpgradesSave] ResetAll ▶ all upgrade levels wiped");
         }
 
+        /*──────────── nested struct ────────────*/
         [System.Serializable]
-        private class UpgradeSave
+        class UpgradeSave
         {
             [SerializeField] UpgradeType upgradeType;
-            [SerializeField] int level;
+            [SerializeField] int         level;
 
             public UpgradeType UpgradeType => upgradeType;
-            public int Level => level;
+            public int         Level       => level;
 
-            public UpgradeSave(UpgradeType upgradeType, int level)
-            {
-                this.upgradeType = upgradeType;
-                this.level = level;
-            }
+            public UpgradeSave(UpgradeType t, int l) { upgradeType = t; level = l; }
         }
     }
 }

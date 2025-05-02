@@ -1,3 +1,4 @@
+using System;
 using OctoberStudio.Save;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,77 +6,73 @@ using UnityEngine.Events;
 
 namespace OctoberStudio
 {
-    /// <summary>
-    /// Ukladá kúpené postavy, aktuálne vybranú postavu
-    /// + DEV‑prepísané Damage/HP.
-    /// </summary>
     public class CharactersSave : ISave
     {
-        /* ------- serialised ------- */
-        [SerializeField] int[]  boughtCharacterIds;
-        [SerializeField] int    selectedCharacterId;
-        [SerializeField] float  characterDamage  = 0f;   // 0 = nepoužiť override
-        [SerializeField] float  characterHealth  = 0f;   // 0 = nepoužiť override
+        /* ── stored data ─────────────────────────────── */
+        [SerializeField] int[] boughtCharacterIds;
+        [SerializeField] int   selectedCharacterId;
 
-        /* ------- runtime ------- */
-        List<int> bought;
-        
-        /* ------- public API ------- */
-        public int   SelectedCharacterId
-        {
-            get => selectedCharacterId;
-            private set => selectedCharacterId = value;
-        }
+        [SerializeField] float characterDamage = 0f;
+        [SerializeField] float characterHealth = 0f;
 
-        public float CharacterDamage
-        {
-            get => characterDamage;
-            set => characterDamage = Mathf.Max(0f, value);
-        }
-        public float CharacterHealth
-        {
-            get => characterHealth;
-            set => characterHealth = Mathf.Max(0f, value);
-        }
+        /* ── public API ──────────────────────────────── */
+        public int   SelectedCharacterId            => selectedCharacterId;
+        public float CharacterDamage { get => characterDamage; set => characterDamage = value; }
+        public float CharacterHealth { get => characterHealth; set => characterHealth = value; }
 
-        /// <summary> Notifikuje ID aktuálne vybratej postavy – int arg. </summary>
+        /// <summary>Fires with the **new id** each time the selection changes.</summary>
         public UnityAction<int> onSelectedCharacterChanged;
 
-        /* ------- Init / Flush ------- */
+        List<int> boughtList;
+
+        /* ── init / flush ───────────────────────────── */
         public void Init()
         {
             if (boughtCharacterIds == null || boughtCharacterIds.Length == 0)
             {
-                boughtCharacterIds = new[] { 0 };     // prvá postava zdarma
+                boughtCharacterIds = new[] { 0 };   // first hero free
                 selectedCharacterId = 0;
             }
-            bought = new List<int>(boughtCharacterIds);
+            boughtList = new List<int>(boughtCharacterIds ?? Array.Empty<int>());
         }
 
         public void Flush()
         {
-            if (bought == null) Init();
-            boughtCharacterIds = bought.ToArray();
+            if (boughtList == null) Init();
+            boughtCharacterIds = boughtList.ToArray();
         }
 
-        /* ------- helpers ------- */
+        /* ── queries & mutations ────────────────────── */
         public bool HasCharacterBeenBought(int id)
         {
-            if (bought == null) Init();
-            return bought.Contains(id);
+            boughtList ??= new List<int>(boughtCharacterIds);
+            return boughtList.Contains(id);
         }
 
         public void AddBoughtCharacter(int id)
         {
-            if (bought == null) Init();
-            if (!bought.Contains(id)) bought.Add(id);
+            boughtList ??= new List<int>(boughtCharacterIds);
+            if (!boughtList.Contains(id)) boughtList.Add(id);
         }
 
         public void SetSelectedCharacterId(int id)
         {
-            if (bought == null) Init();
-            SelectedCharacterId = id;
+            boughtList ??= new List<int>(boughtCharacterIds);
+            selectedCharacterId = id;
             onSelectedCharacterChanged?.Invoke(id);
+        }
+
+        /* ── hard‑reset helper for DevPopup ─────────── */
+        public void ResetAll()
+        {
+            boughtList          = new List<int> { 0 };
+            boughtCharacterIds  = new[] { 0 };
+            selectedCharacterId = 0;
+            characterDamage     = 0f;
+            characterHealth     = 0f;
+
+            onSelectedCharacterChanged?.Invoke(0);
+            Debug.Log("[CharactersSave] ResetAll ▶ everything wiped");
         }
     }
 }

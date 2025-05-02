@@ -2328,21 +2328,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e184543ef4406f448a867e20a8f1f0d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  charactersDatabase: {fileID: 11400000, guid: 94ea5f0fdccb79e4cbdd7bd522bc3dc2, type: 2}
+  charactersDb: {fileID: 11400000, guid: 94ea5f0fdccb79e4cbdd7bd522bc3dc2, type: 2}
+  abilitiesDb: {fileID: 11400000, guid: 0647b23f7b3015041b61926ed80fbbe4, type: 2}
+  currencyID: gold
   closeBtn: {fileID: 3152923057525015153}
   addGoldBtn: {fileID: 7413912662980139503}
-  deleteSaveBtn: {fileID: 6376244033927291752}
+  deleteBtn: {fileID: 6376244033927291752}
   resetBtn: {fileID: 8054011908823129450}
   levelSlider: {fileID: 6176782643772537849}
   dmgSlider: {fileID: 6319012142587818634}
   hpSlider: {fileID: 8569849363396285426}
-  levelLabel: {fileID: 3476080975189653558}
-  dmgLabel: {fileID: 1574306390388003221}
-  hpLabel: {fileID: 4016896059650854524}
-  origLevelLabel: {fileID: 5998384538690882879}
-  origDmgLabel: {fileID: 6509871926714800079}
-  origHpLabel: {fileID: 7189353373967044032}
-  goldLabel: {fileID: 223864916547841411}
+  levelValLbl: {fileID: 3476080975189653558}
+  dmgValLbl: {fileID: 1574306390388003221}
+  hpValLbl: {fileID: 4016896059650854524}
+  origLevelLbl: {fileID: 5998384538690882879}
+  origDmgLbl: {fileID: 6509871926714800079}
+  origHpLbl: {fileID: 7189353373967044032}
+  goldLbl: {fileID: 223864916547841411}
 --- !u!1 &6096035366340053708
 GameObject:
   m_ObjectHideFlags: 0

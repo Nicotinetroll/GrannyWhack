@@ -1,3 +1,4 @@
+// Assets/Common/Scripts/UI/SelectedCharacterUIBehavior.cs
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,50 +12,53 @@ namespace OctoberStudio.UI
 {
     public class SelectedCharacterUIBehavior : MonoBehaviour
     {
+    /*─────────────── Inspector ───────────────*/
         [Header("Info")]
-        [SerializeField] private Image    iconImage;
-        [SerializeField] private TMP_Text titleLabel;
+        [SerializeField] Image    iconImage;
+        [SerializeField] TMP_Text titleLabel;
 
         [Header("Stats")]
-        [SerializeField] private TMP_Text hpText;
-        [SerializeField] private TMP_Text damageText;
-        [SerializeField] private TMP_Text levelLabel;
+        [SerializeField] TMP_Text hpText;
+        [SerializeField] TMP_Text damageText;
+        [SerializeField] TMP_Text levelLabel;
 
         [Header("Starting Ability")]
-        [SerializeField] private GameObject abilityIconContainer;
-        [SerializeField] private Image      abilityIconImage;
+        [SerializeField] GameObject abilityIconContainer;
+        [SerializeField] Image      abilityIconImage;
 
         [Header("XP Bar")]
-        [SerializeField] private CharacterXPBar xpBar;
+        [SerializeField] CharacterXPBar xpBar;
 
         [Header("Next Unlock")]
-        [SerializeField] private TMP_Text nextUnlockLabel;
+        [SerializeField] TMP_Text nextUnlockLabel;
 
         [Header("Total Play Time and Kills")]
-        [SerializeField] private TMP_Text playtimeText;
-        [SerializeField] private TMP_Text killsText;
+        [SerializeField] TMP_Text playtimeText;
+        [SerializeField] TMP_Text killsText;
 
         [Header("Upgrades (optional)")]
-        [SerializeField] private UpgradesDatabase upgradesDatabase;
+        [SerializeField] UpgradesDatabase upgradesDatabase;
 
-        private UpgradesSave      upgradesSave;
-        private CharacterData     currentData;
-        private AbilitiesDatabase currentDb;
-        
+    /*─────────────── runtime ───────────────*/
+        UpgradesSave      upgradesSave;
+        CharactersSave    charactersSave;
+        CharacterData     currentData;
+        AbilitiesDatabase currentDb;
 
+    /*────────────────── API ──────────────────*/
         /// <summary>
-        /// Call once to populate; will auto‐refresh on damage‐upgrade changes.
+        /// Volaj vždy, keď sa zmení zvolená postava alebo jej štatistiky.
         /// </summary>
         public void Setup(CharacterData data, AbilitiesDatabase db)
         {
             currentData = data;
             currentDb   = db;
 
-            // Icon & name
+            /* 1) Ikona + meno */
             iconImage.sprite = data.Icon;
             titleLabel.text  = data.Name;
 
-            // Subscribe to global upgrades
+            /* 2) hook na Upgrades */
             if (upgradesSave == null)
             {
                 upgradesSave = GameController.SaveManager.GetSave<UpgradesSave>("Upgrades Save");
@@ -62,96 +66,99 @@ namespace OctoberStudio.UI
                 upgradesSave.onUpgradeLevelChanged += OnUpgradeLevelChanged;
             }
 
-            // Ensure the playtime tracker is initialized
+            /* 3) hook na CharactersSave → aby sa UI preplo aj po výbere novej postavy */
+            if (charactersSave == null)
+                charactersSave = GameController.SaveManager.GetSave<CharactersSave>("Characters");
+
+            /* 4) play‑time & kills systémy */
             CharacterPlaytimeSystem.Init(GameController.SaveManager);
             CharacterKillSystem.Init(GameController.SaveManager);
-
 
             RedrawAll();
         }
 
-        private void RedrawAll()
+    /*────────────────── core ──────────────────*/
+        void RedrawAll()
         {
-            // HP
-            hpText.text = currentData.BaseHP.ToString("F0");
+        /*–— 1) HP –—*/
+            float baseHP = charactersSave != null && charactersSave.CharacterHealth > 0
+                          ? charactersSave.CharacterHealth
+                          : currentData.BaseHP;
+            hpText.text = baseHP.ToString("F0");
 
-            // DAMAGE = base + level bonus + global multiplier
-            float basePlusLevel = currentData.BaseDamage + CharacterLevelSystem.GetDamageBonus(currentData);
+        /*–— 2) Damage –—*/
+            float rawDmg = charactersSave != null && charactersSave.CharacterDamage > 0
+                         ? charactersSave.CharacterDamage
+                         : currentData.BaseDamage + CharacterLevelSystem.GetDamageBonus(currentData);
 
+            /* global upgrade multipler */
             if (upgradesDatabase == null)
                 upgradesDatabase = Resources.Load<UpgradesDatabase>("UpgradesDatabase");
 
-            float multiplier = 1f;
-            var upgDef = upgradesDatabase?.GetUpgrade(UpgradeType.Damage);
-            if (upgDef != null && upgDef.LevelsCount > 0)
+            float mult = 1f;
+            var upDef  = upgradesDatabase?.GetUpgrade(UpgradeType.Damage);
+            if (upDef != null && upDef.LevelsCount > 0)
             {
-                int shopLevel = GameController.UpgradesManager.GetUpgradeLevel(UpgradeType.Damage);
-                if (shopLevel > 0)
+                int shopLvl = GameController.UpgradesManager.GetUpgradeLevel(UpgradeType.Damage);
+                if (shopLvl > 0)
                 {
-                    int idx = Mathf.Clamp(shopLevel - 1, 0, upgDef.LevelsCount - 1);
-                    multiplier = upgDef.GetLevel(idx).Value;
+                    int idx = Mathf.Clamp(shopLvl - 1, 0, upDef.LevelsCount - 1);
+                    mult = upDef.GetLevel(idx).Value;
                 }
             }
-            if (killsText != null)
-            {
-                int kills = CharacterKillSystem.GetKills(currentData);
-                killsText.text = kills.ToString();
-            }
+            damageText.text = (rawDmg * mult).ToString("F1");
 
-
-            damageText.text = (basePlusLevel * multiplier).ToString("F1");
-
-            // LEVEL
+        /*–— 3) Level –—*/
             int lvl = CharacterLevelSystem.GetLevel(currentData);
             levelLabel.text = $"{lvl}";
 
-            // Starting‑ability icon
-            bool has = currentData.HasStartingAbility;
-            abilityIconContainer.SetActive(has);
-            if (has && currentDb != null)
+        /*–— 4) Starting ability –—*/
+            bool hasSA = currentData.HasStartingAbility;
+            abilityIconContainer.SetActive(hasSA);
+            if (hasSA && currentDb != null)
             {
-                var ad = currentDb.GetAbility(currentData.StartingAbility);
-                abilityIconImage.sprite = ad.Icon;
+                var sa = currentDb.GetAbility(currentData.StartingAbility);
+                abilityIconImage.sprite = sa?.Icon;
             }
 
-            // XP BAR
+        /*–— 5) XP bar –—*/
             xpBar?.Setup(currentData);
 
-            // NEXT EVO UNLOCK
+        /*–— 6) Next EVO unlock pomocou levelu –—*/
             if (nextUnlockLabel != null && currentDb != null)
             {
-                var nextLevels = Enumerable.Range(0, currentDb.AbilitiesCount)
-                                           .Select(i => currentDb.GetAbility(i))
-                                           .Where(ad => ad.IsEvolution
-                                                     && ad.IsCharacterSpecific
-                                                     && ad.AllowedCharacterName == currentData.Name)
-                                           .Select(ad => ad.MinCharacterLevel)
-                                           .Distinct()
-                                           .OrderBy(x => x);
+                var next = Enumerable.Range(0, currentDb.AbilitiesCount)
+                                     .Select(i => currentDb.GetAbility(i))
+                                     .Where(ad => ad.IsEvolution
+                                               && ad.IsCharacterSpecific
+                                               && ad.AllowedCharacterName == currentData.Name)
+                                     .Select(ad => ad.MinCharacterLevel)
+                                     .Distinct()
+                                     .OrderBy(x => x)
+                                     .FirstOrDefault(x => x > lvl);
 
-                int upcoming = nextLevels.FirstOrDefault(x => x > lvl);
-                nextUnlockLabel.text = upcoming > 0
-                    ? $"Next unlock at level {upcoming}."
+                nextUnlockLabel.text = next > 0
+                    ? $"Next unlock at level {next}."
                     : "All EVO abilities unlocked!";
             }
 
-            // TOTAL PLAYTIME
+        /*–— 7) Kills & play‑time –—*/
+            if (killsText != null)
+                killsText.text = CharacterKillSystem.GetKills(currentData).ToString();
+
             if (playtimeText != null)
             {
-                float seconds = CharacterPlaytimeSystem.GetTime(currentData);
-                int mm = Mathf.FloorToInt(seconds / 60f);
-                int ss = Mathf.FloorToInt(seconds % 60f);
+                float sec = CharacterPlaytimeSystem.GetTime(currentData);
+                int mm = Mathf.FloorToInt(sec / 60f);
+                int ss = Mathf.FloorToInt(sec % 60f);
                 playtimeText.text = $"{mm:00}:{ss:00}";
             }
         }
 
-        private void OnUpgradeLevelChanged(UpgradeType type, int _)
-        {
-            if (type == UpgradeType.Damage)
-                RedrawAll();
-        }
+    /*────────────────── events ──────────────────*/
+        void OnUpgradeLevelChanged(UpgradeType t, int _) { if (t == UpgradeType.Damage) RedrawAll(); }
 
-        private void OnDestroy()
+        void OnDestroy()
         {
             if (upgradesSave != null)
                 upgradesSave.onUpgradeLevelChanged -= OnUpgradeLevelChanged;
