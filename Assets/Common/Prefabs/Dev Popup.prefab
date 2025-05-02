@@ -2329,17 +2329,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   charactersDatabase: {fileID: 11400000, guid: 94ea5f0fdccb79e4cbdd7bd522bc3dc2, type: 2}
-  closeButton: {fileID: 3152923057525015153}
-  currentGoldLabel: {fileID: 4780681771800304704}
-  addGoldButton: {fileID: 8054011908823129450}
-  deleteSavesButton: {fileID: 6376244033927291752}
-  resetButton: {fileID: 8054011908823129450}
+  closeBtn: {fileID: 3152923057525015153}
+  addGoldBtn: {fileID: 7413912662980139503}
+  deleteSaveBtn: {fileID: 6376244033927291752}
+  resetBtn: {fileID: 8054011908823129450}
   levelSlider: {fileID: 6176782643772537849}
   dmgSlider: {fileID: 6319012142587818634}
   hpSlider: {fileID: 8569849363396285426}
+  levelLabel: {fileID: 3476080975189653558}
+  dmgLabel: {fileID: 1574306390388003221}
+  hpLabel: {fileID: 4016896059650854524}
   origLevelLabel: {fileID: 5998384538690882879}
   origDmgLabel: {fileID: 6509871926714800079}
   origHpLabel: {fileID: 7189353373967044032}
+  goldLabel: {fileID: 223864916547841411}
 --- !u!1 &6096035366340053708
 GameObject:
   m_ObjectHideFlags: 0

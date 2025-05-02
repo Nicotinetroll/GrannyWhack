@@ -35,7 +35,7 @@ namespace OctoberStudio.UI
                 characterSave.onSelectedCharacterChanged -= Refresh;
         }
 
-        private void Refresh()
+        private void Refresh(int _ = 0)
         {
             // 1) Fetch current character & level
             var charData  = charactersDatabase.GetCharacterData(characterSave.SelectedCharacterId);

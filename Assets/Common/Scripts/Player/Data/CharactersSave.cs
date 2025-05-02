@@ -5,61 +5,77 @@ using UnityEngine.Events;
 
 namespace OctoberStudio
 {
+    /// <summary>
+    /// Ukladá kúpené postavy, aktuálne vybranú postavu
+    /// + DEV‑prepísané Damage/HP.
+    /// </summary>
     public class CharactersSave : ISave
     {
-        /* ‑‑‑‑ kúpené & výber ‑‑‑‑ */
-        [SerializeField] int[] boughtCharacterIds;
-        [SerializeField] int   selectedCharacterId;
+        /* ------- serialised ------- */
+        [SerializeField] int[]  boughtCharacterIds;
+        [SerializeField] int    selectedCharacterId;
+        [SerializeField] float  characterDamage  = 0f;   // 0 = nepoužiť override
+        [SerializeField] float  characterHealth  = 0f;   // 0 = nepoužiť override
 
-        /* ‑‑‑‑ DEV nastaviteľné štatistiky ‑‑‑‑ */
-        [SerializeField] float characterDamage = 1f;
-        [SerializeField] float characterHealth = 50f;
+        /* ------- runtime ------- */
+        List<int> bought;
+        
+        /* ------- public API ------- */
+        public int   SelectedCharacterId
+        {
+            get => selectedCharacterId;
+            private set => selectedCharacterId = value;
+        }
 
-        /* public API */
-        public int   SelectedCharacterId  => selectedCharacterId;
-        public float CharacterDamage      { get => characterDamage; set => characterDamage = value; }
-        public float CharacterHealth      { get => characterHealth; set => characterHealth = value; }
+        public float CharacterDamage
+        {
+            get => characterDamage;
+            set => characterDamage = Mathf.Max(0f, value);
+        }
+        public float CharacterHealth
+        {
+            get => characterHealth;
+            set => characterHealth = Mathf.Max(0f, value);
+        }
 
-        public UnityAction onSelectedCharacterChanged;
+        /// <summary> Notifikuje ID aktuálne vybratej postavy – int arg. </summary>
+        public UnityAction<int> onSelectedCharacterChanged;
 
-        List<int> boughtList;
-
-        /* ───────────────────── init ───────────────────── */
+        /* ------- Init / Flush ------- */
         public void Init()
         {
             if (boughtCharacterIds == null || boughtCharacterIds.Length == 0)
             {
-                boughtCharacterIds = new[] { 0 };   // prvá postava zdarma
+                boughtCharacterIds = new[] { 0 };     // prvá postava zdarma
                 selectedCharacterId = 0;
             }
-            boughtList = new List<int>(boughtCharacterIds);
+            bought = new List<int>(boughtCharacterIds);
         }
 
-        /* ───────────────────── store / query ───────────────────── */
+        public void Flush()
+        {
+            if (bought == null) Init();
+            boughtCharacterIds = bought.ToArray();
+        }
+
+        /* ------- helpers ------- */
         public bool HasCharacterBeenBought(int id)
         {
-            if (boughtList == null) Init();
-            return boughtList.Contains(id);
+            if (bought == null) Init();
+            return bought.Contains(id);
         }
 
         public void AddBoughtCharacter(int id)
         {
-            if (boughtList == null) Init();
-            if (!boughtList.Contains(id)) boughtList.Add(id);
+            if (bought == null) Init();
+            if (!bought.Contains(id)) bought.Add(id);
         }
 
         public void SetSelectedCharacterId(int id)
         {
-            if (boughtList == null) Init();
-            selectedCharacterId = id;
-            onSelectedCharacterChanged?.Invoke();
-        }
-
-        /* ───────────────────── save flush ───────────────────── */
-        public void Flush()
-        {
-            if (boughtList == null) Init();
-            boughtCharacterIds = boughtList.ToArray();
+            if (bought == null) Init();
+            SelectedCharacterId = id;
+            onSelectedCharacterChanged?.Invoke(id);
         }
     }
 }

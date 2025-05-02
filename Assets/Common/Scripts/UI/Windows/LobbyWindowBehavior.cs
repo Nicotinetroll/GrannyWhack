@@ -170,7 +170,7 @@ namespace OctoberStudio.UI
 
         /* =========================== ZVYŠOK =========================== */
 
-        private void UpdateSelectedDisplay()
+        private void UpdateSelectedDisplay(int _ = 0)
         {
             if (selectedDisplay == null
                 || charactersDatabase == null

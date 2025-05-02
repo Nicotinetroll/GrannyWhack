@@ -10,100 +10,125 @@ using OctoberStudio.Save;
 
 namespace OctoberStudio.UI
 {
-    public class DevPopupBehavior : MonoBehaviour
+    /// <summary>
+    /// Developer‑only popup na úpravu charakter levelu, dmg, HP a goldov.
+    /// </summary>
+    public sealed class DevPopupBehavior : MonoBehaviour
     {
-        /* ---------- Inspector ---------- */
-        [Header("Databases / Saves")]
-        [SerializeField] private CharactersDatabase charactersDatabase;   // nastav v Inspectore
+        /* ────────────── Inspector references ────────────── */
+        [Header("Databases")]
+        [SerializeField] CharactersDatabase charactersDatabase;
 
-        [Header("UI – Close & Gold")]
-        [SerializeField] private Button   closeButton;
-        [SerializeField] private TMP_Text currentGoldLabel;
-        [SerializeField] private Button   addGoldButton;
-        [SerializeField] private Button   deleteSavesButton;
-        [SerializeField] private Button   resetButton;
+        [Header("Buttons")]
+        [SerializeField] Button closeBtn;
+        [SerializeField] Button addGoldBtn;
+        [SerializeField] Button deleteSaveBtn;
+        [SerializeField] Button resetBtn;
 
         [Header("Sliders")]
-        [SerializeField] private Slider   levelSlider;   // int, 1‑25
-        [SerializeField] private Slider   dmgSlider;     // float, 1‑10
-        [SerializeField] private Slider   hpSlider;      // float, 20‑250
+        [SerializeField] Slider levelSlider;   // int 1‑25
+        [SerializeField] Slider dmgSlider;     // float 1‑15
+        [SerializeField] Slider hpSlider;      // float 20‑500
+
+        [Header("Value Labels (nad sliderom)")]
+        [SerializeField] TMP_Text levelLabel;
+        [SerializeField] TMP_Text dmgLabel;
+        [SerializeField] TMP_Text hpLabel;
 
         [Header("Original Labels")]
-        [SerializeField] private TMP_Text origLevelLabel;
-        [SerializeField] private TMP_Text origDmgLabel;
-        [SerializeField] private TMP_Text origHpLabel;
+        [SerializeField] TMP_Text origLevelLabel;
+        [SerializeField] TMP_Text origDmgLabel;
+        [SerializeField] TMP_Text origHpLabel;
 
-        /* ---------- runtime ---------- */
-        private CharactersSave charactersSave;
-        private CurrencySave   currencySave;
+        [Header("Gold Label")]
+        [SerializeField] TMP_Text goldLabel;
 
-        private CharacterData  selChar;
+        /* ────────────── runtime ────────────── */
+        CharactersSave charactersSave;
+        CurrencySave   currencySave;
 
-        private int   startLvl;
-        private float startDmg;
-        private float startHp;
+        CharacterData  selChar;
 
-        private bool popupActive;
+        int   startLvl;
+        float startDmg;
+        float startHp;
 
-        private InputAction backAction;
-        private InputAction settingsAction;
+        bool popupActive;
 
-        /* ================================================================== */
-        private void Awake()
+        InputAction backAction;
+        InputAction settingsAction;
+
+        /* ─────────────────── Awake ─────────────────── */
+        void Awake()
         {
+            // získaj savy (SaveManager je initialised od GameController)
             charactersSave = GameController.SaveManager.GetSave<CharactersSave>("Characters");
             currencySave   = GameController.SaveManager.GetSave<CurrencySave>("Currency");
 
-            if (!EnsureSaves()) return;
+            // hooky na tlačidlá
+            closeBtn     .onClick.AddListener(Close);
+            addGoldBtn   .onClick.AddListener(AddGold);
+            deleteSaveBtn.onClick.AddListener(DeleteAll);
+            resetBtn     .onClick.AddListener(ResetAll);
 
-            closeButton      .onClick.AddListener(Close);
-            addGoldButton    .onClick.AddListener(AddGold);
-            deleteSavesButton.onClick.AddListener(DeleteAllSaves);
-            resetButton      .onClick.AddListener(ResetAll);
+            // hooky na slidery
+            levelSlider .onValueChanged.AddListener(OnLevelChanged);
+            dmgSlider   .onValueChanged.AddListener(OnDmgChanged);
+            hpSlider    .onValueChanged.AddListener(OnHpChanged);
 
-            levelSlider.onValueChanged.AddListener(OnLevelChange);
-            dmgSlider  .onValueChanged.AddListener(OnDmgChange);
-            hpSlider   .onValueChanged.AddListener(OnHpChange);
-
+            // gold update
             currencySave.onGoldAmountChanged += UpdateGold;
+
+            // slider nastavovanie limít
+            levelSlider.minValue = 1;
+            levelSlider.maxValue = CharacterLevelSystem.MaxLevel;
+            levelSlider.wholeNumbers = true;
+
+            dmgSlider.minValue = 1f;
+            dmgSlider.maxValue = 15f;
+            dmgSlider.wholeNumbers = false;
+
+            hpSlider.minValue = 20f;
+            hpSlider.maxValue = 500f;
+            hpSlider.wholeNumbers = false;
         }
 
-        /* ------------------------ Open / Close ------------------------- */
+        /* ─────────────────── Public API ─────────────────── */
         public void Open()
         {
-            if (!EnsureSaves()) return;
-
             if (popupActive) return;
             popupActive = true;
 
-            /* ---- načítaj postavu & pôvodné hodnoty ---- */
-            selChar   = charactersDatabase.GetCharacterData(charactersSave.SelectedCharacterId);
-            startLvl  = CharacterLevelSystem.GetLevel(selChar);
-            startDmg  = charactersSave.CharacterDamage;
-            startHp   = charactersSave.CharacterHealth;
+            gameObject.SetActive(true);
 
+            // načítaj práve vybranú postavu
+            selChar  = charactersDatabase.GetCharacterData(charactersSave.SelectedCharacterId);
+
+            // pôvodné hodnoty
+            startLvl = CharacterLevelSystem.GetLevel(selChar);
+            startDmg = charactersSave.CharacterDamage <= 0f ? selChar.BaseDamage : charactersSave.CharacterDamage;
+            startHp  = charactersSave.CharacterHealth <= 0f ? selChar.BaseHP     : charactersSave.CharacterHealth;
+
+            // slider defaulty
             levelSlider.SetValueWithoutNotify(startLvl);
             dmgSlider  .SetValueWithoutNotify(startDmg);
             hpSlider   .SetValueWithoutNotify(startHp);
 
-            origLevelLabel.text = $"Original Character Level:   {startLvl}";
-            origDmgLabel  .text = $"Original Character Damage: {startDmg}";
-            origHpLabel   .text = $"Original Character Health: {startHp}";
-
+            UpdateLabels();
             UpdateGold(currencySave.Amount);
 
-            /* ---- input actions „Back“ & „Settings“ ---- */
-            var inputAsset = GameController.InputManager.InputAsset.asset;
-            backAction     = inputAsset.FindAction("Back");
-            settingsAction = inputAsset.FindAction("Settings");
+            // Input actions ESC / Settings
+            var asset = GameController.InputManager.InputAsset.asset;
+            backAction     = asset.FindAction("Back");
+            settingsAction = asset.FindAction("Settings");
+            if (backAction    != null) backAction   .performed += OnEsc;
+            if (settingsAction!= null) settingsAction.performed += OnEsc;
 
-            if (backAction != null)     backAction.performed     += OnEsc;
-            if (settingsAction != null) settingsAction.performed += OnEsc;
-
-            EventSystem.current.SetSelectedGameObject(closeButton.gameObject);
+            EventSystem.current.SetSelectedGameObject(closeBtn.gameObject);
         }
 
-        private void Close()
+        /* ─────────────────── Close / ESC ─────────────────── */
+        void Close()
         {
             if (!popupActive) return;
             popupActive = false;
@@ -111,99 +136,97 @@ namespace OctoberStudio.UI
             if (backAction    != null) backAction   .performed -= OnEsc;
             if (settingsAction!= null) settingsAction.performed -= OnEsc;
 
-            /* SaveManager flush – každý save má vlastný Flush() */
-            GameController.SaveManager.GetSave<CharacterLevelSave>("CharacterLevels")?.Flush();
+            // flushni savy
             charactersSave.Flush();
             currencySave  .Flush();
+            GameController.SaveManager.GetSave<CharacterLevelSave>("CharacterLevels")?.Flush();
 
             gameObject.SetActive(false);
         }
+        void OnEsc(InputAction.CallbackContext _) => Close();
 
-        private void OnEsc(InputAction.CallbackContext _) => Close();
-
-        /* ------------------- Slider Callbacks ------------------- */
-        private void OnLevelChange(float v)
+        /* ─────────────────── Slider callbacks ─────────────────── */
+        void OnLevelChanged(float v)
         {
             int lvl = Mathf.Clamp(Mathf.RoundToInt(v), 1, CharacterLevelSystem.MaxLevel);
             levelSlider.SetValueWithoutNotify(lvl);
             CharacterLevelSystem.SetLevel(selChar, lvl);
+            UpdateLabels();
         }
-
-        private void OnDmgChange(float v)
+        void OnDmgChanged(float v)
         {
-            v = Mathf.Clamp(Mathf.Round(v * 10f) * 0.1f, 1f, 10f);
-            dmgSlider.SetValueWithoutNotify(v);
-            charactersSave.CharacterDamage = v;
+            float dmg = Mathf.Clamp(Mathf.Round(v * 10f) * 0.1f, 1f, 15f);
+            dmgSlider.SetValueWithoutNotify(dmg);
+            charactersSave.CharacterDamage = dmg;
+            UpdateLabels();
         }
-
-        private void OnHpChange(float v)
+        void OnHpChanged(float v)
         {
-            v = Mathf.Clamp(Mathf.Round(v), 20f, 250f);
-            hpSlider.SetValueWithoutNotify(v);
-            charactersSave.CharacterHealth = v;
+            float hp = Mathf.Clamp(Mathf.Round(v / 5f) * 5f, 20f, 500f);
+            hpSlider.SetValueWithoutNotify(hp);
+            charactersSave.CharacterHealth = hp;
+            UpdateLabels();
         }
 
-        /* ------------------- Buttons ------------------- */
-        private void AddGold()
+        /* ─────────────────── Buttons ─────────────────── */
+        void AddGold()
         {
             GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
             currencySave.Deposit(1000);
         }
-
-        private void DeleteAllSaves()
+        void DeleteAll()
         {
             GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
 
+            // PlayerPrefs + súbor save
             PlayerPrefs.DeleteAll();
             PlayerPrefs.Save();
+            string p = Path.Combine(Application.persistentDataPath, "save.dat");
+            if (File.Exists(p)) File.Delete(p);
 
-            string path = Path.Combine(Application.persistentDataPath, "save.dat");
-            if (File.Exists(path)) File.Delete(path);
-
+            // Reload scene
             UnityEngine.SceneManagement.SceneManager.LoadScene(
                 UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
         }
-
-        private void ResetAll()
+        void ResetAll()
         {
             GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
+
+            levelSlider.SetValueWithoutNotify(startLvl);
+            dmgSlider  .SetValueWithoutNotify(startDmg);
+            hpSlider   .SetValueWithoutNotify(startHp);
 
             CharacterLevelSystem.SetLevel(selChar, startLvl);
             charactersSave.CharacterDamage = startDmg;
             charactersSave.CharacterHealth = startHp;
 
-            levelSlider.SetValueWithoutNotify(startLvl);
-            dmgSlider  .SetValueWithoutNotify(startDmg);
-            hpSlider   .SetValueWithoutNotify(startHp);
+            UpdateLabels();
         }
 
-        /* ------------------- Gold label helper ------------------- */
-        private void UpdateGold(int amt) =>
-            currentGoldLabel.text = $"Current Golds: {amt}";
+        /* ─────────────────── Helpers ─────────────────── */
+        void UpdateLabels()
+        {
+            levelLabel.text = $"Character Level: {levelSlider.value:0}";
+            dmgLabel  .text = $"Character Damage: {dmgSlider.value:0.0}";
+            hpLabel   .text = $"Character Health: {hpSlider.value:0}";
 
-        /* ------------------- Cleanup ------------------- */
-        private void OnDestroy()
+            origLevelLabel.text = $"Original Level: {startLvl}";
+            origDmgLabel  .text = $"Original Damage: {startDmg:0.0}";
+            origHpLabel   .text = $"Original Health: {startHp:0}";
+        }
+        void UpdateGold(int amt)
+        {
+            if (goldLabel != null)
+                goldLabel.text = $"Current Golds: {amt}";
+        }
+
+        /* ─────────────────── Cleanup ─────────────────── */
+        void OnDestroy()
         {
             if (backAction    != null) backAction   .performed -= OnEsc;
             if (settingsAction!= null) settingsAction.performed -= OnEsc;
-            currencySave.onGoldAmountChanged -= UpdateGold;
+            if (currencySave != null)
+                currencySave.onGoldAmountChanged -= UpdateGold;
         }
-        
-        bool EnsureSaves()
-        {
-            if (charactersSave == null)
-                charactersSave = GameController.SaveManager?.GetSave<CharactersSave>("Characters");
-
-            if (currencySave == null)
-                currencySave   = GameController.SaveManager?.GetSave<CurrencySave>("Currency");
-
-            if (charactersSave == null || currencySave == null)
-            {
-                Debug.LogError("[DevPopup] Save files not initialised – popup aborted.");
-                return false;
-            }
-            return true;
-        }
-
     }
 }

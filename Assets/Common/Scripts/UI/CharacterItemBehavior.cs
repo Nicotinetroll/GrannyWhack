@@ -95,7 +95,7 @@ namespace OctoberStudio.UI
             RedrawVisuals();
         }
 
-        private void RedrawVisuals()
+        private void RedrawVisuals(int _ = 0)
         {
             // Icon & Name
             if (titleLabel != null) titleLabel.text  = Data.Name;
