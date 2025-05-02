@@ -80,17 +80,21 @@ namespace OctoberStudio
         }
 
     /* ───── hard‑reset (called from DevPopup) ───── */
-        public void ResetAll()
-        {
-            boughtCharacterIds  = new[] { 0 };
-            boughtList          = new List<int> { 0 };
-            selectedCharacterId = 0;
+    public void ResetAll()
+    {
+        /* character ownership */
+        boughtCharacterIds  = new[] { 0 };
+        boughtList          = new List<int> { 0 };
+        selectedCharacterId = 0;
 
-            characterDamage     = 0f;
-            characterHealth     = 0f;
+        /* dev overrides */
+        characterDamage = 0f;
+        characterHealth = 0f;
 
-            onSelectedCharacterChanged?.Invoke(0);
-            Debug.Log("[CharactersSave] ResetAll ▶ everything wiped");
-        }
+        /* fire event so every Character‑UI redraws immediately */
+        onSelectedCharacterChanged?.Invoke(0);
+
+        Debug.Log("[CharactersSave] ResetAll ▶ wiped characters, damage & health overrides");
+    }
     }
 }

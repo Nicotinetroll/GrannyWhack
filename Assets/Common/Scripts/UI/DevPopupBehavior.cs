@@ -1,6 +1,15 @@
 /************************************************************
- *  DevPopupBehavior.cs – DEV panel in Lobby   (2025‑05‑05)
- *  ▸ fixes opening‑value & level‑change bugs
+ *  DevPopupBehavior.cs – DEV panel in Lobby   (2025‑05‑06)
+ *
+ *  • Add / delete gold
+ *  • Live‑tweak Level, Damage, HP (sliders)
+ *  • Hard‑reset (wipes *all* progress: currency, upgrades,
+ *    rerolls, play‑time, kills, characters, PlayerPrefs,
+ *    persistent save‑files) and reloads the scene
+ *  • Values always open with the EXACT stats used in‑game,
+ *    including shop upgrades and level bonuses
+ *  • Broadcasts UI refresh to SelectedCharacterUIBehavior
+ *    & EvoAbilitiesDisplayBehavior after every change
  ************************************************************/
 
 using System;
@@ -24,9 +33,8 @@ namespace OctoberStudio.UI
         [Header("Databases")]
         [SerializeField] CharactersDatabase charactersDb;
         [SerializeField] AbilitiesDatabase  abilitiesDb;
-        [SerializeField] UpgradesDatabase   upgradesDb;
 
-        [Header("Currency key")]
+        [Header("Currency key (must exist in DB)")]
         [SerializeField] string currencyID = "gold";
 
         [Header("Buttons")]
@@ -75,16 +83,22 @@ namespace OctoberStudio.UI
             gold.onGoldAmountChanged += a => goldLbl.text = $"Current Golds: {a}";
         }
 
-    /*────────────────── helpers ──────────────────*/
-        int   GlobalDmgLvl  => GameController.UpgradesManager.GetUpgradeLevel(UpgradeType.Damage);
-        float GlobalDmgMult => GameController.UpgradesManager.GetUpgadeValue(UpgradeType.Damage);
+    /*───────── helpers ─────────*/
+        /* global upgrade helpers */
+        float GlobalDmgMult  => GameController.UpgradesManager.GetUpgadeValue(UpgradeType.Damage);
+        float GlobalHPBonus  => GameController.UpgradesManager.GetUpgadeValue(UpgradeType.Health);
 
         float CalcDamage(int lvl)
         {
             float raw = cData.BaseDamage + CharacterLevelSystem.GetDamageBonus(cData);
-            return raw * (GlobalDmgLvl > 0 ? GlobalDmgMult : 1f);
+            return raw + GameController.UpgradesManager.GetUpgadeValue(UpgradeType.Damage);
         }
-        float CalcHP(int lvl) => cData.BaseHP; // extend if you add HP upgrades
+
+        float CalcHP(int lvl)
+        {
+            /*  base HP + additive shop‑upgrade bonus  */
+            return cData.BaseHP + GameController.UpgradesManager.GetUpgadeValue(UpgradeType.Health);
+        }
 
     /*────────────────── Open / Close ──────────────────*/
         public void Open()
@@ -93,25 +107,30 @@ namespace OctoberStudio.UI
             open = true;
             gameObject.SetActive(true);
 
+            /* current character & “true” base stats (after shop upgrades) */
             cData   = charactersDb.GetCharacterData(chars.SelectedCharacterId);
             baseLvl = 1;
             baseDmg = CalcDamage(baseLvl);
             baseHP  = CalcHP(baseLvl);
 
+            /* saved overrides (if player already tweaked in DEV) */
             int   savedLvl = CharacterLevelSystem.GetLevel(cData);
-            float savedDmg = chars.CharacterDamage >= 1f ? chars.CharacterDamage : CalcDamage(savedLvl);
-            float savedHP  = chars.CharacterHealth >= 20f ? chars.CharacterHealth : CalcHP(savedLvl);
+            float savedDmg = chars.CharacterDamage >= 1f  ? chars.CharacterDamage  : CalcDamage(savedLvl);
+            float savedHP  = chars.CharacterHealth >= 20f ? chars.CharacterHealth  : CalcHP(savedLvl);
 
+            /* sliders */
             levelSlider.Configure(1, 25,  savedLvl, true);
             dmgSlider  .Configure(1f,15f, savedDmg,false);
             hpSlider   .Configure(20f,500f,savedHP,false);
 
+            /* labels */
             RefreshValueLabels();
             origLevelLbl.text = $"Original Character Level:   {baseLvl}";
             origDmgLbl  .text = $"Original Character Damage: {baseDmg:0.0}";
             origHpLbl   .text = $"Original Character Health: {baseHP:0}";
             goldLbl.text      = $"Current Golds: {gold.Amount}";
 
+            /* ESC / Settings hooks */
             var map = GameController.InputManager.InputAsset.asset;
             escA = map.FindAction("Back");
             setA = map.FindAction("Settings");
@@ -134,15 +153,19 @@ namespace OctoberStudio.UI
         }
         void OnEsc(InputAction.CallbackContext _) => Close();
 
-    /*────────────────── slider callbacks ──────────────────*/
+    /*──────────────── slider callbacks ─────────────────*/
         void OnLevel(float v)
         {
             int lvl = Mathf.Clamp(Mathf.RoundToInt(v), 1, 25);
             levelSlider.SetValueWithoutNotify(lvl);
             CharacterLevelSystem.SetLevel(cData, lvl);
 
-            if (chars.CharacterDamage < 1f) dmgSlider.SetValueWithoutNotify(CalcDamage(lvl));
-            if (chars.CharacterHealth < 20f) hpSlider.SetValueWithoutNotify(CalcHP(lvl));
+            /* auto‑recalculate derived stats if DEV overrides are not set */
+            if (Mathf.Approximately(chars.CharacterDamage , 0f))
+                dmgSlider.SetValueWithoutNotify(CalcDamage(lvl));
+
+            if (Mathf.Approximately(chars.CharacterHealth , 0f))
+                hpSlider.SetValueWithoutNotify(CalcHP(lvl));
 
             BroadcastUI();
             RefreshValueLabels();
@@ -153,6 +176,7 @@ namespace OctoberStudio.UI
             float dmg = Mathf.Clamp(Mathf.Round(v * 10f) * 0.1f, 1f, 15f);
             dmgSlider.SetValueWithoutNotify(dmg);
             chars.CharacterDamage = dmg;
+
             BroadcastUI();
             RefreshValueLabels();
         }
@@ -162,6 +186,9 @@ namespace OctoberStudio.UI
             float hp = Mathf.Clamp(Mathf.Round(v / 5f) * 5f, 20f, 500f);
             hpSlider.SetValueWithoutNotify(hp);
             chars.CharacterHealth = hp;
+            
+            baseHP = CalcHP( CharacterLevelSystem.GetLevel(cData) );
+
             BroadcastUI();
             RefreshValueLabels();
         }
@@ -173,8 +200,8 @@ namespace OctoberStudio.UI
             hpValLbl   .text = $"Character Health: {hpSlider.value:0}";
         }
 
-    /*────────────────── Buttons ──────────────────*/
-        void AddGold() => gold.Deposit(1000);
+    /*──────────────── Buttons ─────────────────*/
+        void AddGold() => gold.Deposit(1_000);
 
         void DeleteEverything()
         {
@@ -187,9 +214,9 @@ namespace OctoberStudio.UI
             GameController.SaveManager.GetSave<StageSave>("Stage")?.ResetAll();
             GameController.SaveManager.GetSave<CurrencySave>("Reroll")?.ResetAll();
 
+            /* nuke disk */
             PlayerPrefs.DeleteAll();
             PlayerPrefs.Save();
-
             var dir = Application.persistentDataPath;
             if (Directory.Exists(dir))
                 foreach (var f in Directory.GetFiles(dir)) File.Delete(f);
@@ -212,7 +239,7 @@ namespace OctoberStudio.UI
             RefreshValueLabels();
         }
 
-    /*────────────────── helpers ──────────────────*/
+    /*──────── helpers ────────*/
         void BroadcastUI()
         {
             foreach (var ui in FindObjectsOfType<SelectedCharacterUIBehavior>())
