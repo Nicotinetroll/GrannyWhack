@@ -14,6 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   icon: {fileID: 21300000, guid: bff1caf6224894e58b24f5acae1fc4c2, type: 3}
   displayName: Blast Throne
+  description: 
+  recommendedDamage: 1 ~ 2
+  recommendedHealth: 40 ~ 50
   timeline: {fileID: 11400000, guid: fa599a9bdd46a7b4886ff5ecbdfbe895, type: 2}
   stageType: 0
   stageFieldData: {fileID: 11400000, guid: 52c7b0006b996a04681b47c761528a3d, type: 2}

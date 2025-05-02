@@ -6,6 +6,7 @@ namespace OctoberStudio
     [CreateAssetMenu(fileName = "Stage Data", menuName = "October/Stage Data")]
     public class StageData : ScriptableObject
     {
+        /* -------- Display -------- */
         [Header("Display Data")]
         [SerializeField] Sprite icon;
         public Sprite Icon => icon;
@@ -13,10 +14,24 @@ namespace OctoberStudio
         [SerializeField] string displayName;
         public string DisplayName => displayName;
 
+        /* -------- NOVÉ TEXT POLIA -------- */
+        [Space, Header("Extra Info")]
+        [TextArea, SerializeField] string description;
+        public string Description => description;
+
+        [SerializeField] string recommendedDamage;
+        public string RecommendedDamage => recommendedDamage;
+
+        [SerializeField] string recommendedHealth;
+        public string RecommendedHealth => recommendedHealth;
+        /* --------------------------------- */
+
+        /* -------- Timeline -------- */
         [Header("Timeline Data")]
         [SerializeField] TimelineAsset timeline;
         public TimelineAsset Timeline => timeline;
 
+        /* -------- Settings -------- */
         [Header("Stage Settings")]
         [SerializeField] StageType stageType;
         public StageType StageType => stageType;
