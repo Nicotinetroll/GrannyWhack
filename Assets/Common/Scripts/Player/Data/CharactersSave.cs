@@ -28,12 +28,17 @@ namespace OctoberStudio
         /* ── init / flush ───────────────────────────── */
         public void Init()
         {
+            /* -------------------------------------------------
+             * make sure boughtCharacterIds is never null
+             * ------------------------------------------------- */
             if (boughtCharacterIds == null || boughtCharacterIds.Length == 0)
             {
-                boughtCharacterIds = new[] { 0 };   // first hero free
+                boughtCharacterIds = new[] { 0 };  // first character is always owned
                 selectedCharacterId = 0;
             }
-            boughtList = new List<int>(boughtCharacterIds ?? Array.Empty<int>());
+
+            /* existing logic – now guaranteed to get a non‑null array */
+            boughtList = new List<int>(boughtCharacterIds);
         }
 
         public void Flush()
@@ -65,12 +70,16 @@ namespace OctoberStudio
         /* ── hard‑reset helper for DevPopup ─────────── */
         public void ResetAll()
         {
+            /* ───── core data ───── */
+            boughtCharacterIds  = new[] { 0 };      // player owns character 0 again
             boughtList          = new List<int> { 0 };
-            boughtCharacterIds  = new[] { 0 };
             selectedCharacterId = 0;
+
+            /* ───── DEV overrides ───── */
             characterDamage     = 0f;
             characterHealth     = 0f;
 
+            /* ───── notify & log ───── */
             onSelectedCharacterChanged?.Invoke(0);
             Debug.Log("[CharactersSave] ResetAll ▶ everything wiped");
         }

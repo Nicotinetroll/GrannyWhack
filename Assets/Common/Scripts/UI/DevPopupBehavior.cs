@@ -209,34 +209,27 @@ namespace OctoberStudio.UI
             GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
             Debug.LogWarning("[DevPopup] FULL RESET initiated…");
 
-            /* 1 ) reset each save object */
+            /* 1 ── wipe every in‑memory save ------------------------------ */
             charsSave.ResetAll();
             curSave  .ResetAll();
             upgSave ?.ResetAll();
 
             GameController.SaveManager.GetSave<CharacterLevelSave>("CharacterLevels")?.ResetAll();
-            GameController.SaveManager.GetSave<StageSave>          ("Stage")         ?.ResetAll();
-            GameController.SaveManager.GetSave<CurrencySave>       ("Reroll")        ?.ResetAll();
+            GameController.SaveManager.GetSave<StageSave>("Stage")                   ?.ResetAll();
+            GameController.SaveManager.GetSave<CurrencySave>("Reroll")               ?.ResetAll();
 
-            /* 2 ) force‑save EMPTY data – closes file handle */
-            GameController.SaveManager.Save(true);
-
-            /* 3 ) nuke persistent data */
+            /* 2 ── nuke disk & PlayerPrefs -------------------------------- */
             PlayerPrefs.DeleteAll();
             PlayerPrefs.Save();
 
-            string dir = Application.persistentDataPath;
+            var dir = Application.persistentDataPath;
             if (Directory.Exists(dir))
-            {
-                foreach (string f in Directory.GetFiles(dir))
-                {
-                    try { File.Delete(f); }
-                    catch (Exception) { /* file could be locked – ignore */ }
-                }
-            }
+                foreach (var f in Directory.GetFiles(dir)) File.Delete(f);
 
-            /* 4 ) reload scene */
-            Debug.LogWarning("[DevPopup] All progress wiped. Reloading…");
+            /* 3 ── write a fresh blank save file -------------------------- */
+            GameController.SaveManager.Save(true);
+
+            /* 4 ── reload current scene ----------------------------------- */
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 
