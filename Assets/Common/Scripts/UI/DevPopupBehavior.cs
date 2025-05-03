@@ -90,55 +90,61 @@ namespace OctoberStudio.UI
 
         float CalcDamage(int lvl)
         {
-            float raw = cData.BaseDamage + CharacterLevelSystem.GetDamageBonus(cData);
-            return raw + GameController.UpgradesManager.GetUpgadeValue(UpgradeType.Damage);
+            // base damage + level bonus + shop upgrade
+            float raw     = cData.BaseDamage + CharacterLevelSystem.GetDamageBonus(cData);
+            float shopBon = GameController.UpgradesManager.GetUpgadeValue(UpgradeType.Damage);
+            return raw + shopBon;
         }
 
         float CalcHP(int lvl)
         {
-            /*  base HP + additive shop‑upgrade bonus  */
-            return cData.BaseHP + GameController.UpgradesManager.GetUpgadeValue(UpgradeType.Health);
+            // base HP + level-based bonus (if any) + shop upgrade
+            // if you don’t have a per-level HP field, just use BaseHP here
+            float baseHP    = cData.BaseHP;
+            // If you later introduce an HpPerLevel field, add: +(lvl-1)*cData.HpPerLevel
+            float shopBon   = GameController.UpgradesManager.GetUpgadeValue(UpgradeType.Health);
+            return baseHP + shopBon;
         }
 
     /*────────────────── Open / Close ──────────────────*/
-        public void Open()
-        {
-            if (open) return;
-            open = true;
-            gameObject.SetActive(true);
+    public void Open()
+    {
+        if (open) return;
+        open = true;
+        gameObject.SetActive(true);
 
-            /* current character & “true” base stats (after shop upgrades) */
-            cData   = charactersDb.GetCharacterData(chars.SelectedCharacterId);
-            baseLvl = 1;
-            baseDmg = CalcDamage(baseLvl);
-            baseHP  = CalcHP(baseLvl);
+        // current character & “true” base stats (after shop upgrades)
+        cData   = charactersDb.GetCharacterData(chars.SelectedCharacterId);
+        baseLvl = 1;
+        baseDmg = CalcDamage(baseLvl);
+        baseHP  = CalcHP(baseLvl);
 
-            /* saved overrides (if player already tweaked in DEV) */
-            int   savedLvl = CharacterLevelSystem.GetLevel(cData);
-            float savedDmg = chars.CharacterDamage >= 1f  ? chars.CharacterDamage  : CalcDamage(savedLvl);
-            float savedHP  = chars.CharacterHealth >= 20f ? chars.CharacterHealth  : CalcHP(savedLvl);
+        // saved overrides (if player already tweaked in DEV)
+        int   savedLvl = CharacterLevelSystem.GetLevel(cData);
+        float savedDmg = chars.CharacterDamage >= 1f  ? chars.CharacterDamage  : CalcDamage(savedLvl);
+        float savedHP  = chars.CharacterHealth >= baseHP ? chars.CharacterHealth  : baseHP;
 
-            /* sliders */
-            levelSlider.Configure(1, 25,  savedLvl, true);
-            dmgSlider  .Configure(1f,15f, savedDmg,false);
-            hpSlider   .Configure(20f,500f,savedHP,false);
+        // configure sliders: hpSlider.minValue = baseHP
+        levelSlider.Configure(   1,   25, savedLvl, true);
+        dmgSlider  .Configure(1f, 15f, savedDmg, false);
+        hpSlider   .Configure(baseHP, 500f, savedHP, false);
 
-            /* labels */
-            RefreshValueLabels();
-            origLevelLbl.text = $"Original Character Level:   {baseLvl}";
-            origDmgLbl  .text = $"Original Character Damage: {baseDmg:0.0}";
-            origHpLbl   .text = $"Original Character Health: {baseHP:0}";
-            goldLbl.text      = $"Current Golds: {gold.Amount}";
+        // update all labels
+        RefreshValueLabels();
+        origLevelLbl.text = $"Original Character Level:   {baseLvl}";
+        origDmgLbl  .text = $"Original Character Damage: {baseDmg:0.0}";
+        origHpLbl   .text = $"Original Character Health: {baseHP:0}";
+        goldLbl.text      = $"Current Golds: {gold.Amount}";
 
-            /* ESC / Settings hooks */
-            var map = GameController.InputManager.InputAsset.asset;
-            escA = map.FindAction("Back");
-            setA = map.FindAction("Settings");
-            if (escA != null) escA.performed += OnEsc;
-            if (setA != null) setA.performed += OnEsc;
+        // ESC / Settings hooks
+        var map = GameController.InputManager.InputAsset.asset;
+        escA = map.FindAction("Back");
+        setA = map.FindAction("Settings");
+        if (escA != null) escA.performed += OnEsc;
+        if (setA != null) setA.performed += OnEsc;
 
-            EventSystem.current.SetSelectedGameObject(closeBtn.gameObject);
-        }
+        EventSystem.current.SetSelectedGameObject(closeBtn.gameObject);
+    }
 
         void Close()
         {
@@ -154,22 +160,26 @@ namespace OctoberStudio.UI
         void OnEsc(InputAction.CallbackContext _) => Close();
 
     /*──────────────── slider callbacks ─────────────────*/
-        void OnLevel(float v)
+    void OnLevel(float v)
+    {
+        int lvl = Mathf.Clamp(Mathf.RoundToInt(v), 1, 25);
+        levelSlider.SetValueWithoutNotify(lvl);
+        CharacterLevelSystem.SetLevel(cData, lvl);
+
+        // recalc sliders jen když uživatel neoverride-oval
+        if (Mathf.Approximately(chars.CharacterDamage, 0f))
+            dmgSlider.SetValueWithoutNotify(CalcDamage(lvl));
+
+        if (Mathf.Approximately(chars.CharacterHealth, 0f))
         {
-            int lvl = Mathf.Clamp(Mathf.RoundToInt(v), 1, 25);
-            levelSlider.SetValueWithoutNotify(lvl);
-            CharacterLevelSystem.SetLevel(cData, lvl);
-
-            /* auto‑recalculate derived stats if DEV overrides are not set */
-            if (Mathf.Approximately(chars.CharacterDamage , 0f))
-                dmgSlider.SetValueWithoutNotify(CalcDamage(lvl));
-
-            if (Mathf.Approximately(chars.CharacterHealth , 0f))
-                hpSlider.SetValueWithoutNotify(CalcHP(lvl));
-
-            BroadcastUI();
-            RefreshValueLabels();
+            float newHP = CalcHP(lvl);
+            hpSlider.minValue = newHP;
+            hpSlider.SetValueWithoutNotify(newHP);
         }
+
+        BroadcastUI();
+        RefreshValueLabels();
+    }
 
         void OnDmg(float v)
         {
@@ -183,11 +193,10 @@ namespace OctoberStudio.UI
 
         void OnHp(float v)
         {
-            float hp = Mathf.Clamp(Mathf.Round(v / 5f) * 5f, 20f, 500f);
+            float hp = Mathf.Clamp(Mathf.Round(v / 5f) * 5f, baseHP, 500f);
             hpSlider.SetValueWithoutNotify(hp);
+            hpSlider.minValue = baseHP;      // zajišťuje, že necvakne níž než baseHP
             chars.CharacterHealth = hp;
-            
-            baseHP = CalcHP( CharacterLevelSystem.GetLevel(cData) );
 
             BroadcastUI();
             RefreshValueLabels();
@@ -228,12 +237,16 @@ namespace OctoberStudio.UI
         void ResetStats()
         {
             CharacterLevelSystem.SetLevel(cData, baseLvl);
+
             chars.CharacterDamage = 0f;
             chars.CharacterHealth = 0f;
 
             levelSlider.SetValueWithoutNotify(baseLvl);
             dmgSlider  .SetValueWithoutNotify(baseDmg);
-            hpSlider   .SetValueWithoutNotify(baseHP);
+
+            // reset HP-slider na původní max:
+            hpSlider.minValue = baseHP;
+            hpSlider.SetValueWithoutNotify(baseHP);
 
             BroadcastUI();
             RefreshValueLabels();

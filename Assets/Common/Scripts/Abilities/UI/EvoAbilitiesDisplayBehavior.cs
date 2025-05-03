@@ -1,4 +1,4 @@
-// Assets/Common/Scripts/UI/EvoAbilitiesDisplayBehavior.cs
+// Assets/Common/Scripts/UI/EvoAbilitiesDisplayBehavior.cs
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,27 +12,28 @@ namespace OctoberStudio.UI
     {
     /*────────── Inspector ──────────*/
         [Header("Data & Prefabs")]
-        [SerializeField] CharactersDatabase charactersDatabase;
-        [SerializeField] AbilitiesDatabase  abilitiesDatabase;
-        [SerializeField] CharactersSave     characterSave;     // optional, doplní sa autom.
-        [SerializeField] GameObject         evoItemPrefab;
+        [SerializeField] private CharactersDatabase charactersDatabase;
+        [SerializeField] private AbilitiesDatabase  abilitiesDatabase;
+        [SerializeField] private CharactersSave     characterSave;     // optional, auto-filled if null
+        [SerializeField] private GameObject         evoItemPrefab;
 
         [Header("Layout")]
-        [SerializeField] RectTransform      container;         // Grid/Horizontal Layout
+        [SerializeField] private RectTransform      container;         // parent for Grid/Horizontal Layout
 
     /*────────── Lifecycle ──────────*/
-        void Start()
+        private void Start()
         {
             if (characterSave == null)
                 characterSave = GameController
                                    .SaveManager
                                    .GetSave<CharactersSave>("Characters");
 
+            // Re-draw whenever selected character changes
             characterSave.onSelectedCharacterChanged += Refresh;
-            Refresh();          // initial draw
+            Refresh(); // initial draw
         }
 
-        void OnDestroy()
+        private void OnDestroy()
         {
             if (characterSave != null)
                 characterSave.onSelectedCharacterChanged -= Refresh;
@@ -40,14 +41,13 @@ namespace OctoberStudio.UI
 
     /*────────── Public API ──────────*/
         /// <summary>
-        /// Volaj, keď sa zmení level, damage alebo po výbere inej postavy.
-        /// Wrapper bez parametra, aby sa dal pohodlne volať z Dev popupu.
+        /// Force a full refresh (e.g. from DevPopupBroadcastUI).
         /// </summary>
         [ContextMenu("Refresh Display")]
         public void RefreshDisplay() => Refresh(0);
 
     /*────────── Core ──────────*/
-        void Refresh(int _ = 0)
+        private void Refresh(int _ = 0)
         {
             if (charactersDatabase == null || abilitiesDatabase == null || container == null)
             {
@@ -55,39 +55,35 @@ namespace OctoberStudio.UI
                 return;
             }
 
-            /* 1) Aktuálna postava + level */
+            // 1) Current character & level
             var charData = charactersDatabase.GetCharacterData(characterSave.SelectedCharacterId);
             int charLvl  = CharacterLevelSystem.GetLevel(charData);
 
-            Debug.Log($"[EvoUI] Refresh for '{charData.Name}' (lvl {charLvl})");
+            Debug.Log($"[EvoUI] Refresh for '{charData.Name}' (lvl {charLvl})");
 
-            /* 2) Zmaž staré ikony */
+            // 2) Clear out old icons
             for (int i = container.childCount - 1; i >= 0; i--)
                 Destroy(container.GetChild(i).gameObject);
 
-            /* 3) Nazbieraj EVO ability tejto postavy */
+            // 3) Gather this character’s EVO abilities
             var evo = new List<AbilityData>();
             for (int i = 0; i < abilitiesDatabase.AbilitiesCount; i++)
             {
                 var ad = abilitiesDatabase.GetAbility(i);
                 if (ad == null || !ad.IsEvolution || !ad.IsCharacterSpecific) continue;
-
-                if (!ad.AllowedCharacterName.Equals(charData.Name,
-                                                     StringComparison.OrdinalIgnoreCase)) continue;
-
+                if (!ad.AllowedCharacterName.Equals(charData.Name, StringComparison.OrdinalIgnoreCase)) continue;
                 evo.Add(ad);
             }
 
-            /* 4) Ak žiadne EVO – končíme */
+            // 4) If none, bail out
             if (evo.Count == 0)
             {
                 Debug.Log($"[EvoUI] No EVO abilities defined for '{charData.Name}'");
                 return;
             }
 
-            /* 5) Sort low→high a spawn */
+            // 5) Sort low→high and spawn
             evo.Sort((a, b) => a.MinCharacterLevel.CompareTo(b.MinCharacterLevel));
-
             foreach (var ad in evo)
             {
                 bool unlocked = charLvl >= ad.MinCharacterLevel;

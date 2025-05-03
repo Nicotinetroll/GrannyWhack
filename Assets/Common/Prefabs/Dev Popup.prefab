@@ -640,7 +640,7 @@ GameObject:
   - component: {fileID: 8054011908823129450}
   - component: {fileID: 7593458874807255631}
   m_Layer: 0
-  m_Name: Get Golds Button
+  m_Name: Reset Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3223,10 +3223,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: DOJEBANE - pri zmene levelu, pri kupe upgradu za goldy  a 100 dalisch veci
-    sa nastavi HP na 20. Treba si to spatne nastavit cez slider. Button Delete saved
-    files - Nuklearne odjebe vsetky data a neda sa to vratit. Button Reset iba vrati
-    slider hodnoty na zakladne.
+  m_text: Moze to byt dojebane
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7137805b022d44869b12d93cb388c588, type: 2}
   m_sharedMaterial: {fileID: 8527393934874279224, guid: 7137805b022d44869b12d93cb388c588,
