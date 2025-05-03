@@ -42,10 +42,10 @@ namespace OctoberStudio.UI
                 ? $"{Mathf.RoundToInt(PlayerStatsManager.Instance.TotalDamage):N0}"
                 : "0";
 
-            levelText.text = $"Level {StageController.ExperienceManager.Level + 1}";
+            levelText.text = $"{StageController.ExperienceManager.Level + 1}";
 
             var time = TimeSpan.FromSeconds(GameController.SaveManager.GetSave<StageSave>("Stage").Time);
-            timeSurvivedText.text = $"Time: {time:mm\\:ss}";
+            timeSurvivedText.text = $"{time:mm\\:ss}";
 
             foreach (var list in abilityLists)
             {

@@ -1240,7 +1240,7 @@ MonoBehaviour:
   stageFailedScreen: {fileID: 7926813176137370766}
   stageCompletedScreen: {fileID: 73902015}
   playerStats: {fileID: 808867513}
-  testingPreset: {fileID: 0}
+  testingPreset: {fileID: 11400000, guid: 0b2b4e01ae419fb47b00f52de8081dbc, type: 2}
 --- !u!1 &1478012300
 GameObject:
   m_ObjectHideFlags: 0

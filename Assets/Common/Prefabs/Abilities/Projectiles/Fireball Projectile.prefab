@@ -50,7 +50,7 @@ MonoBehaviour:
   visuals: {fileID: 7261048089433104841}
   flashEffect: {fileID: 5728043551366478197}
   hitEffectPoolName: FireballHit
-  projectileVFX: {fileID: 6941013715111736392}
+  projectileVFX: {fileID: 0}
   hitEffectOffset: 0.1
   disableDelay: 0.5
 --- !u!58 &5435862335019065818
@@ -150,19 +150,14 @@ PrefabInstance:
     - {fileID: 114981672378350052, guid: ead2eb1ec6d8ee54fa5d36c7f5e30eef, type: 3}
     - {fileID: 54488790111006576, guid: ead2eb1ec6d8ee54fa5d36c7f5e30eef, type: 3}
     - {fileID: 135219337407746228, guid: ead2eb1ec6d8ee54fa5d36c7f5e30eef, type: 3}
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 8511685127220770311, guid: ead2eb1ec6d8ee54fa5d36c7f5e30eef, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ead2eb1ec6d8ee54fa5d36c7f5e30eef, type: 3}
 --- !u!1 &5728043551366478197 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3151957531930537338, guid: ead2eb1ec6d8ee54fa5d36c7f5e30eef,
-    type: 3}
-  m_PrefabInstance: {fileID: 7259831109800449039}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &6941013715111736392 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 329737889198186567, guid: ead2eb1ec6d8ee54fa5d36c7f5e30eef,
     type: 3}
   m_PrefabInstance: {fileID: 7259831109800449039}
   m_PrefabAsset: {fileID: 0}
