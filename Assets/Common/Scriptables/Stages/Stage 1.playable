@@ -1866,7 +1866,7 @@ MonoBehaviour:
     - dropType: 3
       chance: 0
     disableOffscreenTeleport: 0
-  circularSpawn: 0
+  circularSpawn: 1
   enemiesCount: 80
 --- !u!114 &-6859296879997444207
 MonoBehaviour:
@@ -1919,7 +1919,7 @@ MonoBehaviour:
     useDamageOverride: 1
     damageOverride: 30
     useHPOverride: 1
-    hpOverride: 50
+    hpOverride: 25
     useSpeedOverride: 1
     speedOverride: 0.65
     useDropOverride: 1
@@ -1955,7 +1955,7 @@ MonoBehaviour:
     useDamageOverride: 1
     damageOverride: 30
     useHPOverride: 1
-    hpOverride: 75
+    hpOverride: 44
     useSpeedOverride: 1
     speedOverride: 0.65
     useDropOverride: 1
@@ -1969,7 +1969,7 @@ MonoBehaviour:
     - dropType: 3
       chance: 0
     disableOffscreenTeleport: 0
-  circularSpawn: 0
+  circularSpawn: 1
   enemiesCount: 135
 --- !u!114 &-5711701878891749380
 MonoBehaviour:
@@ -2016,7 +2016,7 @@ MonoBehaviour:
     useDamageOverride: 1
     damageOverride: 30
     useHPOverride: 1
-    hpOverride: 62.5
+    hpOverride: 33
     useSpeedOverride: 1
     speedOverride: 0.65
     useDropOverride: 1
@@ -2030,7 +2030,7 @@ MonoBehaviour:
     - dropType: 3
       chance: 0
     disableOffscreenTeleport: 0
-  circularSpawn: 0
+  circularSpawn: 1
   enemiesCount: 90
 --- !u!114 &-4439639454475571979
 MonoBehaviour:
@@ -2062,7 +2062,7 @@ MonoBehaviour:
     - dropType: 1
       chance: 15
     disableOffscreenTeleport: 0
-  circularSpawn: 0
+  circularSpawn: 1
   enemiesCount: 80
 --- !u!114 &-4427320696502645219
 MonoBehaviour:
@@ -2152,7 +2152,7 @@ MonoBehaviour:
     useDamageOverride: 1
     damageOverride: 60
     useHPOverride: 1
-    hpOverride: 75
+    hpOverride: 44
     useSpeedOverride: 1
     speedOverride: 0.65
     useDropOverride: 1
@@ -2623,7 +2623,7 @@ MonoBehaviour:
     useDamageOverride: 1
     damageOverride: 30
     useHPOverride: 1
-    hpOverride: 50
+    hpOverride: 25
     useSpeedOverride: 1
     speedOverride: 0.65
     useDropOverride: 1
@@ -2637,7 +2637,7 @@ MonoBehaviour:
     - dropType: 3
       chance: 0
     disableOffscreenTeleport: 0
-  circularSpawn: 0
+  circularSpawn: 1
   enemiesCount: 90
 --- !u!114 &-1878650142989148009
 MonoBehaviour:
@@ -2673,7 +2673,7 @@ MonoBehaviour:
     - dropType: 3
       chance: 0
     disableOffscreenTeleport: 0
-  circularSpawn: 0
+  circularSpawn: 1
   enemiesCount: 80
 --- !u!114 &-1765349686638798108
 MonoBehaviour:
@@ -3011,7 +3011,7 @@ MonoBehaviour:
     useDamageOverride: 1
     damageOverride: 120
     useHPOverride: 1
-    hpOverride: 2500
+    hpOverride: 120
     useSpeedOverride: 1
     speedOverride: 0
     useDropOverride: 0
@@ -3020,7 +3020,7 @@ MonoBehaviour:
       chance: 0
     disableOffscreenTeleport: 0
   circularSpawn: 1
-  enemiesCount: 4
+  enemiesCount: 1
 --- !u!114 &-461406323870349249
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3037,7 +3037,7 @@ MonoBehaviour:
     useDamageOverride: 1
     damageOverride: 30
     useHPOverride: 1
-    hpOverride: 100
+    hpOverride: 40
     useSpeedOverride: 1
     speedOverride: 0.5
     useDropOverride: 1
@@ -3215,7 +3215,7 @@ MonoBehaviour:
     - dropType: 3
       chance: 0
     disableOffscreenTeleport: 0
-  circularSpawn: 0
+  circularSpawn: 1
   enemiesCount: 80
 --- !u!114 &1155733898151975935
 MonoBehaviour:
@@ -3673,7 +3673,7 @@ MonoBehaviour:
     useDamageOverride: 1
     damageOverride: 80
     useHPOverride: 1
-    hpOverride: 125
+    hpOverride: 50
     useSpeedOverride: 1
     speedOverride: 0.5
     useDropOverride: 1
@@ -4019,7 +4019,7 @@ MonoBehaviour:
     - dropType: 3
       chance: 0
     disableOffscreenTeleport: 0
-  circularSpawn: 0
+  circularSpawn: 1
   enemiesCount: 80
 --- !u!114 &3294371521546586021
 MonoBehaviour:
@@ -4105,7 +4105,7 @@ MonoBehaviour:
     useDamageOverride: 1
     damageOverride: 30
     useHPOverride: 1
-    hpOverride: 75
+    hpOverride: 30
     useSpeedOverride: 1
     speedOverride: 0.5
     useDropOverride: 1
@@ -4733,7 +4733,7 @@ MonoBehaviour:
     useDamageOverride: 1
     damageOverride: 30
     useHPOverride: 1
-    hpOverride: 62.5
+    hpOverride: 33
     useSpeedOverride: 1
     speedOverride: 0.65
     useDropOverride: 1
@@ -5624,7 +5624,7 @@ MonoBehaviour:
     - dropType: 3
       chance: 0
     disableOffscreenTeleport: 0
-  circularSpawn: 0
+  circularSpawn: 1
   enemiesCount: 80
 --- !u!114 &8402131107621698192
 MonoBehaviour:
@@ -5642,14 +5642,14 @@ MonoBehaviour:
     useDamageOverride: 1
     damageOverride: 150
     useHPOverride: 1
-    hpOverride: 3000
+    hpOverride: 120
     useSpeedOverride: 1
     speedOverride: 0
     useDropOverride: 0
     dropOverride: []
     disableOffscreenTeleport: 0
   circularSpawn: 1
-  enemiesCount: 4
+  enemiesCount: 1
 --- !u!114 &8563627931388518738
 MonoBehaviour:
   m_ObjectHideFlags: 1

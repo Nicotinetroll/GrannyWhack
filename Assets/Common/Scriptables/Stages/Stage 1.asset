@@ -17,7 +17,7 @@ MonoBehaviour:
   description: 'Bonbon pie tiramisu muffin bonbon ice cream. Lollipop sweet roll
     chupa chups chupa chups lollipop lemon drops marshmallow muffin. '
   recommendedDamage: 1 ~ 2
-  recommendedHealth: 40 ~ 50
+  recommendedHealth: 40 ~ 60
   timeline: {fileID: 11400000, guid: fa599a9bdd46a7b4886ff5ecbdfbe895, type: 2}
   stageType: 0
   stageFieldData: {fileID: 11400000, guid: 52c7b0006b996a04681b47c761528a3d, type: 2}
