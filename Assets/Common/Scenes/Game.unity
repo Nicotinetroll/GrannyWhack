@@ -2132,6 +2132,16 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3672269647345697639, guid: 24deeb7ea64b4df49994e80e9e1a9403,
+        type: 3}
+      propertyPath: duration
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3672269647345697639, guid: 24deeb7ea64b4df49994e80e9e1a9403,
+        type: 3}
+      propertyPath: maxScale
+      value: 0.7
+      objectReference: {fileID: 0}
     - target: {fileID: 3872156152832831777, guid: 24deeb7ea64b4df49994e80e9e1a9403,
         type: 3}
       propertyPath: coinsParticle

@@ -1,6 +1,3 @@
-/************************************************************
- *  CharacterLevelSave.cs  –  per‑character XP / Level data
- ************************************************************/
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,20 +18,19 @@ namespace OctoberStudio
     {
         [SerializeField] public List<CharacterLevelEntry> Entries = new();
 
-        /*──────────────────────── ISave ────────────────────────*/
-        public void Flush()  { /* nothing special needed */ }
+        public void Flush()
+        {
+            // Only write out our current entries.
+            // Do NOT reset or clear Entries here!
+        }
 
         public void Clear() => Entries.Clear();
 
-        /// <summary>
-        /// Hard‑reset: wipes *all* saved level data.
-        /// </summary>
         public void ResetAll()
         {
-            Debug.Log("[CharacterLevelSave] FULL RESET – every character set to level 1, 0 XP.");
-            Entries.Clear();                    // drop everything
-            // After this, CharacterLevelSystem will lazily recreate fresh
-            // entries on demand (all start at lvl 1, xp 0).
+            // FULL RESET only when you want to wipe everything.
+            Debug.Log("[CharacterLevelSave] FULL RESET – every character set to level 1, 0 XP.");
+            Entries.Clear();
         }
     }
 }
