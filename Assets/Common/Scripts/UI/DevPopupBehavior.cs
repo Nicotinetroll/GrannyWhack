@@ -246,7 +246,13 @@ namespace OctoberStudio.UI
     chars.ResetAll();
     gold.ResetAll();
     upgSave?.ResetAll();
-    GameController.SaveManager.GetSave<CharacterLevelSave>(CharacterLevelsSaveKey)?.ResetAll();
+
+    var lvlSave = GameController.SaveManager.GetSave<CharacterLevelSave>(CharacterLevelsSaveKey);
+    if (lvlSave != null)
+    {
+        lvlSave.ResetAll();
+        lvlSave.Flush();
+    }
 
     // 2) StageSave
     var stageSave = GameController.SaveManager.GetSave<StageSave>("Stage");
@@ -256,48 +262,46 @@ namespace OctoberStudio.UI
         stageSave.Flush();
     }
 
-    // 3) CharacterKillSave
+    // 3) CharacterKillSave – clear disk & memory
     var killSave = GameController.SaveManager.GetSave<CharacterKillSave>("CharacterKillSave");
     if (killSave != null)
     {
         killSave.FromDictionary(new Dictionary<string, int>());  // clear entries
         killSave.Flush();
     }
-    // 3a) Clear the in-memory kills dictionary immediately
+    // clear static in-memory kills dictionary
     var killsField = typeof(CharacterKillSystem)
-        .GetField("kills", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+        .GetField("kills", BindingFlags.NonPublic | BindingFlags.Static);
     if (killsField != null)
     {
-        var killsDict = killsField.GetValue(null) as System.Collections.IDictionary;
-        killsDict?.Clear();
+        var dict = killsField.GetValue(null) as System.Collections.IDictionary;
+        dict?.Clear();
     }
 
-    // 4) CharacterPlaytimeSystem → clear private PlaytimeSave.entries via reflection
+    // 4) CharacterPlaytimeSystem – clear entries
     var saveMgr = GameController.SaveManager;
     var ptType = typeof(CharacterPlaytimeSystem)
-        .GetNestedType("PlaytimeSave", System.Reflection.BindingFlags.NonPublic);
+        .GetNestedType("PlaytimeSave", BindingFlags.NonPublic);
     if (ptType != null)
     {
-        var getSaveM = saveMgr.GetType()
-            .GetMethod("GetSave", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance,
-                       null, new[] { typeof(string) }, null)
+        var getSave = saveMgr.GetType()
+            .GetMethod("GetSave", BindingFlags.Public | BindingFlags.Instance, null, new[] { typeof(string) }, null)
             .MakeGenericMethod(ptType);
-        var ptSave = getSaveM.Invoke(saveMgr, new object[] { "CharacterPlaytimes" });
+        var ptSave = getSave.Invoke(saveMgr, new object[] { "CharacterPlaytimes" });
         if (ptSave != null)
         {
-            var entriesField = ptType.GetField("entries", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var entriesField = ptType.GetField("entries", BindingFlags.NonPublic | BindingFlags.Instance);
             var list = entriesField.GetValue(ptSave) as System.Collections.IList;
             list?.Clear();
-            var flushM = ptType.GetMethod("Flush", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance,
-                                          null, Type.EmptyTypes, null);
-            flushM.Invoke(ptSave, null);
+            ptType.GetMethod("Flush", BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null)
+                  .Invoke(ptSave, null);
         }
     }
 
     // 5) Reroll charges
     GameController.SaveManager.GetSave<CurrencySave>("Reroll")?.ResetAll();
 
-    // 6) PlayerPrefs + disk files
+    // 6) Delete all PlayerPrefs & raw files
     PlayerPrefs.DeleteAll();
     PlayerPrefs.Save();
     var dir = Application.persistentDataPath;
@@ -305,12 +309,14 @@ namespace OctoberStudio.UI
         foreach (var f in System.IO.Directory.GetFiles(dir))
             System.IO.File.Delete(f);
 
-    // 7) Persist & reload
+    // 7) Persist cleared state & reload scene
     GameController.SaveManager.Save(true);
     UnityEngine.SceneManagement.SceneManager.LoadScene(
         UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex
     );
 }
+
+
 
 
 
