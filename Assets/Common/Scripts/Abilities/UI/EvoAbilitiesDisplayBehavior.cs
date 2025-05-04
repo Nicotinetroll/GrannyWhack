@@ -51,7 +51,7 @@ namespace OctoberStudio.UI
         {
             if (charactersDatabase == null || abilitiesDatabase == null || container == null)
             {
-                Debug.LogWarning("[EvoUI] Missing references – refresh aborted.");
+            //    Debug.LogWarning("[EvoUI] Missing references – refresh aborted.");
                 return;
             }
 
@@ -59,7 +59,7 @@ namespace OctoberStudio.UI
             var charData = charactersDatabase.GetCharacterData(characterSave.SelectedCharacterId);
             int charLvl  = CharacterLevelSystem.GetLevel(charData);
 
-            Debug.Log($"[EvoUI] Refresh for '{charData.Name}' (lvl {charLvl})");
+            //Debug.Log($"[EvoUI] Refresh for '{charData.Name}' (lvl {charLvl})");
 
             // 2) Clear out old icons
             for (int i = container.childCount - 1; i >= 0; i--)
@@ -78,7 +78,7 @@ namespace OctoberStudio.UI
             // 4) If none, bail out
             if (evo.Count == 0)
             {
-                Debug.Log($"[EvoUI] No EVO abilities defined for '{charData.Name}'");
+            //    Debug.Log($"[EvoUI] No EVO abilities defined for '{charData.Name}'");
                 return;
             }
 
@@ -87,8 +87,8 @@ namespace OctoberStudio.UI
             foreach (var ad in evo)
             {
                 bool unlocked = charLvl >= ad.MinCharacterLevel;
-                Debug.Log($"[EvoUI] SPAWNING '{ad.Title}'  " +
-                          $"charLvl={charLvl}, minCharLvl={ad.MinCharacterLevel}, unlocked={unlocked}");
+                //Debug.Log($"[EvoUI] SPAWNING '{ad.Title}'  " +
+                //          $"charLvl={charLvl}, minCharLvl={ad.MinCharacterLevel}, unlocked={unlocked}");
 
                 var go = Instantiate(evoItemPrefab, container, false);
                 go.GetComponent<EvoAbilityItemBehavior>().Setup(ad.Icon, unlocked);

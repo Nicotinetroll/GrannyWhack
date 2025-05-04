@@ -36,7 +36,7 @@ namespace OctoberStudio.UI
                 else
                 {
                     iconImage.enabled = false;
-                    Debug.LogWarning($"[EvoAbilityItem] '{name}' received null sprite!");
+                //    Debug.LogWarning($"[EvoAbilityItem] '{name}' received null sprite!");
                 }
             }
 

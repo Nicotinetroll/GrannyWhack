@@ -1,5 +1,9 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -210,24 +214,80 @@ namespace OctoberStudio.UI
         void AddGold() => gold.Deposit(1_000);
 
         void DeleteEverything()
+{
+    GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
+
+    // 1) Characters, Gold, Upgrades, Level
+    chars.ResetAll();
+    gold.ResetAll();
+    upgSave?.ResetAll();
+    GameController.SaveManager.GetSave<CharacterLevelSave>(CharacterLevelsSaveKey)?.ResetAll();
+
+    // 2) StageSave
+    var stageSave = GameController.SaveManager.GetSave<StageSave>("Stage");
+    if (stageSave != null)
+    {
+        stageSave.ResetAll();
+        stageSave.Flush();
+    }
+
+    // 3) CharacterKillSave
+    var killSave = GameController.SaveManager.GetSave<CharacterKillSave>("CharacterKillSave");
+    if (killSave != null)
+    {
+        killSave.FromDictionary(new Dictionary<string, int>());  // clear entries
+        killSave.Flush();
+    }
+    // Clear the in-memory kills dictionary so UI reads zero
+    var killsField = typeof(CharacterKillSystem)
+        .GetField("kills", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+    var killsDict = killsField?.GetValue(null) as System.Collections.IDictionary;
+    killsDict?.Clear();
+
+    // 4) CharacterPlaytimeSystem → clear private PlaytimeSave.entries via reflection
+    var saveMgr = GameController.SaveManager;
+    var ptType = typeof(CharacterPlaytimeSystem)
+        .GetNestedType("PlaytimeSave", System.Reflection.BindingFlags.NonPublic);
+    if (ptType != null)
+    {
+        var getSaveM = saveMgr.GetType()
+            .GetMethod("GetSave", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance,
+                       null, new[] { typeof(string) }, null)
+            .MakeGenericMethod(ptType);
+        var ptSave = getSaveM.Invoke(saveMgr, new object[] { "CharacterPlaytimes" });
+        if (ptSave != null)
         {
-            GameController.AudioManager.PlaySound(AudioManager.BUTTON_CLICK_HASH);
-            chars.ResetAll();
-            gold.ResetAll();
-            upgSave?.ResetAll();
-            GameController.SaveManager.GetSave<CharacterLevelSave>(CharacterLevelsSaveKey)?.ResetAll();
-            GameController.SaveManager.GetSave<StageSave>("Stage")?.ResetAll();
-            GameController.SaveManager.GetSave<CurrencySave>("Reroll")?.ResetAll();
-
-            PlayerPrefs.DeleteAll();
-            PlayerPrefs.Save();
-            var dir = Application.persistentDataPath;
-            if (Directory.Exists(dir))
-                foreach (var f in Directory.GetFiles(dir)) File.Delete(f);
-
-            GameController.SaveManager.Save(true);
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            var entriesField = ptType.GetField("entries", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var list = entriesField.GetValue(ptSave) as System.Collections.IList;
+            list?.Clear();
+            var flushM = ptType.GetMethod("Flush", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance,
+                                          null, Type.EmptyTypes, null);
+            flushM.Invoke(ptSave, null);
         }
+    }
+
+    // 5) Reroll charges
+    GameController.SaveManager.GetSave<CurrencySave>("Reroll")?.ResetAll();
+
+    // 6) PlayerPrefs + disk files
+    PlayerPrefs.DeleteAll();
+    PlayerPrefs.Save();
+    var dir = Application.persistentDataPath;
+    if (System.IO.Directory.Exists(dir))
+        foreach (var f in System.IO.Directory.GetFiles(dir))
+            System.IO.File.Delete(f);
+
+    // 7) Persist & reload
+    GameController.SaveManager.Save(true);
+    UnityEngine.SceneManagement.SceneManager.LoadScene(
+        UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex
+    );
+}
+
+
+
+
+
 
         void ResetStats()
         {

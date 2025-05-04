@@ -92,6 +92,7 @@ namespace OctoberStudio
             dps               = 0f;
             timeAlive         = 0f;
 
+            Debug.Log($"[StageSave] After ResetAll → kills={enemiesKilled}, timeAlive={timeAlive}");
             onSelectedStageChanged?.Invoke(0);
             Debug.Log("[StageSave] ResetAll ▶ stage progress wiped");
         }
