@@ -23,6 +23,7 @@ namespace OctoberStudio.UI
         [Header("Databases")]
         [SerializeField] CharactersDatabase charactersDb;
         [SerializeField] AbilitiesDatabase  abilitiesDb;
+        [SerializeField] private CharacterLevelingConfig levelingConfig;
 
         [Header("Currency key (must exist in DB)")]
         [SerializeField] string currencyID = "gold";
@@ -151,20 +152,42 @@ namespace OctoberStudio.UI
         void OnEsc(InputAction.CallbackContext _) => Close();
 
         /*──────────────── slider callbacks ─────────────────*/
+        void DumpLevelSaveFields(CharacterLevelSave lvlSave)
+        {
+            var t = typeof(CharacterLevelSave);
+            var fields = t.GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
+            foreach (var f in fields)
+                Debug.Log($"[DevPopup] Field: {f.Name}");
+        }
         void OnLevel(float v)
         {
-            if (isInitializing) return;
-
-            int lvl = Mathf.Clamp(Mathf.RoundToInt(v), 1, 25);
+            // clamp slider to valid range
+            int lvl = Mathf.Clamp(Mathf.RoundToInt(v), 1, levelingConfig.MaxLevel);
             levelSlider.SetValueWithoutNotify(lvl);
 
-            // Persist level change
+            // 1) update the logical level
             CharacterLevelSystem.SetLevel(cData, lvl);
+
+            // 2) cheat the underlying XP so the runtime will keep you at this level
             var lvlSave = GameController.SaveManager.GetSave<CharacterLevelSave>(CharacterLevelsSaveKey);
+
+            // find or create the entry for this character
+            var entry = lvlSave.Entries.Find(e => e.name == cData.Name);
+            if (entry == null)
+            {
+                entry = new CharacterLevelEntry { name = cData.Name };
+                lvlSave.Entries.Add(entry);
+            }
+
+            // set XP exactly to the cumulative XP needed for 'lvl'
+            entry.xp  = levelingConfig.GetCumulativeXpForLevel(lvl);
+            entry.lvl = lvl;
+
+            // persist changes
             lvlSave.Flush();
             GameController.SaveManager.Save(true);
 
-            // Update dependent sliders
+            // 3) recompute damage/HP if no manual overrides
             if (Mathf.Approximately(chars.CharacterDamage, 0f))
                 dmgSlider.SetValueWithoutNotify(CalcDamage(lvl));
             if (Mathf.Approximately(chars.CharacterHealth, 0f))
@@ -174,9 +197,11 @@ namespace OctoberStudio.UI
                 hpSlider.SetValueWithoutNotify(newHP);
             }
 
+            // 4) update UI
             BroadcastUI();
             RefreshValueLabels();
         }
+
 
         void OnDmg(float v)
         {
@@ -238,11 +263,14 @@ namespace OctoberStudio.UI
         killSave.FromDictionary(new Dictionary<string, int>());  // clear entries
         killSave.Flush();
     }
-    // Clear the in-memory kills dictionary so UI reads zero
+    // 3a) Clear the in-memory kills dictionary immediately
     var killsField = typeof(CharacterKillSystem)
         .GetField("kills", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-    var killsDict = killsField?.GetValue(null) as System.Collections.IDictionary;
-    killsDict?.Clear();
+    if (killsField != null)
+    {
+        var killsDict = killsField.GetValue(null) as System.Collections.IDictionary;
+        killsDict?.Clear();
+    }
 
     // 4) CharacterPlaytimeSystem → clear private PlaytimeSave.entries via reflection
     var saveMgr = GameController.SaveManager;
@@ -283,6 +311,7 @@ namespace OctoberStudio.UI
         UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex
     );
 }
+
 
 
 

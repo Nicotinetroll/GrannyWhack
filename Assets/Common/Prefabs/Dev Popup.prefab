@@ -2159,6 +2159,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   charactersDb: {fileID: 11400000, guid: 94ea5f0fdccb79e4cbdd7bd522bc3dc2, type: 2}
   abilitiesDb: {fileID: 11400000, guid: 0647b23f7b3015041b61926ed80fbbe4, type: 2}
+  levelingConfig: {fileID: 11400000, guid: c12c981835a3bc04db91c2623e3c6c81, type: 2}
   currencyID: gold
   closeBtn: {fileID: 4427991074838365661}
   addGoldBtn: {fileID: 7413912662980139503}

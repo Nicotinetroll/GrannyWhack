@@ -15,8 +15,8 @@ namespace OctoberStudio.UI
         private void Awake()
         {
             _button = GetComponent<Button>();
-            if (_button == null)
-                Debug.LogWarning("[EvoAbilityItemBehavior] No Button on " + name);
+            //if (_button == null)
+            //    Debug.LogWarning("[EvoAbilityItemBehavior] No Button on " + name);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace OctoberStudio.UI
                 disabledOverlay.blocksRaycasts = !unlocked;
             }
 
-            Debug.Log($"[EvoAbilityItem] '{name}' unlocked={unlocked}");
+        //    Debug.Log($"[EvoAbilityItem] '{name}' unlocked={unlocked}");
         }
 
     }
